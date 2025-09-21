@@ -1,9 +1,12 @@
 import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http'; // 👈 import this
 import { AppComponent } from './app/app.component';
-import { appConfig } from './app/app.config';
+import { routes } from './app/app.routes';
 
-if (typeof window !== 'undefined') {
-  bootstrapApplication(AppComponent, appConfig).catch((err) =>
-    console.error(err)
-  );
-}
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient() // 👈 register HttpClient globally
+  ]
+}).catch(err => console.error(err));

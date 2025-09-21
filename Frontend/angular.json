@@ -24,13 +24,10 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -88,5 +85,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "ce3204d4-6bf1-40c2-9a8c-ed5be4679268"
   }
 }
