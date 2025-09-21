@@ -1,0 +1,94 @@
+<!-- src/app/features/chat/test/test.component.html -->
+<div class="test-container">
+  <div class="test-header">
+    <h2>Test Component - Backend Connection</h2>
+    <p>Displaying number 4 from MongoDB database</p>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button 
+      (click)="fetchTestData()" 
+      class="btn btn-primary"
+      [disabled]="loading">
+      {{ loading ? 'Loading...' : 'Fetch Data' }}
+    </button>
+    
+    <button 
+      (click)="initializeData()" 
+      class="btn btn-success"
+      [disabled]="loading">
+      Initialize with 4
+    </button>
+    
+    <button 
+      (click)="createNewData()" 
+      class="btn btn-info"
+      [disabled]="loading">
+      Add New 4
+    </button>
+    
+    <button 
+      (click)="refreshData()" 
+      class="btn btn-secondary"
+      [disabled]="loading">
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <span>Loading test data...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <div class="error-message">{{ error }}</div>
+    <button (click)="refreshData()" class="btn btn-small">Try Again</button>
+  </div>
+
+  <!-- Data Display -->
+  <div *ngIf="!loading && testData.length > 0" class="data-display">
+    <h3>Numbers from Database:</h3>
+    
+    <div class="numbers-grid">
+      <div 
+        *ngFor="let item of testData; let i = index" 
+        class="number-card"
+        [attr.data-index]="i">
+        <div class="number-value">{{ item.number }}</div>
+        <div class="number-info">
+          <small>ID: {{ item._id.substring(0, 8) }}...</small>
+          <small>Created: {{ item.createdAt | date:'short' }}</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Summary -->
+    <div class="data-summary">
+      <div class="summary-item">
+        <span class="label">Total Records:</span>
+        <span class="value">{{ testData.length }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="label">All Numbers:</span>
+        <span class="value">{{ testData.map(item => item.number).join(', ') }}</span>
+      </div>
+    </div>
+
+    <!-- Raw Data (for debugging) -->
+    <details class="raw-data">
+      <summary>Raw Data (JSON)</summary>
+      <pre>{{ testData | json }}</pre>
+    </details>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && testData.length === 0 && !error" class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>No Test Data Found</h3>
+    <p>Click "Initialize with 4" to add test data to the database</p>
+  </div>
+</div>
