@@ -3,13 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TestService {
+  api = 'http://localhost:5000/api/test';
 
-  api = "http://127.0.0.1:8000/mongo/get-all";
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllData(): Observable<any> {
     return this.http.get<any>(this.api);
