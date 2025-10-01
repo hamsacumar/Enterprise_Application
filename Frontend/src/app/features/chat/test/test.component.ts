@@ -14,6 +14,11 @@ export class TestComponent implements OnInit {
   testData: TestData[] = [];
   loading = false;
   error: string | null = null;
+  
+  // Helper method to get formatted numbers
+  getFormattedNumbers(): string {
+    return this.testData.map(item => item.number).join(', ');
+  }
 
   constructor(private testService: TestService) {}
 
