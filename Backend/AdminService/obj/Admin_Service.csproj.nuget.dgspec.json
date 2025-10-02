@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/nirojiha/Desktop/Enterprise_Application/Backend/Admin_Service/Admin_Service.csproj": {}
+    "/Users/nirojiha/Desktop/Enterprise_Application/Backend/AdminService/Admin_Service.csproj": {}
   },
   "projects": {
-    "/Users/nirojiha/Desktop/Enterprise_Application/Backend/Admin_Service/Admin_Service.csproj": {
+    "/Users/nirojiha/Desktop/Enterprise_Application/Backend/AdminService/Admin_Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/nirojiha/Desktop/Enterprise_Application/Backend/Admin_Service/Admin_Service.csproj",
+        "projectUniqueName": "/Users/nirojiha/Desktop/Enterprise_Application/Backend/AdminService/Admin_Service.csproj",
         "projectName": "Admin_Service",
-        "projectPath": "/Users/nirojiha/Desktop/Enterprise_Application/Backend/Admin_Service/Admin_Service.csproj",
+        "projectPath": "/Users/nirojiha/Desktop/Enterprise_Application/Backend/AdminService/Admin_Service.csproj",
         "packagesPath": "/Users/nirojiha/.nuget/packages/",
-        "outputPath": "/Users/nirojiha/Desktop/Enterprise_Application/Backend/Admin_Service/obj/",
+        "outputPath": "/Users/nirojiha/Desktop/Enterprise_Application/Backend/AdminService/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/nirojiha/.nuget/NuGet/NuGet.Config"
@@ -47,6 +47,10 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.8, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.5.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
