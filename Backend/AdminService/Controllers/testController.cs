@@ -23,7 +23,7 @@ namespace Backend.Controllers
         }
 
         
-    }
+    
 
     [HttpPost("init")]
     public async Task<IActionResult> Initialize()
@@ -40,3 +40,4 @@ namespace Backend.Controllers
         return Ok(new { success = true, message = "New test data created" });
     }
 }
+    }
