@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Backend.Models
 {
@@ -7,7 +8,8 @@ namespace Backend.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } = null!;
+        [JsonIgnore] // <- hides Id from POST body
+        public string? Id { get; set; }
 
         [BsonElement("name")]
         public string Name { get; set; } = null!;
@@ -19,6 +21,7 @@ namespace Backend.Models
         public decimal Price { get; set; }
 
         [BsonElement("createdAt")]
+        [JsonIgnore] // <- hides CreatedAt from POST body
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
