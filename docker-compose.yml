@@ -19,7 +19,7 @@ services:
   nodeapi:
     build: ./backend/ChatboxService    # Path to Node.js backend
     ports:
-      - "5000:5000"                    # Expose backend on host port 5000
+      - "5001:5000"                    # Expose backend on host port 5000
     environment:
       - MONGO_URI=mongodb://mongo:27017/Enterprice  # MongoDB connection string
     depends_on:
