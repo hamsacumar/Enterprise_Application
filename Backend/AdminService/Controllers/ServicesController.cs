@@ -36,8 +36,12 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ServiceItem item)
         {
-            // id left empty -> Mongo will create
+            // Make sure Id is null so MongoDB can generate it
+            item.Id = null;
+            item.CreatedAt = DateTime.UtcNow;
+
             await _service.CreateAsync(item);
+
             return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
         }
 
@@ -48,7 +52,7 @@ namespace Backend.Controllers
             var exists = await _service.GetByIdAsync(id);
             if (exists == null) return NotFound();
 
-            // preserve CreatedAt if you want
+            // preserve Id and CreatedAt
             updated.Id = id;
             updated.CreatedAt = exists.CreatedAt;
 
