@@ -1,0 +1,27 @@
+<div class="service-list">
+  <h2>Service List</h2>
+
+  <div *ngIf="loading" class="loading">Loading services...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <table *ngIf="!loading && !error && services.length > 0">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Service Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let service of services; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ service.name }}</td>
+        <td>{{ service.description }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !error && services.length === 0">
+    No services available.
+  </div>
+</div>
