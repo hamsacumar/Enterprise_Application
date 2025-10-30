@@ -1,29 +1,58 @@
 version: "3.8"
+
 services:
+  # =========================
+  # Angular frontend service
+  # =========================
   angular:
-    build: ./frontend
+    build: ./frontend                  # Path to Angular project
     ports:
-      - "4200:80"
+      - "4200:80"                      # Map container port 80 to host 4200
     depends_on:
-      - nodeapi
-    restart: always
+      - nodeapi                        # Wait for Node.js backend
+      - adminapi                       # Wait for .NET backend
+    restart: always                     # Restart if container fails
 
+  # =========================
+  # Node.js backend service
+  # =========================
   nodeapi:
-    build: .\backend\ChatboxService
+    build: ./backend/ChatboxService    # Path to Node.js backend
     ports:
-      - "5000:5000"
+      - "5000:5000"                    # Expose backend on host port 5000
     environment:
-      - MONGO_URI=mongodb://mongo:27017/Enterprice
+      - MONGO_URI=mongodb://mongo:27017/Enterprice  # MongoDB connection string
     depends_on:
-      - mongo
+      - mongo                           # Ensure MongoDB starts first
     restart: always
 
-  mongo:
-    image: mongo:latest
+# Note that connection string names are different for Node.js and .NET backends. and port changed 5000 to 5001
+  # =========================
+  # .NET backend service
+  # =========================
+  adminapi:
+    build: ./backend/AdminService      # Path to .NET backend
     ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
+      - "5125:5125"                    # Expose .NET API on host port 5125
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development          # Set environment
+      - MONGO_URI=mongodb://mongo:27017/Enterprise  # MongoDB connection string
+    depends_on:
+      - mongo                           # Ensure MongoDB starts first
+    restart: always
 
+  # =========================
+  # MongoDB service
+  # =========================
+  mongo:
+    image: mongo:latest                # Use latest MongoDB image
+    ports:
+      - "27017:27017"                  # Expose MongoDB to host
+    volumes:
+      - mongo_data:/data/db            # Persist MongoDB data
+
+# =========================
+# Volumes for persistent data
+# =========================
 volumes:
   mongo_data:
