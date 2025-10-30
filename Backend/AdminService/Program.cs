@@ -1,53 +1,65 @@
-using Backend.Services; // or your actual namespace
-using Backend.Settings; // for MongoDbSettings
+using Backend.Services;              // Existing + new services
+using Backend.Settings;              // MongoDbSettings
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register MongoDB settings
-builder.Services.Configure<MongoDbSettings>(
-    builder.Configuration.GetSection("MongoDbSettings"));
+// ----------------------
+// MongoDB Configuration
+// ----------------------
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 
-// Register MongoDB client
-builder.Services.AddSingleton<IMongoClient>(sp =>
+// Support MONGO_URI environment variable (for Docker)
+var envMongo = Environment.GetEnvironmentVariable("MONGO_URI");
+var cfg = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
+var connectionString = envMongo ?? cfg?.ConnectionString ?? throw new Exception("Mongo connection string missing");
+var databaseName = cfg?.DatabaseName ?? "Enterprise";
+
+// Register Mongo client (used globally)
+builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(connectionString));
+builder.Services.Configure<MongoDbSettings>(opt =>
 {
-    var settings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
-    if (settings == null || string.IsNullOrEmpty(settings.ConnectionString))
-    {
-        throw new Exception("MongoDB settings are missing or invalid in appsettings.json");
-    }
-    return new MongoClient(settings.ConnectionString);
+    opt.ConnectionString = connectionString;
+    opt.DatabaseName = databaseName;
 });
 
-// Register services
-builder.Services.AddScoped<ITestService, TestService>();
-builder.Services.AddScoped<AdminService.Services.IAdminService, AdminService.Services.AdminService>();
+// ----------------------
+// Dependency Injection
+// ----------------------
+builder.Services.AddScoped<ITestService, TestService>();  // ✅ your existing test service
+builder.Services.AddScoped<AdminService.Services.IAdminService, AdminService.Services.AdminService>(); // ✅ your existing admin service
+builder.Services.AddScoped<IServiceService, ServiceService>(); // ✅ NEW: for managing Services (CRUD)
 
-// Add controllers
+// ----------------------
+// Controllers + Swagger
+// ----------------------
 builder.Services.AddControllers();
-
-// Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Admin Service API", Version = "v1" });
 });
 
-// ✅ Add CORS
-// Enable CORS
+// ----------------------
+// CORS Configuration
+// ----------------------
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
-
 var app = builder.Build();
+
+// ----------------------
+// Middleware
+// ----------------------
 app.UseCors("AllowAngular");
 
 if (app.Environment.IsDevelopment())
@@ -59,13 +71,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 
-// ✅ Add this to show a message at root
-app.MapGet("/", () => "🚀 Backend is running!");
-
-// Map API controllers
 app.MapControllers();
+
+// ----------------------
+// Root route (test)
+// ----------------------
+app.MapGet("/", () => Results.Ok(new { message = "🚀 Admin API running successfully!" }));
 
 app.Run();
