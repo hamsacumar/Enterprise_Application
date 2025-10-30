@@ -59,9 +59,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// ✅ Order matters: CORS should come before controllers
+// Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 
+// ✅ Add this to show a message at root
+app.MapGet("/", () => "🚀 Backend is running!");
+
+// Map API controllers
 app.MapControllers();
 
 app.Run();
