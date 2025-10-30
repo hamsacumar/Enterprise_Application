@@ -61,7 +61,6 @@ if (app.Environment.IsDevelopment())
 
 // ✅ Order matters: CORS should come before controllers
 app.UseHttpsRedirection();
-app.UseCors("AllowAngularApp");
 
 app.MapControllers();
 
