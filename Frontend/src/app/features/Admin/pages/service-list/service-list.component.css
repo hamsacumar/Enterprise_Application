@@ -1,38 +1,54 @@
 .service-list {
   padding: 1.5rem;
+}
 
-  h2 {
-    color: #2d3748;
-    margin-bottom: 1rem;
-  }
+.add-btn {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  border: none;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
+.add-btn:hover {
+  background-color: #1e40af;
+}
 
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
 
-    th {
-      background-color: #f1f5f9;
-      color: #374151;
-    }
+th, td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+}
 
-    tr:hover {
-      background-color: #f9fafb;
-    }
-  }
+th {
+  background-color: #f1f5f9;
+  color: #374151;
+}
 
-  .loading {
-    color: #4b5563;
-  }
+tr:hover {
+  background-color: #f9fafb;
+}
 
-  .error {
-    color: red;
-    margin-top: 0.5rem;
-  }
+.loading {
+  color: #4b5563;
+}
+
+.error {
+  color: red;
+  margin-top: 0.5rem;
+}
+
+.actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  font-size: 1rem;
 }

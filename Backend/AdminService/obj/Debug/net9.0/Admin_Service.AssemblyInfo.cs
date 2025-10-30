@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Admin_Service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+765302a0706010b4d0d7c09065a891391fc75533")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f8b46a1f15743d4af9d45cf0120909b942c985c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Admin_Service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Admin_Service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

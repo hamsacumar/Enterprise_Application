@@ -1,6 +1,17 @@
 <div class="service-list">
   <h2>Service List</h2>
 
+  <button class="add-btn" (click)="toggleAddForm()">+ Add Service</button>
+
+  <!-- Add new service form -->
+  <div *ngIf="showAddForm" class="form">
+    <input [(ngModel)]="newService.name" placeholder="Service Name" />
+    <input [(ngModel)]="newService.description" placeholder="Description" />
+    <input type="number" [(ngModel)]="newService.price" placeholder="Price" />
+    <button (click)="addService()">Save</button>
+    <button (click)="toggleAddForm()">Cancel</button>
+  </div>
+
   <div *ngIf="loading" class="loading">Loading services...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
 
@@ -10,13 +21,44 @@
         <th>#</th>
         <th>Service Name</th>
         <th>Description</th>
+        <th>Price</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let service of services; index as i">
         <td>{{ i + 1 }}</td>
-        <td>{{ service.name }}</td>
-        <td>{{ service.description }}</td>
+
+        <!-- Editable row -->
+        <td *ngIf="editingServiceId === service.id">
+          <input [(ngModel)]="editingService.name" />
+        </td>
+        <td *ngIf="editingServiceId !== service.id">{{ service.name }}</td>
+
+        <td *ngIf="editingServiceId === service.id">
+          <input [(ngModel)]="editingService.description" />
+        </td>
+        <td *ngIf="editingServiceId !== service.id">{{ service.description }}</td>
+
+        <td *ngIf="editingServiceId === service.id">
+          <input type="number" [(ngModel)]="editingService.price" />
+        </td>
+        <td *ngIf="editingServiceId !== service.id">{{ service.price }}</td>
+
+        <td>
+  <!-- Actions menu -->
+  <div *ngIf="editingServiceId !== service.id" class="actions">
+    <button (click)="editService(service)">⋮</button>
+    <button (click)="deleteService(service)">🗑️</button>
+  </div>
+
+  <!-- Save / Cancel buttons for editing -->
+  <div *ngIf="editingServiceId === service.id" class="actions">
+    <button (click)="saveService()">💾</button>
+    <button (click)="cancelEdit()">✖</button>
+  </div>
+</td>
+
       </tr>
     </tbody>
   </table>
