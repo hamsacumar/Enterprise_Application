@@ -13,12 +13,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton<UserService>();
 
+var environment = builder.Environment.EnvironmentName;
+Console.WriteLine($"[ENVIRONMENT] {environment} ");
 
+var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
+var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
+
+if (string.IsNullOrEmpty(jwtSettings?.Secret))
+{
+    throw new Exception("JWT Secret is not configured.");
+}
+else
+{
+    Console.WriteLine("[JWT] Secret is configured.");
+}
 //configure jwt
-var jwtSettings = new JwtSettings();
-builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
+
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddSingleton<JwtHelper>();
+
+
 
 
 
