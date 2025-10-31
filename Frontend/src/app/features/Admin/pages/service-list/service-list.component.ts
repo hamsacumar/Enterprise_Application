@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService, ServiceItem } from '../services/admin.service';
+import { AdminService, ServiceItem } from '../../services/admin.service';
 
 type ServiceWithMenu = ServiceItem & { showMenu?: boolean };
 
