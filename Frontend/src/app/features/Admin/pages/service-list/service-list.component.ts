@@ -65,40 +65,53 @@ export class ServiceListComponent implements OnInit {
       next: (service) => {
         this.services.unshift(service);
         this.showAddForm = false;
+        this.newService = { name: '', description: '', price: 0 };
       },
       error: (err) => console.error('Error adding service:', err)
     });
   }
 
+  /** Cancel add form */
+  cancelAdd(): void {
+    this.showAddForm = false;
+    this.newService = { name: '', description: '', price: 0 };
+  }
+
   /** Start editing a service */
   editService(service: ServiceItem): void {
-    this.editingServiceId = service.id || null;
-    this.editingService = { name: service.name, description: service.description, price: service.price };
+    const id = (service as any).id ?? (service as any).Id;
+    if (!id) return;
+    
+    this.editingServiceId = id;
+    this.editingService = { 
+      name: service.name, 
+      description: service.description, 
+      price: service.price 
+    };
   }
 
   /** Save updated service */
   saveService(): void {
-  if (!this.editingServiceId || !this.editingService.name || this.editingService.price == null) return;
+    if (!this.editingServiceId || !this.editingService.name || this.editingService.price == null) return;
 
-  const payload: Omit<ServiceItem, 'id' | 'createdAt'> = {
-    name: this.editingService.name,
-    description: this.editingService.description || '',
-    price: this.editingService.price
-  };
+    const payload: Omit<ServiceItem, 'id' | 'createdAt'> = {
+      name: this.editingService.name,
+      description: this.editingService.description || '',
+      price: this.editingService.price
+    };
 
-  this.adminService.updateService(this.editingServiceId, payload).subscribe({
-    next: () => {
-      const index = this.services.findIndex(s => s.id === this.editingServiceId);
-      if (index > -1) {
-        this.services[index] = { ...this.services[index], ...payload };
+    this.adminService.updateService(this.editingServiceId, payload).subscribe({
+      next: () => {
+        this.fetchServices();
+        this.editingServiceId = null;
+        this.editingService = {};
+      },
+      error: (err) => {
+        console.error('Error updating service:', err);
+        this.error = 'Failed to update service';
       }
-      this.editingServiceId = null;
-      this.editingService = {};
-    },
-    error: (err) => console.error('Error updating service:', err)
-  });
-}
-
+    });
+  }
 
   /** Cancel editing */
   cancelEdit(): void {
@@ -108,15 +121,23 @@ export class ServiceListComponent implements OnInit {
 
   /** Delete service */
   deleteService(service: ServiceItem): void {
-  if (!service.id) return;
-  if (!confirm(`Delete "${service.name}"?`)) return;
+    const id = (service as any).id ?? (service as any).Id;
+    if (!id) return;
+    if (!confirm(`Delete "${service.name}"?`)) return;
 
-  this.adminService.deleteService(service.id).subscribe({
-    next: () => {
-      this.services = this.services.filter(s => s.id !== service.id);
-    },
-    error: (err) => console.error('Error deleting service:', err)
-  });
-}
+    this.adminService.deleteService(id).subscribe({
+      next: () => {
+        this.fetchServices();
+      },
+      error: (err) => {
+        console.error('Error deleting service:', err);
+        this.error = 'Failed to delete service';
+      }
+    });
+  }
 
+  /** Get service ID for comparison */
+  getServiceId(service: ServiceItem): string {
+    return (service as any).id ?? (service as any).Id ?? '';
+  }
 }

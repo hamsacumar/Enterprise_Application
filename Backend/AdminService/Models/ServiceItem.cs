@@ -8,7 +8,6 @@ namespace Backend.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [JsonIgnore] // <- hides Id from POST body
         public string? Id { get; set; }
 
         [BsonElement("name")]

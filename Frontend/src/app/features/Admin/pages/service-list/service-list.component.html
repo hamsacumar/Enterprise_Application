@@ -1,21 +1,32 @@
 <div class="service-list">
   <h2>Service List</h2>
 
-  <button class="add-btn" (click)="toggleAddForm()">+ Add Service</button>
+  <button type="button" class="add-btn" (click)="toggleAddForm()">
+    {{ showAddForm ? 'Cancel' : '+ Add Service' }}
+  </button>
 
   <!-- Add new service form -->
-  <div *ngIf="showAddForm" class="form">
-    <input [(ngModel)]="newService.name" placeholder="Service Name" />
-    <input [(ngModel)]="newService.description" placeholder="Description" />
-    <input type="number" [(ngModel)]="newService.price" placeholder="Price" />
-    <button (click)="addService()">Save</button>
-    <button (click)="toggleAddForm()">Cancel</button>
+  <div *ngIf="showAddForm" class="add-form">
+    <h3>Add New Service</h3>
+    <div class="form-group">
+      <input [(ngModel)]="newService.name" placeholder="Service Name" class="form-input" />
+    </div>
+    <div class="form-group">
+      <input [(ngModel)]="newService.description" placeholder="Description" class="form-input" />
+    </div>
+    <div class="form-group">
+      <input type="number" [(ngModel)]="newService.price" placeholder="Price" class="form-input" />
+    </div>
+    <div class="form-actions">
+      <button type="button" class="save-btn" (click)="addService()">Save</button>
+      <button type="button" class="cancel-btn" (click)="cancelAdd()">Cancel</button>
+    </div>
   </div>
 
   <div *ngIf="loading" class="loading">Loading services...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
 
-  <table *ngIf="!loading && !error && services.length > 0">
+  <table *ngIf="!loading && !error && services.length > 0" class="services-table">
     <thead>
       <tr>
         <th>#</th>
@@ -26,44 +37,54 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let service of services; index as i">
+      <tr *ngFor="let service of services; index as i" [class.editing]="editingServiceId === getServiceId(service)">
         <td>{{ i + 1 }}</td>
 
-        <!-- Editable row -->
-        <td *ngIf="editingServiceId === service.id">
-          <input [(ngModel)]="editingService.name" />
+        <!-- Service Name Column -->
+        <td *ngIf="editingServiceId !== getServiceId(service)">{{ service.name }}</td>
+        <td *ngIf="editingServiceId === getServiceId(service)">
+          <input [(ngModel)]="editingService.name" class="edit-input" />
         </td>
-        <td *ngIf="editingServiceId !== service.id">{{ service.name }}</td>
 
-        <td *ngIf="editingServiceId === service.id">
-          <input [(ngModel)]="editingService.description" />
+        <!-- Description Column -->
+        <td *ngIf="editingServiceId !== getServiceId(service)">{{ service.description }}</td>
+        <td *ngIf="editingServiceId === getServiceId(service)">
+          <input [(ngModel)]="editingService.description" class="edit-input" />
         </td>
-        <td *ngIf="editingServiceId !== service.id">{{ service.description }}</td>
 
-        <td *ngIf="editingServiceId === service.id">
-          <input type="number" [(ngModel)]="editingService.price" />
+        <!-- Price Column -->
+        <td *ngIf="editingServiceId !== getServiceId(service)">{{ service.price | currency }}</td>
+        <td *ngIf="editingServiceId === getServiceId(service)">
+          <input type="number" [(ngModel)]="editingService.price" class="edit-input" />
         </td>
-        <td *ngIf="editingServiceId !== service.id">{{ service.price }}</td>
 
+        <!-- Actions Column -->
         <td>
-  <!-- Actions menu -->
-  <div *ngIf="editingServiceId !== service.id" class="actions">
-    <button (click)="editService(service)">⋮</button>
-    <button (click)="deleteService(service)">🗑️</button>
-  </div>
+          <!-- Normal Actions - Show Edit and Delete buttons -->
+          <div *ngIf="editingServiceId !== getServiceId(service)" class="actions">
+            <button type="button" class="action-btn edit-btn" (click)="editService(service)" title="Edit">
+              <span class="icon">✏️</span>
+            </button>
+            <button type="button" class="action-btn delete-btn" (click)="deleteService(service)" title="Delete">
+              <span class="icon">🗑️</span>
+            </button>
+          </div>
 
-  <!-- Save / Cancel buttons for editing -->
-  <div *ngIf="editingServiceId === service.id" class="actions">
-    <button (click)="saveService()">💾</button>
-    <button (click)="cancelEdit()">✖</button>
-  </div>
-</td>
-
+          <!-- Edit Mode Actions - Show Save and Cancel buttons -->
+          <div *ngIf="editingServiceId === getServiceId(service)" class="actions">
+            <button type="button" class="action-btn save-btn" (click)="saveService()" title="Save">
+              <span class="icon">💾</span>
+            </button>
+            <button type="button" class="action-btn cancel-btn" (click)="cancelEdit()" title="Cancel">
+              <span class="icon">✖</span>
+            </button>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
 
-  <div *ngIf="!loading && !error && services.length === 0">
+  <div *ngIf="!loading && !error && services.length === 0" class="no-services">
     No services available.
   </div>
 </div>
