@@ -27,8 +27,6 @@ builder.Services.Configure<MongoDbSettings>(opt =>
 // ----------------------
 // Dependency Injection
 // ----------------------
-builder.Services.AddScoped<ITestService, TestService>();  // ✅ your existing test service
-builder.Services.AddScoped<AdminService.Services.IAdminService, AdminService.Services.AdminService>(); // ✅ your existing admin service
 builder.Services.AddScoped<IServiceService, ServiceService>(); // ✅ NEW: for managing Services (CRUD)
 
 // ----------------------
