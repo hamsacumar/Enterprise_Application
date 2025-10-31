@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService, ServiceItem } from '../services/admin.service';
 
+type ServiceWithMenu = ServiceItem & { showMenu?: boolean };
+
 @Component({
   selector: 'app-service-list',
   standalone: true,
@@ -13,7 +15,7 @@ import { AdminService, ServiceItem } from '../services/admin.service';
 export class ServiceListComponent implements OnInit {
   private adminService = inject(AdminService);
 
-  services: ServiceItem[] = [];
+  services: ServiceWithMenu[] = [];
   loading = true;
   error: string | null = null;
 
@@ -34,7 +36,8 @@ export class ServiceListComponent implements OnInit {
     this.loading = true;
     this.adminService.getAllServices().subscribe({
       next: (data) => {
-        this.services = data;
+        // Add local property showMenu for dropdown toggle
+        this.services = data.map(item => ({ ...item, showMenu: false }));
         this.loading = false;
       },
       error: (err) => {
@@ -63,7 +66,8 @@ export class ServiceListComponent implements OnInit {
 
     this.adminService.addService(payload).subscribe({
       next: (service) => {
-        this.services.unshift(service);
+        // Add new service at the top with showMenu property
+        this.services.unshift({ ...service, showMenu: false });
         this.showAddForm = false;
         this.newService = { name: '', description: '', price: 0 };
       },
@@ -78,15 +82,15 @@ export class ServiceListComponent implements OnInit {
   }
 
   /** Start editing a service */
-  editService(service: ServiceItem): void {
-    const id = (service as any).id ?? (service as any).Id;
+  editService(service: ServiceWithMenu): void {
+    const id = this.getServiceId(service);
     if (!id) return;
-    
+
     this.editingServiceId = id;
-    this.editingService = { 
-      name: service.name, 
-      description: service.description, 
-      price: service.price 
+    this.editingService = {
+      name: service.name,
+      description: service.description,
+      price: service.price
     };
   }
 
@@ -120,8 +124,8 @@ export class ServiceListComponent implements OnInit {
   }
 
   /** Delete service */
-  deleteService(service: ServiceItem): void {
-    const id = (service as any).id ?? (service as any).Id;
+  deleteService(service: ServiceWithMenu): void {
+    const id = this.getServiceId(service);
     if (!id) return;
     if (!confirm(`Delete "${service.name}"?`)) return;
 
@@ -136,8 +140,13 @@ export class ServiceListComponent implements OnInit {
     });
   }
 
-  /** Get service ID for comparison */
-  getServiceId(service: ServiceItem): string {
+  /** Toggle menu visibility for a service */
+  toggleMenu(service: ServiceWithMenu): void {
+    service.showMenu = !service.showMenu;
+  }
+
+  /** Get service ID safely */
+  getServiceId(service: ServiceWithMenu): string {
     return (service as any).id ?? (service as any).Id ?? '';
   }
 }
