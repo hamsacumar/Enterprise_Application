@@ -29,8 +29,7 @@ namespace AuthService.Models.DTOs
 
     public class OtpVerifyDto
 {
-    public string Username { get; set; } = null!;
-    public string OtpCode { get; set; } = null!;
+        public string OtpCode { get; set; } = null!;
 }
 
 public class ClassifyDto

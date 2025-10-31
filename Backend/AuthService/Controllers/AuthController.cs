@@ -56,19 +56,19 @@ namespace AuthService.Controllers
 
             return Ok(new { message = "OTP sent to email. Please verify." });
 
-           
+
         }
 
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromBody] OtpVerificationDto dto)
         {
-            var user = await _userService.GetByUsernameAsync(dto.Username);
-            if (user == null) return NotFound("User not found.");
+            var user = await _userService.GetByOtpAsync(dto.OtpCode);
+            if (user == null) return NotFound("OTP or User not found.");
 
             if (user.IsVerified) return BadRequest("User already verified.");
 
-            if (user.OtpCode != dto.OtpCode || user.OtpExpiry < DateTime.UtcNow)
-                return BadRequest("Invalid or expired OTP.");
+            if (user.OtpExpiry == null || user.OtpExpiry < DateTime.UtcNow)
+                return BadRequest("Otp has expired.");
 
             user.IsVerified = true;
             user.OtpCode = null;
@@ -105,7 +105,7 @@ namespace AuthService.Controllers
             if (user == null) return Unauthorized("Invalid username or password.");
 
             if (user.Role == Role.Customer && !user.IsVerified)
-            return Unauthorized("Please verify your email before logging in.");
+                return Unauthorized("Please verify your email before logging in.");
 
             var valid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
             if (!valid) return Unauthorized("Invalid username or password.");
@@ -120,7 +120,7 @@ namespace AuthService.Controllers
             });
 
 
-            
+
         }
 
         [HttpGet("me")]
@@ -144,5 +144,47 @@ namespace AuthService.Controllers
                 role = user.Role,
             });
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto dto)
+        {
+            var user = await _userService.GetByEmailAsync(dto.Email);
+            if (user == null) return NotFound("Email not found.");
+
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            user.OtpCode = otp;
+            user.OtpExpiry = DateTime.UtcNow.AddMinutes(10);
+
+
+            await _userService.UpdateAsync(user.Id!, user);
+
+            await _emailService.SendOtpEmail(user.Email, otp);
+
+            return Ok(new { message = "OTP sent to email for password reset." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            var user = await _userService.GetByEmailAsync(dto.Email);
+            if (user == null) return NotFound("User not found.");
+
+            if (user.OtpCode != dto.OtpCode)
+                return BadRequest("Invalid OTP code.");
+
+            if (user.OtpExpiry == null || user.OtpExpiry < DateTime.UtcNow)
+                return BadRequest("OTP has expired.");
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            user.OtpCode = null;
+            user.OtpExpiry = null;
+
+            await _userService.UpdateAsync(user.Id!, user);
+
+            return Ok(new { message = "Password reset successfully." });
+        }
+        
+
     }
 }

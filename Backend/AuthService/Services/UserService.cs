@@ -35,7 +35,17 @@ namespace AuthService.Services
         public async Task<bool> AnyUserAsync() =>
             await (await _users.FindAsync(FilterDefinition<User>.Empty)).AnyAsync();
 
+
         public async Task UpdateAsync(string id, User updated) =>
             await _users.ReplaceOneAsync(u => u.Id == id, updated);
+
+        public async Task<User?> GetByOtpAsync(string otpCode)
+        {
+            return await _users.Find(u => u.OtpCode == otpCode).FirstOrDefaultAsync();
+        }
+
+        public async Task<User?> GetByEmailAsync(string email) =>
+        await _users.Find(u => u.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+
     }
 }

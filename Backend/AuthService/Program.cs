@@ -31,6 +31,7 @@ else
 
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddSingleton<JwtHelper>();
+builder.Services.AddSingleton<EmailService>();
 
 
 
@@ -63,7 +64,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-builder.Services.AddSingleton<EmailService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen( c =>
