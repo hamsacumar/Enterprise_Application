@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService, ServiceItem } from '../../services/admin.service';
@@ -141,8 +141,30 @@ export class ServiceListComponent implements OnInit {
   }
 
   /** Toggle menu visibility for a service */
-  toggleMenu(service: ServiceWithMenu): void {
-    service.showMenu = !service.showMenu;
+  toggleMenu(service: ServiceWithMenu, event: MouseEvent): void {
+    event.stopPropagation();
+    const wasOpen = !!service.showMenu;
+    this.closeAllMenus();
+    service.showMenu = !wasOpen;
+  }
+
+  private closeAllMenus(): void {
+    this.services.forEach(s => (s.showMenu = false));
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+    // If click is outside any menu-container, close all
+    if (!target.closest('.menu-container')) {
+      this.closeAllMenus();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEsc(): void {
+    this.closeAllMenus();
   }
 
   /** Get service ID safely */
