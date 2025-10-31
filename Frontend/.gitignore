@@ -1,3 +1,7 @@
+# ==========================================
+# FRONTEND (Angular / Node.js)
+# ==========================================
+
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
@@ -40,3 +44,62 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# ==========================================
+# BACKEND (.NET 9 / C#)
+# ==========================================
+
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE folders
+.vs/
+.idea/
+
+# Logs and temp files
+*.log
+*.tlog
+*.cache
+*.tmp
+*.pidb
+
+# .NET Core build and publish
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Package restore folders
+packages/
+node_modules/
+
+# Test results
+TestResults/
+*.coverage
+*.coveragexml
+
+# Publish output
+publish/
+*.pubxml
+*.publish.xml
+
+# Environment files
+.env
+.env.*
+
+# ASP.NET generated files
+Properties/launchSettings.json
+
+# Backup and temporary files
+*.bak
+*.backup
+*.old
+*.orig
