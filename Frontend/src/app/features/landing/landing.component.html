@@ -1,0 +1,142 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Premium Car Wash & Detailing Services</h1>
+    <p class="hero-subtitle">
+      Experience the finest car care with our professional washing and detailing services.
+      We make your vehicle shine like new!
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary-large">Book Appointment</button>
+      <button class="btn-secondary-large">View Services</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-number">15K+</div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Expert Team</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4.9⭐</div>
+        <div class="stat-label">Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section class="services">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Our Premium Services</h2>
+      <p class="section-subtitle">Complete car care solutions for every need</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services">
+        <div class="service-icon">{{ service.icon }}</div>
+        <h3 class="service-title">{{ service.title }}</h3>
+        <p class="service-description">{{ service.description }}</p>
+        <div class="service-price">{{ service.price }}</div>
+        <button class="btn-service">Learn More</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Why Choose AutoWash Pro?</h2>
+      <p class="section-subtitle">Experience the difference with our premium service</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">{{ feature.icon }}</div>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="pricing">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Simple & Transparent Pricing</h2>
+      <p class="section-subtitle">Choose the perfect plan for your vehicle</p>
+    </div>
+    <div class="pricing-grid">
+      <div 
+        class="pricing-card" 
+        *ngFor="let plan of pricingPlans"
+        [class.popular]="plan.popular"
+      >
+        <div class="popular-badge" *ngIf="plan.popular">Most Popular</div>
+        <div class="plan-header">
+          <h3 class="plan-name">{{ plan.name }}</h3>
+          <div class="plan-price">
+            <span class="currency">$</span>
+            <span class="amount">{{ plan.price }}</span>
+            <span class="period">/month</span>
+          </div>
+        </div>
+        <ul class="plan-features">
+          <li *ngFor="let feature of plan.features">
+            <span class="check-icon">✓</span>
+            {{ feature }}
+          </li>
+        </ul>
+        <button class="btn-plan" [class.btn-popular]="plan.popular">
+          {{ plan.buttonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">What Our Customers Say</h2>
+      <p class="section-subtitle">Join thousands of satisfied customers</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+        <div class="testimonial-rating">
+          <span *ngFor="let star of [1,2,3,4,5]">⭐</span>
+        </div>
+        <p class="testimonial-text">"{{ testimonial.text }}"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">{{ testimonial.avatar }}</div>
+          <div class="author-info">
+            <div class="author-name">{{ testimonial.name }}</div>
+            <div class="author-role">{{ testimonial.role }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to Make Your Car Shine?</h2>
+      <p class="cta-subtitle">
+        Book your appointment today and experience the AutoWash Pro difference!
+      </p>
+      <div class="cta-actions">
+        <button class="btn-cta-primary">Book Now</button>
+        <button class="btn-cta-secondary">Contact Us</button>
+      </div>
+    </div>
+  </div>
+</section>
+

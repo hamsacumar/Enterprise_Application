@@ -1,0 +1,161 @@
+npm <!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">Premium Car Wash & Detailing Services</h1>
+    <p class="hero-subtitle">
+      Your Vehicle Deserves the Best Care
+    </p>
+    <p class="hero-description">
+      Experience professional car washing and detailing services with real-time tracking, 
+      easy online booking, and quality guaranteed. Keep your vehicle spotless and shining!
+    </p>
+    <div class="hero-actions">
+      <button class="btn-large btn-primary">Book Appointment</button>
+      <button class="btn-large btn-secondary">View Services</button>
+    </div>
+
+    <!-- Backend Status Badge -->
+    <div class="status-badge" *ngIf="backendStatus">
+      <span class="status-indicator"></span>
+      <span class="status-text">
+        System Status: <strong>Online</strong> - All services available
+      </span>
+    </div>
+  </div>
+
+  <div class="hero-image">
+    <div class="floating-card car-wash-card">
+      <div class="service-preview">
+        <div class="service-icon">🚗💧</div>
+        <h3>Quick Service</h3>
+        <div class="service-features">
+          <div class="feature-item">
+            <span class="check-icon">✓</span>
+            <span>Exterior Wash</span>
+          </div>
+          <div class="feature-item">
+            <span class="check-icon">✓</span>
+            <span>Interior Cleaning</span>
+          </div>
+          <div class="feature-item">
+            <span class="check-icon">✓</span>
+            <span>Tire Shine</span>
+          </div>
+          <div class="feature-item">
+            <span class="check-icon">✓</span>
+            <span>Vacuum & Polish</span>
+          </div>
+        </div>
+        <div class="service-time">⏱️ 30-45 minutes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="statistics-section">
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let stat of statistics">
+      <div class="stat-value">{{ stat.value }}</div>
+      <div class="stat-label">{{ stat.label }}</div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section" id="services">
+  <div class="section-header">
+    <h2 class="section-title">Our Services & Features</h2>
+    <p class="section-subtitle">
+      Everything your vehicle needs in one place
+    </p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card" *ngFor="let feature of features">
+      <div class="feature-icon">{{ feature.icon }}</div>
+      <h3 class="feature-title">{{ feature.title }}</h3>
+      <p class="feature-description">{{ feature.description }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- Service Packages Section -->
+<section class="data-section" id="pricing">
+  <div class="section-header">
+    <h2 class="section-title">Popular Service Packages</h2>
+    <p class="section-subtitle">
+      Choose the perfect package for your vehicle
+    </p>
+  </div>
+
+  <div class="data-cards">
+    <div class="data-card package-card">
+      <div class="data-card-header">
+        <h3>Basic Wash</h3>
+        <span class="data-badge price-badge">$25</span>
+      </div>
+      <p class="data-description">Perfect for regular maintenance. Includes exterior wash, tire cleaning, and basic interior vacuum.</p>
+      <button class="btn-view">Book Now</button>
+    </div>
+
+    <div class="data-card package-card featured">
+      <div class="featured-badge">MOST POPULAR</div>
+      <div class="data-card-header">
+        <h3>Premium Detailing</h3>
+        <span class="data-badge price-badge">$75</span>
+      </div>
+      <p class="data-description">Complete care package with full interior & exterior detailing, waxing, polish, and leather conditioning.</p>
+      <button class="btn-view">Book Now</button>
+    </div>
+
+    <div class="data-card package-card">
+      <div class="data-card-header">
+        <h3>Express Clean</h3>
+        <span class="data-badge price-badge">$15</span>
+      </div>
+      <p class="data-description">Quick wash for busy schedules. Exterior wash and dry in 15 minutes. Perfect for a quick refresh.</p>
+      <button class="btn-view">Book Now</button>
+    </div>
+  </div>
+
+  <div class="refresh-section">
+    <button class="btn-refresh" (click)="refreshData()">
+      📅 View All Packages
+    </button>
+  </div>
+</section>
+
+<!-- Loading State -->
+<section class="data-section" *ngIf="loading">
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading data from backend...</p>
+  </div>
+</section>
+
+<!-- Error State -->
+<section class="data-section" *ngIf="error && !loading">
+  <div class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h3>Connection Notice</h3>
+    <p>{{ error }}</p>
+    <button class="btn-retry" (click)="refreshData()">Retry Connection</button>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2 class="cta-title">Ready to Give Your Car a Shine?</h2>
+    <p class="cta-description">
+      Join thousands of satisfied customers who trust us with their vehicles. 
+      Book your appointment today and experience the difference!
+    </p>
+    <div class="cta-actions">
+      <button class="btn-large btn-white">Book Appointment Now</button>
+      <button class="btn-large btn-outline">Contact Us</button>
+    </div>
+  </div>
+</section>
+

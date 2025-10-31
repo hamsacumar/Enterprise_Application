@@ -1,0 +1,32 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <span *ngIf="!isCollapsed">☰</span>
+      <span *ngIf="isCollapsed">→</span>
+    </button>
+  </div>
+
+  <div class="sidebar-menu">
+    <div
+      *ngFor="let item of menuItems; let i = index"
+      class="menu-item"
+      [class.active]="item.active"
+      (click)="setActive(i)"
+    >
+      <span class="menu-icon">{{ item.icon }}</span>
+      <span class="menu-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+      <span class="menu-badge" *ngIf="item.badge && !isCollapsed">{{ item.badge }}</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer" *ngIf="!isCollapsed">
+    <div class="user-profile">
+      <div class="user-avatar">👤</div>
+      <div class="user-info">
+        <div class="user-name">John Doe</div>
+        <div class="user-role">Developer</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
