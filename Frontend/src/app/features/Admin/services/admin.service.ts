@@ -16,7 +16,7 @@ export interface ServiceItem {
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5125/api/services'; // backend URL
+  private apiUrl = 'http://localhost:5125/api/admin/services'; // backend URL
 
   // Normalize backend DTO (which may use PascalCase like Id/CreatedAt)
   private toServiceItem = (dto: any): ServiceItem => ({
