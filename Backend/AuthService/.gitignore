@@ -1,2 +1,18 @@
 # Ignore Development secrets
 appsettings.Development.json
+
+# --------------------------------------------------------
+# Build results & temporary files
+# --------------------------------------------------------
+bin/
+obj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+
+# --------------------------------------------------------
+# Visual Studio / VS Code cache
+# --------------------------------------------------------
+.vs/
+.vscode/
+*.code-workspace
