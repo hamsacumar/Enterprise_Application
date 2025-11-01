@@ -57,4 +57,13 @@ export class AdminService {
   deleteService(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  getWorkers() {
+  return this.http.get(`${this.apiUrl}/admin/workers`);
+}
+
+addWorker(worker: any) {
+  return this.http.post(`${this.apiUrl}/admin/workers`, worker);
+}
+
 }
