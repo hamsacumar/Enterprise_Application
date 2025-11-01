@@ -1,0 +1,20 @@
+<div class="worker-container">
+  <h2>Manage Workers</h2>
+
+  <form (ngSubmit)="addWorker()" #workerForm="ngForm" class="worker-form">
+    <input type="text" placeholder="Name" [(ngModel)]="worker.name" name="name" required />
+    <input type="email" placeholder="Email" [(ngModel)]="worker.email" name="email" required />
+    <input type="text" placeholder="Contact" [(ngModel)]="worker.contact" name="contact" />
+    <input type="text" placeholder="Specialization" [(ngModel)]="worker.specialization" name="specialization" />
+    <input type="password" placeholder="Password" [(ngModel)]="worker.password" name="password" required />
+    <button type="submit">Add Worker</button>
+  </form>
+
+  <div class="worker-list">
+    <div *ngFor="let w of workers" class="worker-card">
+      <h4>{{ w.name }} ({{ w.role }})</h4>
+      <p>Email: {{ w.email }}</p>
+      <p>Contact: {{ w.contact }}</p>
+    </div>
+  </div>
+</div>

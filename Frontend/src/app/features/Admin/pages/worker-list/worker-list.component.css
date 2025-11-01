@@ -1,0 +1,32 @@
+.worker-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.worker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.worker-form input, button {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.worker-form button {
+  background-color: #152259;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.worker-card {
+  background: #fafafa;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
