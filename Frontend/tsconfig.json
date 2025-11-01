@@ -16,8 +16,6 @@
     "target": "ES2022",
     "module": "ES2022",
      "baseUrl": "src",
-     "ignoreDeprecations": "6.0",
-
 
   "paths": {
     "@environments/*": ["environments/*"]}

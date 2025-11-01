@@ -9,6 +9,7 @@ import { VerifyOtpComponent } from './features/auth/pages/verify-otp/verify-otp.
 import { ClassifyComponent } from './features/auth/pages/classify/classify.component';
 import { ForgotPasswordComponent } from './features/auth/pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './features/auth/pages/reset-password/reset-password.component';
+import { ChatbotComponent } from './features/chatbot/chatbot.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,11 @@ export const routes: Routes = [
       // { path: 'workers', component: WorkersComponent },
       // { path: 'orders', component: OrdersComponent }
     ]
+  },
+  //aichatbot 
+  {
+    path:'ai',
+    component:ChatbotComponent
   },
   // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   // { path: '**', redirectTo: 'dashboard' },
