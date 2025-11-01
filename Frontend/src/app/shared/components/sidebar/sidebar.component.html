@@ -1,4 +1,4 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed">
+<aside class="sidebar" [class.collapsed]="isCollapsed" *ngIf="isAuthenticated">
   <div class="sidebar-header">
     <button class="toggle-btn" (click)="toggleSidebar()">
       <span *ngIf="!isCollapsed">☰</span>
@@ -19,12 +19,12 @@
     </div>
   </div>
 
-  <div class="sidebar-footer" *ngIf="!isCollapsed">
+  <div class="sidebar-footer" *ngIf="!isCollapsed && currentUser">
     <div class="user-profile">
-      <div class="user-avatar">👤</div>
+      <div class="user-avatar-text">{{ getUserAvatar() }}</div>
       <div class="user-info">
-        <div class="user-name">John Doe</div>
-        <div class="user-role">Developer</div>
+        <div class="user-name">{{ currentUser.name }}</div>
+        <div class="user-role">{{ currentUser.role }}</div>
       </div>
     </div>
   </div>

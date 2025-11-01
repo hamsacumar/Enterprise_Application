@@ -1,23 +1,36 @@
 <nav class="navbar">
   <div class="navbar-container">
     <div class="navbar-brand">
-      <div class="logo">
+      <div class="logo" routerLink="/">
         <span class="logo-icon">🚗</span>
         <span class="logo-text">AutoWash Pro</span>
       </div>
     </div>
 
     <div class="navbar-menu" [class.active]="isMenuOpen">
-      <a href="#home" class="nav-link active">Home</a>
-      <a href="#services" class="nav-link">Services</a>
-      <a href="#pricing" class="nav-link">Pricing</a>
-      <a href="#about" class="nav-link">About Us</a>
-      <a href="#contact" class="nav-link">Contact</a>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Home</a>
+      <a routerLink="/services" class="nav-link">Services</a>
+      <a routerLink="/pricing" class="nav-link">Pricing</a>
+      <a routerLink="/about" class="nav-link">About Us</a>
+      <a routerLink="/contact" class="nav-link">Contact</a>
     </div>
 
     <div class="navbar-actions">
-      <button class="btn-secondary">Customer Login</button>
-      <button class="btn-primary">Book Now</button>
+      <!-- Show user info if authenticated -->
+      <div *ngIf="isAuthenticated && currentUser" class="user-info">
+        <div class="user-avatar">{{ getUserInitials() }}</div>
+        <div class="user-details">
+          <div class="user-name">{{ currentUser.name }}</div>
+          <div class="user-role">{{ currentUser.role }}</div>
+        </div>
+        <button class="btn-secondary" (click)="logout()">Logout</button>
+      </div>
+
+      <!-- Show login button if not authenticated -->
+      <div *ngIf="!isAuthenticated" class="auth-buttons">
+        <button class="btn-secondary" (click)="navigateToLogin()">Customer Login</button>
+        <button class="btn-primary" routerLink="/booking">Book Now</button>
+      </div>
     </div>
 
     <div class="hamburger" (click)="toggleMenu()">
