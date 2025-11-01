@@ -1,4 +1,3 @@
-import { Routes } from '@angular/router';
 import { DashboardComponent } from './features/Admin/pages/dashboard/dashboard.component';
 import { ServiceListComponent } from './features/Admin/pages/service-list/service-list.component';
 import { DashboardHomeComponent } from './features/Admin/pages/dashboard-home/dashboard-home.component';
@@ -23,8 +22,8 @@ export const routes: Routes = [
       // { path: 'orders', component: OrdersComponent }
     ]
   },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: '**', redirectTo: 'dashboard' }
+  // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  // { path: '**', redirectTo: 'dashboard' },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
