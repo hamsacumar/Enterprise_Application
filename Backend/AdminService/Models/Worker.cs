@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace AdminService.Models
+namespace Backend.Models
 {
     public class Worker
     {

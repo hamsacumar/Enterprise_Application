@@ -1,10 +1,11 @@
-using AdminService.Models;
+using Backend.Models;
+using Backend.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AdminService.Services
+namespace Backend.Services
 {
     public class WorkerService : IWorkerService
     {
@@ -34,5 +35,28 @@ namespace AdminService.Services
             var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
             return BitConverter.ToString(bytes).Replace("-", "").ToLower();
         }
+
+        public async Task UpdateAsync(string id, Worker worker)
+{
+    var update = Builders<Worker>.Update
+        .Set(w => w.Name, worker.Name)
+        .Set(w => w.Email, worker.Email)
+        .Set(w => w.Contact, worker.Contact)
+        .Set(w => w.Role, worker.Role)
+        .Set(w => w.Specialization, worker.Specialization);
+
+    if (!string.IsNullOrEmpty(worker.PasswordHash))
+    {
+        update = update.Set(w => w.PasswordHash, HashPassword(worker.PasswordHash));
+    }
+
+    await _workers.UpdateOneAsync(w => w.Id == id, update);
+}
+
+public async Task DeleteAsync(string id)
+{
+    await _workers.DeleteOneAsync(w => w.Id == id);
+}
+
     }
 }
