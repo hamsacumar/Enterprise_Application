@@ -13,7 +13,7 @@ import {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7176/api/auth'; // Update with your backend URL
+  private apiUrl = 'http://localhost:5155/api/auth'; // HTTP endpoint
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 

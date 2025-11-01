@@ -30,3 +30,14 @@ C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\obj\Deb
 C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\obj\Debug\net9.0\backend.pdb
 C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\obj\Debug\net9.0\backend.genruntimeconfig.cache
 C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\obj\Debug\net9.0\ref\backend.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\ChatboxService\package-lock.json
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\ChatboxService\package.json
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\haric\Desktop\Enterprise\Enterprise_Application-Thishok\backend\obj\Debug\net9.0\backend.sourcelink.json
