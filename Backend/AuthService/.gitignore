@@ -1,11 +1,12 @@
 # Ignore Development secrets
 appsettings.Development.json
 
-# --------------------------------------------------------
-# Build results & temporary files
-# --------------------------------------------------------
+# Explicitly ignore bin and obj directories
 bin/
 obj/
+
+# Build results & temporary files
+# --------------------------------------------------------
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
