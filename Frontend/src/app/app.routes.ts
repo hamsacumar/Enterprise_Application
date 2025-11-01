@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { DashboardComponent } from './features/Admin/pages/dashboard/dashboard.component';
 import { ServiceListComponent } from './features/Admin/pages/service-list/service-list.component';
 import { DashboardHomeComponent } from './features/Admin/pages/dashboard-home/dashboard-home.component';
+import { WorkerListComponent } from './features/Admin/pages/worker-list/worker-list.component';
 
 export const routes: Routes = [
   {
@@ -10,6 +11,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: DashboardHomeComponent },
       { path: 'services', component: ServiceListComponent },
+      { path: 'workers', component: WorkerListComponent },
       // future child routes:
       // { path: 'workers', component: WorkersComponent },
       // { path: 'orders', component: OrdersComponent }
