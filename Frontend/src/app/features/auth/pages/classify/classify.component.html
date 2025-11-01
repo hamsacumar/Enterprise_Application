@@ -1,0 +1,39 @@
+<div class="classify-container">
+    <h2>Classify Your Details</h2>
+    <form (ngSubmit)="onClassify()" #classifyForm="ngForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" [(ngModel)]="username" required placeholder="Enter your username" />
+      </div>
+  
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address" [(ngModel)]="address" placeholder="Enter your address" />
+      </div>
+  
+      <div class="form-group">
+        <label for="carModel">Car Model</label>
+        <input type="text" id="carModel" name="carModel" [(ngModel)]="carModel" placeholder="Enter car model" />
+      </div>
+  
+      <div class="form-group">
+        <label for="carLicensePlate">Car License Plate</label>
+        <input type="text" id="carLicensePlate" name="carLicensePlate" [(ngModel)]="carLicensePlate" placeholder="Enter license plate" />
+      </div>
+  
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="phoneNumber" placeholder="Enter phone number" />
+      </div>
+  
+      <button type="submit" [disabled]="!classifyForm.form.valid">Submit Details</button>
+    </form>
+  
+    <div class="links">
+      <a routerLink="/login">Back to Login</a>
+    </div>
+  
+    <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+  
