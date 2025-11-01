@@ -1,0 +1,24 @@
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+  background-color: #f5f5f5; /* light background for content */
+}
+
+/* Responsive: stack sidebar on top for narrow screens */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    width: 100%; 
+  }
+
+  .content {
+    padding: 0.75rem;
+  }
+}

@@ -1,3 +1,7 @@
+import { Routes } from '@angular/router';
+import { DashboardComponent } from './features/Admin/pages/dashboard/dashboard.component';
+import { ServiceListComponent } from './features/Admin/pages/service-list/service-list.component';
+import { DashboardHomeComponent } from './features/Admin/pages/dashboard-home/dashboard-home.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/pages/login/login.component';
@@ -8,6 +12,19 @@ import { ForgotPasswordComponent } from './features/auth/pages/forgot-password/f
 import { ResetPasswordComponent } from './features/auth/pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    children: [
+      { path: '', component: DashboardHomeComponent },
+      { path: 'services', component: ServiceListComponent },
+      // future child routes:
+      // { path: 'workers', component: WorkersComponent },
+      // { path: 'orders', component: OrdersComponent }
+    ]
+  },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: 'dashboard' }
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
