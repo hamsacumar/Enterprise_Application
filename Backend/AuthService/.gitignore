@@ -1,15 +1,10 @@
 # Ignore Development secrets
 appsettings.Development.json
 
-# Explicitly ignore bin and obj directories
+# Build folders
 bin/
 obj/
 
-# Build results & temporary files
-# --------------------------------------------------------
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
 
 # --------------------------------------------------------
 # Visual Studio / VS Code cache
