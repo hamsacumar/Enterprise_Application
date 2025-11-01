@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<EmailService>();
 
 var environment = builder.Environment.EnvironmentName;
 Console.WriteLine($"[ENVIRONMENT] {environment} ");
@@ -31,10 +32,19 @@ else
 
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddSingleton<JwtHelper>();
-builder.Services.AddSingleton<EmailService>();
 
-
-
+// ====== CORS Policy ======
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularClient",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
 
 
 
@@ -66,6 +76,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+
 builder.Services.AddSwaggerGen( c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -109,6 +121,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAngularClient");
 app.UseAuthentication();
 app.UseAuthorization();
 

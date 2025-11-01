@@ -184,6 +184,23 @@ namespace AuthService.Controllers
 
             return Ok(new { message = "Password reset successfully." });
         }
+
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtp([FromBody] ForgotPasswordRequestDto dto)
+        {
+        var user = await _userService.GetByEmailAsync(dto.Email);
+        if (user == null) return NotFound("User not found.");
+
+        var otp = new Random().Next(100000, 999999).ToString();
+        user.OtpCode = otp;
+    user.OtpExpiry = DateTime.UtcNow.AddMinutes(0.5);
+
+    await _userService.UpdateAsync(user.Id!, user);
+    await _emailService.SendOtpEmail(user.Email, otp);
+
+    return Ok(new { message = "OTP resent successfully to your email." });
+}
+
         
 
     }

@@ -4,4 +4,6 @@ namespace AuthService.Models.DTOs
     {
         public string OtpCode { get; set; } = null!;
     }
+
+  
 }
