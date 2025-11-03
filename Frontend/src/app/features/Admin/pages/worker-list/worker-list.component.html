@@ -1,20 +1,82 @@
-<div class="worker-container">
-  <h2>Manage Workers</h2>
+<div class="worker-list-container">
+  <h2 class="title">Worker Management</h2>
 
-  <form (ngSubmit)="addWorker()" #workerForm="ngForm" class="worker-form">
-    <input type="text" placeholder="Name" [(ngModel)]="worker.name" name="name" required />
-    <input type="email" placeholder="Email" [(ngModel)]="worker.email" name="email" required />
-    <input type="text" placeholder="Contact" [(ngModel)]="worker.contact" name="contact" />
-    <input type="text" placeholder="Specialization" [(ngModel)]="worker.specialization" name="specialization" />
-    <input type="password" placeholder="Password" [(ngModel)]="worker.password" name="password" required />
-    <button type="submit">Add Worker</button>
-  </form>
+  <div class="worker-layout">
+    <div class="list-pane">
+      <div *ngIf="loading" class="loading">Loading workers...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
 
-  <div class="worker-list">
-    <div *ngFor="let w of workers" class="worker-card">
-      <h4>{{ w.name }} ({{ w.role }})</h4>
-      <p>Email: {{ w.email }}</p>
-      <p>Contact: {{ w.contact }}</p>
+      <!-- Worker List -->
+      <div *ngIf="!loading && !error && workers.length > 0" class="worker-cards">
+        <div *ngFor="let worker of workers" class="worker-card">
+          <div class="worker-info">
+            <div class="worker-name">{{ worker.name }}</div>
+            <div class="worker-role">{{ worker.role || 'No Role' }}</div>
+            <div class="worker-email">{{ worker.email }}</div>
+            <div class="worker-contact">{{ worker.contact }}</div>
+          </div>
+
+          <!-- 3-dot menu -->
+          <div class="menu-container">
+            <button class="menu-btn" (click)="toggleMenu(worker, $event)">⋮</button>
+            <div class="menu" *ngIf="worker.showMenu">
+              <div class="menu-item" (click)="editWorker(worker); worker.showMenu = false">Update</div>
+              <div class="menu-item" (click)="deleteWorker(worker); worker.showMenu = false">Delete</div>
+            </div>
+          </div>
+
+          <!-- Edit mode -->
+          <div *ngIf="editingWorkerId === getWorkerId(worker)" class="edit-section">
+            <input [(ngModel)]="editingWorker.name" placeholder="Name" class="edit-input" />
+            <input [(ngModel)]="editingWorker.email" placeholder="Email" class="edit-input" />
+            <input [(ngModel)]="editingWorker.contact" placeholder="Contact" class="edit-input" />
+            <input [(ngModel)]="editingWorker.specialization" placeholder="Specialization" class="edit-input" />
+            <div class="edit-actions">
+              <button class="save-btn" (click)="saveWorker()">Save</button>
+              <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No workers -->
+      <div *ngIf="!loading && !error && workers.length === 0" class="no-workers">
+        No workers available.
+      </div>
     </div>
+
+    <!-- Add Worker Form -->
+    <div class="form-pane">
+      <div *ngIf="showAddForm" class="add-form">
+        <h3>Add New Worker</h3>
+        <div class="form-group">
+          <input [(ngModel)]="newWorker.name" placeholder="Name" class="form-input" />
+        </div>
+        <div class="form-group">
+          <input [(ngModel)]="newWorker.email" placeholder="Email" class="form-input" />
+        </div>
+        <div class="form-group">
+          <input [(ngModel)]="newWorker.contact" placeholder="Contact" class="form-input" />
+        </div>
+        
+        <div class="form-group">
+          <input [(ngModel)]="newWorker.specialization" placeholder="Specialization" class="form-input" />
+        </div>
+        <div class="form-group">
+          <input type="password" [(ngModel)]="newWorker.passwordHash" placeholder="Password" class="form-input" />
+        </div>
+        <div class="form-actions">
+          <button class="save-btn" (click)="addWorker()">Save</button>
+          <button class="cancel-btn" (click)="cancelAdd()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Worker Button -->
+  <div class="bottom-add-container" *ngIf="!showAddForm">
+    <button class="bottom-add-btn" (click)="toggleAddForm()">
+      {{ showAddForm ? 'Cancel' : 'Add Worker' }}
+    </button>
   </div>
 </div>

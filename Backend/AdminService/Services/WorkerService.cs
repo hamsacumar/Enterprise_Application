@@ -25,6 +25,8 @@ namespace Backend.Services
 
         public async Task CreateAsync(Worker worker)
         {
+            // Always enforce default role on creation regardless of incoming payload
+            worker.Role = "worker";
             worker.PasswordHash = HashPassword(worker.PasswordHash);
             await _workers.InsertOneAsync(worker);
         }
@@ -42,7 +44,6 @@ namespace Backend.Services
         .Set(w => w.Name, worker.Name)
         .Set(w => w.Email, worker.Email)
         .Set(w => w.Contact, worker.Contact)
-        .Set(w => w.Role, worker.Role)
         .Set(w => w.Specialization, worker.Specialization);
 
     if (!string.IsNullOrEmpty(worker.PasswordHash))
