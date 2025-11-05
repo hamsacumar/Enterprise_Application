@@ -1,0 +1,32 @@
+<div class="otp-modal">
+  <div class="otp-box">
+    <h2>Verify OTP</h2>
+    <form (ngSubmit)="onVerify()" #otpForm="ngForm">
+      <div class="form-group">
+        <label for="otp">Enter OTP</label>
+        <input
+          type="text"
+          id="otp"
+          name="otp"
+          [(ngModel)]="otpCode"
+          required
+          placeholder="Enter the OTP sent to {{ email }}"
+        />
+      </div>
+
+      <button type="submit" [disabled]="!otpForm.form.valid">Verify OTP</button>
+    </form>
+
+    <div class="timer">
+      <p *ngIf="!canResend">Resend OTP in {{ countdown }}s</p>
+      <button *ngIf="canResend" (click)="onResendOtp()">Resend OTP</button>
+    </div>
+
+    <div class="links">
+      <button (click)="close.emit()">Close</button>
+    </div>
+
+    <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+</div>

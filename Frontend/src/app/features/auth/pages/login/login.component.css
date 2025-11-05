@@ -1,0 +1,155 @@
+.login-page {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Left Section */
+.left-section {
+  flex: 1;
+  background-color: #183153;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-grid img {
+  border-radius: 8px;
+  margin: 10px;
+  width: 280px;
+  height: 160px;
+  object-fit: cover;
+}
+
+.small-images {
+  display: flex;
+}
+
+.tagline {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.tagline h3 {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.tagline p {
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Right Section */
+.right-section {
+  flex: 1;
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  background: #fff;
+  padding: 40px 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  width: 400px;
+  text-align: center;
+}
+
+.logo img {
+  width: 80px;
+  margin-bottom: 15px;
+}
+
+h2 {
+  color: #183153;
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
+p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #183153;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #183153;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover:not(:disabled) {
+  background-color: #0f2240;
+}
+
+.forgot {
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.forgot a {
+  color: #183153;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.register {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.register a {
+  color: #183153;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.register a:hover {
+  text-decoration: underline;
+}
+
+
+.success {
+  color: green;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  font-weight: 500;
+}
