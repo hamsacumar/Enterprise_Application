@@ -1,0 +1,82 @@
+<div class="vehicles-page">
+  <div class="header">
+    <h2 class="page-title">My Vehicles</h2>
+    <button mat-raised-button color="primary" (click)="startAdd()">
+      <mat-icon>add</mat-icon>
+      Add Vehicle
+    </button>
+  </div>
+
+  <mat-card class="form-card" *ngIf="formOpen">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput [(ngModel)]="form.name" placeholder="Honda Civic" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Model</mat-label>
+        <input matInput [(ngModel)]="form.model" placeholder="Civic" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Registration Number</mat-label>
+        <input matInput [(ngModel)]="form.regNumber" placeholder="TN-01-AB-1234" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Year</mat-label>
+        <input matInput type="number" [(ngModel)]="form.year" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <select matNativeControl [(ngModel)]="form.type">
+          <option value="Sedan">Sedan</option>
+          <option value="Hatchback">Hatchback</option>
+          <option value="SUV">SUV</option>
+          <option value="MUV">MUV</option>
+          <option value="Coupe">Coupe</option>
+          <option value="Pickup">Pickup</option>
+        </select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Color (optional)</mat-label>
+        <input matInput [(ngModel)]="form.color" placeholder="Blue" />
+      </mat-form-field>
+    </div>
+    <div class="form-actions">
+      <button mat-button (click)="cancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="!form.name || !form.model || !form.regNumber || !form.type || !form.year">Save</button>
+    </div>
+  </mat-card>
+
+  <table mat-table [dataSource]="vehicles()" class="mat-elevation-z1">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let v"> {{ v.name }} </td>
+    </ng-container>
+    <ng-container matColumnDef="model">
+      <th mat-header-cell *matHeaderCellDef> Model </th>
+      <td mat-cell *matCellDef="let v"> {{ v.model }} </td>
+    </ng-container>
+    <ng-container matColumnDef="regNumber">
+      <th mat-header-cell *matHeaderCellDef> Number </th>
+      <td mat-cell *matCellDef="let v"> {{ v.regNumber }} </td>
+    </ng-container>
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef> Type </th>
+      <td mat-cell *matCellDef="let v"> {{ v.type }} </td>
+    </ng-container>
+    <ng-container matColumnDef="year">
+      <th mat-header-cell *matHeaderCellDef> Year </th>
+      <td mat-cell *matCellDef="let v"> {{ v.year }} </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let v" class="row-actions">
+        <button mat-icon-button (click)="startEdit(v)"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="warn" (click)="remove(v)"><mat-icon>delete</mat-icon></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['name','model','regNumber','type','year','actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['name','model','regNumber','type','year','actions'];"></tr>
+  </table>
+</div>
