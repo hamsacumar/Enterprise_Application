@@ -8,6 +8,7 @@ export interface ServiceItem {
   name: string;
   description?: string;
   price: number;
+  vehicleCategory: string;
   createdAt?: string;
 }
 
@@ -34,6 +35,7 @@ export class AdminService {
     name: dto.name ?? dto.Name,
     description: dto.description ?? dto.Description,
     price: dto.price ?? dto.Price,
+    vehicleCategory: dto.vehicleCategory ?? dto.VehicleCategory ?? 'General',
     createdAt: dto.createdAt ?? dto.CreatedAt,
   });
 
@@ -71,23 +73,21 @@ export class AdminService {
     passwordHash: dto.passwordHash ?? dto.PasswordHash
   });
 
-  // ---- Workers ----
-getWorkers(): Observable<Worker[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/workers`)
-    .pipe(map(items => items.map(this.toWorker)));
-}
+  getWorkers(): Observable<Worker[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/workers`)
+      .pipe(map(items => items.map(this.toWorker)));
+  }
 
-addWorker(worker: Omit<Worker, 'id'>): Observable<Worker> {
-  return this.http.post<any>(`${this.baseUrl}/workers`, worker)
-    .pipe(map(this.toWorker));
-}
+  addWorker(worker: Omit<Worker, 'id'>): Observable<Worker> {
+    return this.http.post<any>(`${this.baseUrl}/workers`, worker)
+      .pipe(map(this.toWorker));
+  }
 
-updateWorker(id: string, worker: Omit<Worker, 'id'>): Observable<void> {
-  return this.http.put<void>(`${this.baseUrl}/workers/${id}`, worker);
-}
+  updateWorker(id: string, worker: Omit<Worker, 'id'>): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/workers/${id}`, worker);
+  }
 
-deleteWorker(id: string): Observable<void> {
-  return this.http.delete<void>(`${this.baseUrl}/workers/${id}`);
-}
-
+  deleteWorker(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/workers/${id}`);
+  }
 }
