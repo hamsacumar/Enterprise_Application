@@ -1,5 +1,5 @@
-# Ignore Development secrets
-appsettings.Development.json
+# Ignore development appsettings
+**/appsettings.Development.json
 
 # Build folders
 bin/
