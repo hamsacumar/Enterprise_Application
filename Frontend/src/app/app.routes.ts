@@ -9,6 +9,8 @@ import { VerifyOtpComponent } from './features/auth/pages/verify-otp/verify-otp.
 import { ClassifyComponent } from './features/auth/pages/classify/classify.component';
 import { ForgotPasswordComponent } from './features/auth/pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './features/auth/pages/reset-password/reset-password.component';
+import { ChatbotComponent } from './features/chatbot/chatbot.component';
+import { WorkerListComponent } from './features/Admin/pages/worker-list/worker-list.component';
 
 export const routes: Routes = [
   {
@@ -17,10 +19,16 @@ export const routes: Routes = [
     children: [
       { path: '', component: DashboardHomeComponent },
       { path: 'services', component: ServiceListComponent },
+      { path: 'workers', component: WorkerListComponent },
       // future child routes:
       // { path: 'workers', component: WorkersComponent },
       // { path: 'orders', component: OrdersComponent }
     ]
+  },
+  //aichatbot 
+  {
+    path:'ai',
+    component:ChatbotComponent
   },
   // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   // { path: '**', redirectTo: 'dashboard' },
