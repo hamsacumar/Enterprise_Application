@@ -10,18 +10,24 @@ type ServiceWithMenu = ServiceItem & { showMenu?: boolean };
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './service-list.component.html',
-  styleUrls: ['./service-list.component.css']
+  styleUrls: ['./service-list.component.css'],
 })
 export class ServiceListComponent implements OnInit {
   private adminService = inject(AdminService);
 
   services: ServiceWithMenu[] = [];
+  groupedServices: Record<string, ServiceWithMenu[]> = {};
   loading = true;
   error: string | null = null;
 
   // Add form
   showAddForm = false;
-  newService: Partial<ServiceItem> = { name: '', description: '', price: 0 };
+  newService: Partial<ServiceItem> = {
+    name: '',
+    description: '',
+    price: 0,
+    vehicleCategory: '',
+  };
 
   // Edit form
   editingServiceId: string | null = null;
@@ -36,49 +42,80 @@ export class ServiceListComponent implements OnInit {
     this.loading = true;
     this.adminService.getAllServices().subscribe({
       next: (data) => {
-        // Add local property showMenu for dropdown toggle
-        this.services = data.map(item => ({ ...item, showMenu: false }));
+        this.services = data.map((item) => ({ ...item, showMenu: false }));
+        this.groupServicesByCategory();
         this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching services:', err);
         this.error = 'Failed to load services';
         this.loading = false;
-      }
+      },
     });
+  }
+
+  /** Group services by vehicle category */
+  private groupServicesByCategory(): void {
+    this.groupedServices = this.services.reduce((acc, service) => {
+      const category = service.vehicleCategory || 'Uncategorized';
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(service);
+      return acc;
+    }, {} as Record<string, ServiceWithMenu[]>);
   }
 
   /** Toggle add form */
   toggleAddForm(): void {
     this.showAddForm = !this.showAddForm;
-    this.newService = { name: '', description: '', price: 0 };
+    this.newService = {
+      name: '',
+      description: '',
+      price: 0,
+      vehicleCategory: '',
+    };
   }
 
   /** Add new service */
   addService(): void {
-    if (!this.newService.name || this.newService.price == null) return;
+    if (
+      !this.newService.name ||
+      this.newService.price == null ||
+      !this.newService.vehicleCategory
+    )
+      return;
 
     const payload: Omit<ServiceItem, 'id' | 'createdAt'> = {
       name: this.newService.name,
       description: this.newService.description || '',
-      price: this.newService.price
+      price: this.newService.price,
+      vehicleCategory: this.newService.vehicleCategory,
     };
 
     this.adminService.addService(payload).subscribe({
       next: (service) => {
-        // Add new service at the top with showMenu property
         this.services.unshift({ ...service, showMenu: false });
+        this.groupServicesByCategory();
         this.showAddForm = false;
-        this.newService = { name: '', description: '', price: 0 };
+        this.newService = {
+          name: '',
+          description: '',
+          price: 0,
+          vehicleCategory: '',
+        };
       },
-      error: (err) => console.error('Error adding service:', err)
+      error: (err) => console.error('Error adding service:', err),
     });
   }
 
   /** Cancel add form */
   cancelAdd(): void {
     this.showAddForm = false;
-    this.newService = { name: '', description: '', price: 0 };
+    this.newService = {
+      name: '',
+      description: '',
+      price: 0,
+      vehicleCategory: '',
+    };
   }
 
   /** Start editing a service */
@@ -90,18 +127,25 @@ export class ServiceListComponent implements OnInit {
     this.editingService = {
       name: service.name,
       description: service.description,
-      price: service.price
+      price: service.price,
+      vehicleCategory: service.vehicleCategory,
     };
   }
 
   /** Save updated service */
   saveService(): void {
-    if (!this.editingServiceId || !this.editingService.name || this.editingService.price == null) return;
+    if (
+      !this.editingServiceId ||
+      !this.editingService.name ||
+      this.editingService.price == null
+    )
+      return;
 
     const payload: Omit<ServiceItem, 'id' | 'createdAt'> = {
       name: this.editingService.name,
       description: this.editingService.description || '',
-      price: this.editingService.price
+      price: this.editingService.price,
+      vehicleCategory: this.editingService.vehicleCategory || 'General',
     };
 
     this.adminService.updateService(this.editingServiceId, payload).subscribe({
@@ -113,34 +157,29 @@ export class ServiceListComponent implements OnInit {
       error: (err) => {
         console.error('Error updating service:', err);
         this.error = 'Failed to update service';
-      }
+      },
     });
   }
 
-  /** Cancel editing */
   cancelEdit(): void {
     this.editingServiceId = null;
     this.editingService = {};
   }
 
-  /** Delete service */
   deleteService(service: ServiceWithMenu): void {
     const id = this.getServiceId(service);
     if (!id) return;
     if (!confirm(`Delete "${service.name}"?`)) return;
 
     this.adminService.deleteService(id).subscribe({
-      next: () => {
-        this.fetchServices();
-      },
+      next: () => this.fetchServices(),
       error: (err) => {
         console.error('Error deleting service:', err);
         this.error = 'Failed to delete service';
-      }
+      },
     });
   }
 
-  /** Toggle menu visibility for a service */
   toggleMenu(service: ServiceWithMenu, event: MouseEvent): void {
     event.stopPropagation();
     const wasOpen = !!service.showMenu;
@@ -149,17 +188,14 @@ export class ServiceListComponent implements OnInit {
   }
 
   private closeAllMenus(): void {
-    this.services.forEach(s => (s.showMenu = false));
+    this.services.forEach((s) => (s.showMenu = false));
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement | null;
     if (!target) return;
-    // If click is outside any menu-container, close all
-    if (!target.closest('.menu-container')) {
-      this.closeAllMenus();
-    }
+    if (!target.closest('.menu-container')) this.closeAllMenus();
   }
 
   @HostListener('document:keydown.escape')
@@ -167,7 +203,6 @@ export class ServiceListComponent implements OnInit {
     this.closeAllMenus();
   }
 
-  /** Get service ID safely */
   getServiceId(service: ServiceWithMenu): string {
     return (service as any).id ?? (service as any).Id ?? '';
   }
