@@ -1,12 +1,15 @@
 .dashboard {
   display: flex;
   height: 100vh;
+  overflow: hidden; /* prevent body scroll; only content will scroll */
 }
 
 .content {
   flex: 1;
   padding: 1rem;
   background-color: #f5f5f5; /* light background for content */
+  overflow: auto; /* scroll only the main content */
+  height: 100vh; /* fill viewport height for internal scrolling */
 }
 
 /* Topbar (mobile only) */
@@ -40,6 +43,16 @@
   }
 }
 
+/* Sidebar host element on desktop */
+app-sidebar {
+  flex: 0 0 250px; /* fixed width column for sidebar */
+  position: sticky; /* keep it fixed within viewport during scroll */
+  top: 0;
+  align-self: stretch; /* match container height */
+  height: 100vh; /* full viewport height */
+  z-index: 1; /* above content background, below overlays */
+}
+
 /* Overlay for mobile sidebar */
 .overlay {
   position: fixed;
@@ -60,6 +73,7 @@
   .content {
     padding: 0.75rem;
     padding-top: 1rem; /* space under topbar */
+    height: auto; /* allow page content height on mobile */
   }
 
   /* Off-canvas sidebar host element */
