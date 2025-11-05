@@ -1,8 +1,14 @@
 import express from "express";
+import http from "http";
+import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
+
 import connectDB from "./config/db.js";
-import testRoutes from "./routes/testRoutes.js";
+
+// Import routes
+import chatRoutes from "./routes/chatRoutes.js";
+import { setupSocket } from "./socket.js";
 
 dotenv.config(); // Load .env variables
 
@@ -16,7 +22,14 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use("/api/test", testRoutes);
+app.use("/api/chat", chatRoutes);
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "*" },
+});
+
+setupSocket(io);
 
 // Root route (optional)
 app.get("/", (req, res) => {
