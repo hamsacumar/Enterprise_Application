@@ -1,0 +1,498 @@
+/* worker-dashboard.component.css */
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5em;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  flex: 1;
+  min-width: 150px;
+  padding: 15px 25px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.tab-button.active {
+  background: white;
+  color: #667eea;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff4757;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* TAB CONTENT */
+.tab-content {
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* APPOINTMENTS GRID */
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 25px;
+}
+
+.appointment-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.appointment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.4em;
+  flex: 1;
+}
+
+.vehicle-badge {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.status-badge.pending {
+  background: #ffa502;
+  color: white;
+}
+
+.status-badge.working {
+  background: #1e90ff;
+  color: white;
+}
+
+.status-badge.completed {
+  background: #2ed573;
+  color: white;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #555;
+  min-width: 120px;
+}
+
+.info-row .value {
+  color: #333;
+  flex: 1;
+}
+
+.info-row .value.highlight {
+  color: #2ed573;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.services-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+}
+
+.service-tag {
+  background: #e8f0fe;
+  color: #1967d2;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.service-tag.completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+/* FORMS */
+.form-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #f0f0f0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+
+.form-input,
+.form-select {
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-textarea {
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* SERVICES CHECKLIST */
+.services-checklist {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.services-checklist h4 {
+  margin: 0 0 15px 0;
+  color: #555;
+}
+
+.checklist-item {
+  margin-bottom: 12px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.checkbox-label span {
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.checkbox-label span.completed {
+  text-decoration: line-through;
+  color: #2ed573;
+  font-weight: 550;
+}
+
+/* ADD SERVICE */
+.add-service-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: #fff8e1;
+  border-radius: 10px;
+}
+
+.add-service-section label {
+  display: block;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.add-service-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.add-service-controls .form-select {
+  flex: 1;
+}
+
+/* PAYMENT SECTION */
+.payment-section {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f0f8ff;
+  border-radius: 10px;
+}
+
+.total-payment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  font-size: 1.2em;
+}
+
+.total-payment .label {
+  font-weight: 600;
+  color: #555;
+}
+
+.total-payment .amount {
+  font-weight: bold;
+  color: #2ed573;
+  font-size: 1.3em;
+}
+
+.payment-toggle {
+  margin-top: 15px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.toggle-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.toggle-text {
+  font-weight: 600;
+  color: #555;
+}
+
+/* PAYMENT SUMMARY */
+.payment-summary {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+}
+
+.paid-badge {
+  background: #2ed573;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-weight: 600;
+}
+
+.unpaid-badge {
+  background: #ff4757;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-weight: 600;
+}
+
+/* BUTTONS */
+.card-footer {
+  padding: 20px;
+  background: #f9f9f9;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-success {
+  background: #2ed573;
+  color: white;
+}
+
+.btn-danger {
+  background: #ff4757;
+  color: white;
+}
+
+.btn-small {
+  padding: 8px 20px;
+  font-size: 14px;
+  min-width: auto;
+  background: #667eea;
+  color: white;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .appointments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab-button {
+    width: 100%;
+  }
+
+  .form-section {
+    grid-template-columns: 1fr;
+  }
+
+  .add-service-controls {
+    flex-direction: column;
+  }
+
+  .card-footer {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

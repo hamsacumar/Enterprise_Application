@@ -1,0 +1,397 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Worker Dashboard</h1>
+  </div>
+
+  <div class="tabs">
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'new'"
+      (click)="setActiveTab('new')"
+    >
+      New Appointments
+      <span class="badge">{{ newAppointments.length }}</span>
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'pending'"
+      (click)="setActiveTab('pending')"
+    >
+      Pending
+      <span class="badge">{{ pendingAppointments.length }}</span>
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'onwork'"
+      (click)="setActiveTab('onwork')"
+    >
+      On Work
+      <span class="badge">{{ onWorkAppointments.length }}</span>
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'complete'"
+      (click)="setActiveTab('complete')"
+    >
+      Completed
+      <span class="badge">{{ completedAppointments.length }}</span>
+    </button>
+  </div>
+
+  <!-- NEW APPOINTMENTS TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'new'">
+    <div class="appointments-grid">
+      <div class="appointment-card" *ngFor="let appointment of newAppointments">
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Vehicle Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">📞 Phone:</span>
+            <span class="value">{{ appointment.phoneNumber }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">🚗 Vehicle:</span>
+            <span class="value">
+              {{ appointment.vehicleName }} – {{ appointment.vehicleModel }} ({{
+                appointment.vehicleYear
+              }})
+            </span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Type:</span>
+            <span class="value">{{ appointment.vehicleType }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Reg No:</span>
+            <span class="value">{{ appointment.vehicleRegNumber }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Services:</span>
+            <div class="services-list">
+              <span
+                class="service-tag"
+                *ngFor="let service of appointment.appointmentServices"
+              >
+                {{ service.name }} – LKR {{ service.basePrice }}
+              </span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Appointment:</span>
+            <span class="value"
+              >{{ appointment.appointmentDate }} |
+              {{ appointment.timeSlot }}</span
+            >
+          </div>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label>Return Date:</label>
+              <input
+                type="date"
+                [(ngModel)]="appointment.returnDate"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Return Time:</label>
+              <input
+                type="time"
+                [(ngModel)]="appointment.returnTime"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label>Note:</label>
+              <textarea
+                [(ngModel)]="appointment.note"
+                class="form-textarea"
+                placeholder="Add notes here..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Extra Payment (Optional):</label>
+              <input
+                type="number"
+                [(ngModel)]="appointment.extraPayment"
+                class="form-input"
+                placeholder="0"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-primary" (click)="moveToOnWork(appointment)">
+            Move to Pending
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENDING TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'pending'">
+    <div class="appointments-grid">
+      <div
+        class="appointment-card"
+        *ngFor="let appointment of pendingAppointments"
+      >
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+          <span class="status-badge pending">Pending Confirmation</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Vehicle Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Services:</span>
+            <div class="services-list">
+              <span
+                class="service-tag"
+                *ngFor="let service of appointment.appointmentServices"
+              >
+                {{ service.name }} – LKR {{ service.basePrice }}
+              </span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Appointment:</span>
+            <span class="value"
+              >{{ appointment.appointmentDate }} |
+              {{ appointment.timeSlot }}</span
+            >
+          </div>
+
+          <div class="info-row">
+            <span class="label">Return:</span>
+            <span class="value"
+              >{{ appointment.returnDate }} | {{ appointment.returnTime }}</span
+            >
+          </div>
+
+          <div class="info-row" *ngIf="appointment.note">
+            <span class="label">Note:</span>
+            <span class="value">{{ appointment.note }}</span>
+          </div>
+
+          <div class="info-row" *ngIf="appointment.extraPayment">
+            <span class="label">Extra Payment:</span>
+            <span class="value highlight">${{ appointment.extraPayment }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button
+            class="btn btn-success"
+            (click)="confirmAppointment(appointment)"
+          >
+            Confirm & Start Work
+          </button>
+          <button
+            class="btn btn-danger"
+            (click)="cancelAppointment(appointment)"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ON WORK TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'onwork'">
+    <div class="appointments-grid">
+      <div
+        class="appointment-card work-card"
+        *ngFor="let appointment of onWorkAppointments"
+      >
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+          <span class="status-badge working">In Progress</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Vehicle Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+
+          <div class="services-checklist">
+            <h4>Services Checklist:</h4>
+            <div
+              class="checklist-item"
+              *ngFor="let service of appointment.selectedServices"
+            >
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  [checked]="isServiceCompleted(appointment, service.name)"
+                  (change)="toggleServiceCompletion(appointment, service.name)"
+                />
+                <span
+                  [class.completed]="
+                    isServiceCompleted(appointment, service.name)
+                  "
+                >
+                  {{ service.name }} – LKR {{ service.basePrice }}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="add-service-section">
+            <label>Add Service:</label>
+            <div class="add-service-controls">
+              <select
+                [(ngModel)]="newServiceToAdd[appointment.id]"
+                class="form-select"
+              >
+                <option value="">Select service...</option>
+                <option
+                  *ngFor="let service of availableServices"
+                  [ngValue]="service"
+                >
+                  {{ service.serviceName }} – LKR {{ service.basePrice }}
+                </option>
+              </select>
+
+              <button class="btn btn-small" (click)="addService(appointment)">
+                Add
+              </button>
+            </div>
+          </div>
+
+          <div class="payment-section">
+            <div class="form-group">
+              <label>Extra Charges:</label>
+              <input
+                type="number"
+                [(ngModel)]="extraCharges[appointment.id]"
+                (input)="updateExtraCharges(appointment)"
+                class="form-input"
+                placeholder="0"
+              />
+            </div>
+
+            <div class="total-payment">
+              <span class="label">Total Payment:</span>
+              <span class="amount">${{ appointment.totalPayment || 0 }}</span>
+            </div>
+
+            <div class="payment-toggle">
+              <label class="toggle-label">
+                <input
+                  type="checkbox"
+                  [checked]="appointment.isPaid"
+                  (change)="togglePaidStatus(appointment)"
+                />
+                <span class="toggle-text">
+                  {{ appointment.isPaid ? "Paid" : "Unpaid" }}
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-success" (click)="finishWork(appointment)">
+            Finish Work
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETED TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'complete'">
+    <div class="appointments-grid">
+      <div
+        class="appointment-card completed-card"
+        *ngFor="let appointment of completedAppointments"
+      >
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+          <span class="status-badge completed">Completed</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Vehicle Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Appointment:</span>
+            <span class="value"
+              >{{ appointment.appointmentDate }} |
+              {{ appointment.timeSlot }}</span
+            >
+          </div>
+
+          <div class="info-row">
+            <span class="label">Return:</span>
+            <span class="value"
+              >{{ appointment.returnDate }} | {{ appointment.returnTime }}</span
+            >
+          </div>
+
+          <div class="info-row">
+            <span class="label">Services:</span>
+            <div class="services-list">
+              <span
+                class="service-tag"
+                *ngFor="let service of appointment.appointmentServices"
+              >
+                {{ service }}
+              </span>
+            </div>
+          </div>
+
+          <div class="info-row" *ngIf="appointment.note">
+            <span class="label">Note:</span>
+            <span class="value">{{ appointment.note }}</span>
+          </div>
+
+          <div class="payment-summary">
+            <div class="summary-row">
+              <span>Total Payment:</span>
+              <span class="amount">${{ appointment.totalPayment }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Status:</span>
+              <span
+                [class]="appointment.isPaid ? 'paid-badge' : 'unpaid-badge'"
+              >
+                {{ appointment.isPaid ? "Paid" : "Unpaid" }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
