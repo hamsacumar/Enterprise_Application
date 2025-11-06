@@ -1,5 +1,7 @@
 # Ignore Development secrets
 appsettings.Development.json
 
-/bin
-/obj
+# Ignore build folders
+**/bin/
+**/obj/
+
