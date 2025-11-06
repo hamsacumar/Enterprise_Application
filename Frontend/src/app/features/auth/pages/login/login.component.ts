@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router,RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -34,8 +34,12 @@ export class LoginComponent {
         
 
         setTimeout(() => {
-          this.router.navigate(['/classify']);
-        },1000);
+          if (res.role === 'Admin') {
+            this.router.navigate(['/Admin/dashboard']);
+          } else if (res.role === 'Employee') {
+            this.router.navigate(['/employee/dashboard']);
+          }
+        }, 1000);
       },
       error: (err) => {
         if(err.status === 401) {

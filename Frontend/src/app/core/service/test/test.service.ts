@@ -13,4 +13,16 @@ export class TestService {
   getAllData(): Observable<any> {
     return this.http.get<any>(this.api);
   }
+
+  getTestData(): Observable<any[]> {
+    return this.http.get<any[]>(this.api);
+  }
+
+  initializeTestData(): Observable<any> {
+    return this.http.post<any>(`${this.api}/init`, {});
+  }
+
+  createTestData(data: { number: number }): Observable<any> {
+    return this.http.post<any>(this.api, data);
+  }
 }

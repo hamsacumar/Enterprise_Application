@@ -12,6 +12,24 @@
   margin-bottom: 1.5rem;
 }
 
+/* Category Section */
+.category-block {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb; /* divider line between categories */
+}
+
+.category-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #152259;
+  margin-bottom: 1rem;
+  border-left: 4px solid #152259;
+  padding-left: 0.6rem;
+  background-color: #f7f9fc;
+  border-radius: 4px;
+}
+
 /* Add Form */
 .add-form {
   background: #fafafa;
@@ -181,12 +199,11 @@
 
 /* Add Service Button */
 .bottom-add-container {
-  position: fixed; /* pin to viewport */
+  position: fixed;
   right: 1rem;
   bottom: 1rem;
-  z-index: 1000; /* ensure above content */
+  z-index: 1000;
 }
-
 
 .bottom-add-btn {
   background-color: #152259;
@@ -204,7 +221,7 @@
   background-color: #0f1b46;
 }
 
-/* Responsive two-pane layout: list left, form right */
+/* Responsive Layout */
 .service-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -221,12 +238,11 @@
   top: 1rem;
 }
 
-/* Make sure the add form fills the pane width */
 .form-pane .add-form {
   width: 100%;
 }
 
-/* Collapse to single column on medium screens */
+/* Collapse on medium screens */
 @media (max-width: 1024px) {
   .service-layout {
     grid-template-columns: 1fr;
@@ -236,7 +252,7 @@
   }
 }
 
-/* Small screens: show add form as a slide-over panel */
+/* Mobile slide-over form */
 @media (max-width: 768px) {
   .service-layout {
     display: block;
@@ -252,7 +268,7 @@
     box-shadow: -2px 0 12px rgba(0,0,0,0.1);
     padding: 1rem;
     overflow: auto;
-    z-index: 1100; /* above the fixed add button */
+    z-index: 1100;
   }
   .form-pane .add-form {
     margin: 0;

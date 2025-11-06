@@ -120,10 +120,17 @@ button:hover:not(:disabled) {
   margin-bottom: 15px;
 }
 
-.forgot a {
+.forgot a, .link {
   color: #183153;
   text-decoration: none;
   font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.forgot a:hover, .link:hover {
+  color: #0f2240;
+  text-decoration: underline;
 }
 
 .register {
@@ -135,9 +142,12 @@ button:hover:not(:disabled) {
   color: #183153;
   font-weight: bold;
   text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
 .register a:hover {
+  color: #0f2240;
   text-decoration: underline;
 }
 

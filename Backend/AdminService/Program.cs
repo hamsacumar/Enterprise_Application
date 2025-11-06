@@ -28,6 +28,7 @@ builder.Services.Configure<MongoDbSettings>(opt =>
 // Dependency Injection
 // ----------------------
 builder.Services.AddScoped<IServiceService, ServiceService>(); // ✅ NEW: for managing Services (CRUD)
+builder.Services.AddSingleton<IWorkerService, WorkerService>();
 
 // ----------------------
 // Controllers + Swagger
