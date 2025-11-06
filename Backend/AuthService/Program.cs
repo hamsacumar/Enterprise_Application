@@ -6,9 +6,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using System.Security.Cryptography;
+using System;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// var generatedKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+// Console.WriteLine($"Generated JWT Secret Key: {generatedKey}");
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton<UserService>();

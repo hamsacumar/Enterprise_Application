@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ResetPasswordService } from '../../services/reset-password.service';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css']
 })
@@ -18,7 +18,10 @@ export class ResetPasswordComponent {
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(private resetPasswordService: ResetPasswordService, private router: Router) {}
+  constructor(
+    private resetPasswordService: ResetPasswordService, 
+    private router: Router
+  ) {}
 
   onSubmit() {
     this.resetPasswordService.resetPassword({
@@ -29,7 +32,7 @@ export class ResetPasswordComponent {
       next: (res) => {
         this.successMessage = res.message || 'Password reset successfully!';
         this.errorMessage = '';
-        setTimeout(() => this.router.navigate(['/login']), 2000); // Redirect to Login
+        setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err) => {
         this.errorMessage = err.error || 'Failed to reset password. Please try again.';
