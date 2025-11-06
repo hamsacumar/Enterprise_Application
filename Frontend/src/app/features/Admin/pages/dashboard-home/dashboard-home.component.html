@@ -1,4 +1,45 @@
-<div class="dashboard-home">
-  <h2>Dashboard</h2>
-  <p>Welcome to the admin dashboard. Use the sidebar to navigate.</p>
+<div class="dashboard-container">
+  <h2 class="title">Admin Dashboard</h2>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="card" *ngFor="let card of summaryCards" [style.borderTopColor]="card.color">
+      <div class="icon">{{ card.icon }}</div>
+      <div class="details">
+        <p class="value">{{ card.value }}</p>
+        <p class="label">{{ card.title }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="chart-card">
+      <h3>Orders Over Time</h3>
+      <ngx-charts-line-chart
+        [view]="[400, 250]"
+        [scheme]="lineChartScheme"
+        [results]="ordersOverTime"
+        [gradient]="false"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="false"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        [xAxisLabel]="'Date'"
+        [yAxisLabel]="'Orders'">
+      </ngx-charts-line-chart>
+    </div>
+
+    <div class="chart-card">
+      <h3>Service Type Distribution</h3>
+      <ngx-charts-pie-chart
+        [view]="[400, 250]"
+        [scheme]="pieChartScheme"
+        [results]="serviceTypeData"
+        [legend]="true"
+        [labels]="true">
+      </ngx-charts-pie-chart>
+    </div>
+  </div>
 </div>
