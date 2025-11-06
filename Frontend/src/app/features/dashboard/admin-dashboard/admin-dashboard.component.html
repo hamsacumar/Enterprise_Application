@@ -1,0 +1,67 @@
+<div class="dashboard-content">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>Admin Dashboard 👨‍💼</h1>
+    <p>Welcome {{ adminEmail }}, manage your business</p>
+  </div>
+
+    <!-- Stats Section -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-details">
+          <h3>156</h3>
+          <p>Total Users</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👷</div>
+        <div class="stat-details">
+          <h3>24</h3>
+          <p>Active Workers</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-details">
+          <h3>342</h3>
+          <p>Total Bookings</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-details">
+          <h3>$28,450</h3>
+          <p>Revenue</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Actions -->
+    <div class="admin-actions">
+      <button class="action-btn users" (click)="viewUsers()">
+        👥 Manage Users
+      </button>
+      <button class="action-btn workers" (click)="manageWorkers()">
+        👷 Manage Workers
+      </button>
+      <button class="action-btn reports" (click)="viewReports()">
+        📊 View Reports
+      </button>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="activities-section">
+      <h2>Recent Activities</h2>
+      <div class="activities-list">
+        <div *ngFor="let activity of recentActivities" class="activity-item">
+          <div class="activity-icon">📌</div>
+          <div class="activity-info">
+            <p class="activity-action">{{ activity.action }}</p>
+            <p class="activity-meta">{{ activity.user }} • {{ activity.time }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+

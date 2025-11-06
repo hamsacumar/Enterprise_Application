@@ -2,15 +2,14 @@
   <div class="navbar-container">
     <div class="navbar-brand">
       <div class="logo" routerLink="/">
-        <span class="logo-icon">🚗</span>
-        <span class="logo-text">AutoWash Pro</span>
+
+        <span class="logo-text">AutoServex</span>
       </div>
     </div>
 
     <div class="navbar-menu" [class.active]="isMenuOpen">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Home</a>
       <a routerLink="/services" class="nav-link">Services</a>
-      <a routerLink="/pricing" class="nav-link">Pricing</a>
       <a routerLink="/about" class="nav-link">About Us</a>
       <a routerLink="/contact" class="nav-link">Contact</a>
     </div>
@@ -26,10 +25,10 @@
         <button class="btn-secondary" (click)="logout()">Logout</button>
       </div>
 
-      <!-- Show login button if not authenticated -->
+      <!-- Show login and signup buttons if not authenticated -->
       <div *ngIf="!isAuthenticated" class="auth-buttons">
-        <button class="btn-secondary" (click)="navigateToLogin()">Customer Login</button>
-        <button class="btn-primary" routerLink="/booking">Book Now</button>
+        <button class="btn-secondary" (click)="navigateToLogin()">Login</button>
+        <button class="btn-primary" (click)="navigateToSignup()">Sign Up</button>
       </div>
     </div>
 

@@ -1,61 +1,79 @@
+<!-- Login Page -->
 <div class="login-container">
   <div class="login-card">
-    <div class="login-header">
-      <div class="logo">
-        <span class="logo-icon">🚗</span>
-        <span class="logo-text">AutoWash Pro</span>
-      </div>
-      <h2>Welcome Back</h2>
-      <p>Sign in to your account</p>
+    <!-- Logo -->
+    <div class="login-logo">
+      <span class="logo-icon">🚗</span>
+      <h1>AutoServex</h1>
     </div>
 
-    <form class="login-form" (ngSubmit)="onSubmit()">
+    <!-- Login Form -->
+    <form (ngSubmit)="login()" class="login-form">
+      <h2>Login to Your Account</h2>
+
+      <!-- Email Field -->
       <div class="form-group">
-        <label for="email">Email</label>
-        <input 
-          type="email" 
-          id="email" 
-          [(ngModel)]="email" 
+        <label for="email">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
           name="email"
           placeholder="Enter your email"
-          required
+          class="form-control"
+          [disabled]="isLoading"
         />
       </div>
 
+      <!-- Password Field -->
       <div class="form-group">
         <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
+        <input
+          id="password"
+          type="password"
           [(ngModel)]="password"
-          name="password" 
+          name="password"
           placeholder="Enter your password"
-          required
+          class="form-control"
+          [disabled]="isLoading"
         />
       </div>
 
-      <div class="error-message" *ngIf="errorMessage">
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
 
+      <!-- Login Button -->
       <button type="submit" class="btn-login" [disabled]="isLoading">
-        <span *ngIf="!isLoading">Sign In</span>
-        <span *ngIf="isLoading">Signing in...</span>
+        {{ isLoading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
 
-    <div class="demo-credentials">
-      <h3>Demo Credentials:</h3>
-      <div class="demo-list">
-        <div class="demo-item" *ngFor="let demo of demoCredentials" (click)="useDemoCredentials(demo.email, demo.password)">
-          <strong>{{ demo.role }}:</strong> {{ demo.email }} / {{ demo.password }}
-        </div>
+    <!-- Test Credentials -->
+    <div class="test-credentials">
+      <p>Test Credentials:</p>
+      <div class="test-buttons">
+        <button class="test-btn admin" (click)="loginAsAdmin()" [disabled]="isLoading">
+          👨‍💼 Login as Admin
+        </button>
+        <button class="test-btn worker" (click)="loginAsWorker()" [disabled]="isLoading">
+          👷 Login as Worker
+        </button>
+        <button class="test-btn user" (click)="loginAsUser()" [disabled]="isLoading">
+          👤 Login as User
+        </button>
       </div>
     </div>
 
+    <!-- Back to Landing -->
     <div class="login-footer">
-      <p>Don't have an account? <a routerLink="/register">Sign up</a></p>
+      <p>
+        Don't have an account?
+        <button type="button" class="link-btn" (click)="goToLanding()">
+          Back to Home
+        </button>
+      </p>
     </div>
   </div>
 </div>
-

@@ -1,32 +1,72 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed" *ngIf="isAuthenticated">
+<!-- Sidebar Container -->
+<div class="sidebar" [class.open]="isOpen">
+  <!-- Sidebar Header -->
   <div class="sidebar-header">
-    <button class="toggle-btn" (click)="toggleSidebar()">
-      <span *ngIf="!isCollapsed">☰</span>
-      <span *ngIf="isCollapsed">→</span>
+    <div class="logo">
+      <span class="logo-text" *ngIf="isOpen">Dashboard</span>
+    </div>
+    <button class="toggle-btn" (click)="toggleSidebar()" title="Toggle Sidebar">
+      <span *ngIf="isOpen">✕</span>
+      <span *ngIf="!isOpen">☰</span>
     </button>
   </div>
 
-  <div class="sidebar-menu">
-    <div
-      *ngFor="let item of menuItems; let i = index"
-      class="menu-item"
-      [class.active]="item.active"
-      (click)="setActive(i)"
-    >
-      <span class="menu-icon">{{ item.icon }}</span>
-      <span class="menu-label" *ngIf="!isCollapsed">{{ item.label }}</span>
-      <span class="menu-badge" *ngIf="item.badge && !isCollapsed">{{ item.badge }}</span>
-    </div>
-  </div>
-
-  <div class="sidebar-footer" *ngIf="!isCollapsed && currentUser">
-    <div class="user-profile">
-      <div class="user-avatar-text">{{ getUserAvatar() }}</div>
-      <div class="user-info">
-        <div class="user-name">{{ currentUser.name }}</div>
-        <div class="user-role">{{ currentUser.role }}</div>
+  <!-- User Info Section -->
+  <div class="user-section" *ngIf="isOpen">
+    <div class="user-info">
+      <div class="user-details">
+        <p class="user-role" [class]="userRole?.toLowerCase()">{{ userRole || 'Guest' }}</p>
       </div>
     </div>
   </div>
-</aside>
 
+  <!-- Navigation Items -->
+  <nav class="nav-menu">
+    <ng-container *ngFor="let item of navItems">
+      <div
+        *ngIf="canViewItem(item)"
+        class="nav-item"
+        [class.has-submenu]="item.subItems && item.subItems.length > 0"
+      >
+      <!-- Main Menu Item -->
+      <button
+        class="nav-link"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="item.subItems ? toggleSubMenu(item.id) : null"
+        [title]="item.label"
+      >
+        <span class="nav-label" *ngIf="isOpen">{{ item.label }}</span>
+        <span class="expand-icon" *ngIf="item.subItems && item.subItems.length > 0 && isOpen">
+          {{ isExpanded(item.id) ? '▼' : '▶' }}
+        </span>
+      </button>
+
+      <!-- Submenu Items -->
+      <div class="submenu" *ngIf="item.subItems && item.subItems.length > 0 && isExpanded(item.id)">
+        <button
+          *ngFor="let subItem of item.subItems"
+          class="submenu-link"
+          [routerLink]="subItem.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
+          [title]="subItem.label"
+        >
+          <span class="submenu-label" *ngIf="isOpen">{{ subItem.label }}</span>
+        </button>
+      </div>
+      </div>
+    </ng-container>
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer" *ngIf="isOpen">
+    <button class="logout-btn" (click)="logout()" title="Logout">
+      Logout
+    </button>
+  </div>
+</div>
+
+<!-- Sidebar Overlay (for mobile) -->
+<div class="sidebar-overlay" *ngIf="isOpen" (click)="toggleSidebar()"></div>

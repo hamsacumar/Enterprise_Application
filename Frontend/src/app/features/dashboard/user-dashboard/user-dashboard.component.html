@@ -1,0 +1,73 @@
+<div class="dashboard-content">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>Welcome back, {{ userEmail }}! 👋</h1>
+    <p>Manage your bookings and vehicle services</p>
+  </div>
+
+    <!-- Stats Section -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-details">
+          <h3>3</h3>
+          <p>Total Bookings</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-details">
+          <h3>2</h3>
+          <p>Completed</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-details">
+          <h3>1</h3>
+          <p>In Progress</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-details">
+          <h3>$255</h3>
+          <p>Total Spent</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action -->
+    <div class="quick-action">
+      <button class="btn-action" (click)="bookService()">
+        📅 Book a Service
+      </button>
+    </div>
+
+    <!-- Recent Bookings -->
+    <div class="bookings-section">
+      <h2>Recent Bookings</h2>
+      <table class="bookings-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of recentBookings">
+            <td>{{ booking.service }}</td>
+            <td>{{ booking.date }}</td>
+            <td>
+              <span class="status-badge" [class]="booking.status.toLowerCase()">
+                {{ booking.status }}
+              </span>
+            </td>
+            <td>{{ booking.amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

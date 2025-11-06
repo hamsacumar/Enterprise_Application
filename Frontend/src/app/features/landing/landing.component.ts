@@ -1,155 +1,110 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css'
+  styleUrls: ['./landing.component.css']
 })
 export class LandingComponent {
+  constructor(private router: Router) {}
+
+  // Hero section
+  heroTitle = 'Professional Vehicle Care Services';
+  heroSubtitle = 'Keep Your Vehicle Looking Showroom Fresh with Our Expert Care';
+
+  // Services
   services = [
     {
-      icon: '🧼',
-      title: 'Basic Wash',
-      description: 'Exterior wash with premium soap and hand dry finish',
-      price: 'From $25'
+      id: 1,
+      icon: '🚗',
+      title: 'Car Wash',
+      description: 'Professional exterior and interior cleaning using premium eco-friendly products.'
     },
     {
+      id: 2,
       icon: '✨',
-      title: 'Premium Detailing',
-      description: 'Complete interior and exterior detailing service',
-      price: 'From $149'
+      title: 'Detailing',
+      description: 'Complete vehicle detailing including ceramic coating and paint restoration.'
     },
     {
-      icon: '💎',
-      title: 'Ceramic Coating',
-      description: 'Long-lasting protection with premium ceramic coating',
-      price: 'From $499'
-    },
-    {
-      icon: '🪑',
-      title: 'Interior Deep Clean',
-      description: 'Professional deep cleaning of seats, carpets, and dashboard',
-      price: 'From $89'
-    },
-    {
-      icon: '🎨',
-      title: 'Paint Correction',
-      description: 'Remove scratches and restore your car\'s original shine',
-      price: 'From $299'
-    },
-    {
+      id: 3,
       icon: '🔧',
-      title: 'Maintenance Package',
-      description: 'Regular maintenance to keep your car in perfect condition',
-      price: 'From $199'
-    }
-  ];
-
-  features = [
+      title: 'Maintenance',
+      description: 'Regular maintenance services to keep your car running smoothly.'
+    },
     {
+      id: 4,
+      icon: '🛡️',
+      title: 'Protection',
+      description: 'Advanced protective treatments including paint protection film.'
+    },
+    {
+      id: 5,
+      icon: '🧼',
+      title: 'Interior Cleaning',
+      description: 'Deep cleaning of carpets, upholstery and sanitization.'
+    },
+    {
+      id: 6,
       icon: '⚡',
-      title: 'Fast Service',
-      description: 'Quick turnaround times without compromising quality'
-    },
-    {
-      icon: '👨‍🔧',
-      title: 'Expert Team',
-      description: 'Certified professionals with years of experience'
-    },
-    {
-      icon: '🌿',
-      title: 'Eco-Friendly',
-      description: 'Environmentally conscious products and water-saving techniques'
-    },
-    {
-      icon: '💯',
-      title: 'Quality Guarantee',
-      description: '100% satisfaction guarantee on all our services'
-    },
-    {
-      icon: '📱',
-      title: 'Easy Booking',
-      description: 'Book online or via mobile app in just a few clicks'
-    },
-    {
-      icon: '💳',
-      title: 'Flexible Payment',
-      description: 'Multiple payment options including subscriptions'
+      title: 'Express Service',
+      description: 'Quick wash and vacuum service in 30 minutes or less.'
     }
   ];
 
-  pricingPlans = [
-    {
-      name: 'Basic',
-      price: 29,
-      popular: false,
-      features: [
-        'Exterior Wash',
-        'Hand Dry',
-        'Tire Cleaning',
-        'Window Cleaning',
-        'Monthly Service'
-      ],
-      buttonText: 'Get Started'
-    },
-    {
-      name: 'Premium',
-      price: 79,
-      popular: true,
-      features: [
-        'Everything in Basic',
-        'Interior Vacuuming',
-        'Dashboard Polish',
-        'Wheel Treatment',
-        'Air Freshener',
-        'Bi-Weekly Service'
-      ],
-      buttonText: 'Most Popular'
-    },
-    {
-      name: 'Ultimate',
-      price: 149,
-      popular: false,
-      features: [
-        'Everything in Premium',
-        'Deep Interior Cleaning',
-        'Paint Protection',
-        'Leather Conditioning',
-        'Engine Bay Clean',
-        'Weekly Service'
-      ],
-      buttonText: 'Go Ultimate'
-    }
+  // Features
+  features = [
+    { icon: '🏆', title: 'Expert Technicians', description: 'Certified professionals with 10+ years of experience' },
+    { icon: '🌱', title: 'Eco-Friendly', description: 'Sustainable products safe for your car and environment' },
+    { icon: '💰', title: 'Competitive Pricing', description: 'Best value with flexible payment plans' },
+    { icon: '⏰', title: 'Time Efficient', description: 'Quick turnaround without compromising quality' },
+    { icon: '📍', title: 'Multiple Locations', description: 'Conveniently located branches across the city' },
+    { icon: '✅', title: 'Quality Guarantee', description: '100% satisfaction guaranteed or money back' }
   ];
 
+  // Testimonials
   testimonials = [
     {
-      avatar: '👨',
-      name: 'Michael Johnson',
-      role: 'Business Owner',
-      text: 'AutoWash Pro has been taking care of my fleet for 2 years now. Exceptional service every single time! Highly recommended.'
+      stars: 5,
+      text: 'AutoServex transformed my car! The detailing service is exceptional and the staff is incredibly professional.',
+      author: 'John Smith'
     },
     {
-      avatar: '👩',
-      name: 'Sarah Williams',
-      role: 'Marketing Director',
-      text: 'The attention to detail is amazing! My car has never looked better. The team is professional and friendly.'
+      stars: 5,
+      text: 'Best car wash service in the city! The express service saved me so much time, and my car looks brand new.',
+      author: 'Sarah Johnson'
     },
     {
-      avatar: '👨‍💼',
-      name: 'David Chen',
-      role: 'Software Engineer',
-      text: 'Love the convenience of their mobile app and the quality of service. Worth every penny!'
+      stars: 5,
+      text: 'I\'ve been using AutoServex for 2 years now. Their maintenance service keeps my car in perfect condition.',
+      author: 'Michael Chen'
     },
     {
-      avatar: '👩‍💼',
-      name: 'Emily Rodriguez',
-      role: 'Real Estate Agent',
-      text: 'As someone who spends a lot of time in my car, AutoWash Pro keeps it pristine. The subscription plan is perfect!'
+      stars: 5,
+      text: 'The ceramic coating they applied gives my car an incredible shine. Professional work and amazing service!',
+      author: 'Emma Williams'
     }
   ];
-}
 
+  // Generate star rating
+  getStars(count: number): number[] {
+    return Array(count).fill(0);
+  }
+
+  // Scroll to section
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Book now
+  bookNow(): void {
+    this.scrollToSection('contact');
+  }
+}

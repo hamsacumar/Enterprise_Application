@@ -50,6 +50,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isMenuOpen = false;
   }
 
+  navigateToSignup() {
+    this.router.navigate(['/signup']);
+    this.isMenuOpen = false;
+  }
+
   getUserInitials(): string {
     if (!this.currentUser) return '?';
     const names = this.currentUser.name.split(' ');

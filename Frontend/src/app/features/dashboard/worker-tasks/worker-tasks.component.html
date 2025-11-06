@@ -1,0 +1,145 @@
+<div class="worker-tasks-container">
+  <!-- Header Section -->
+  <div class="tasks-header">
+    <h1>👷 My Tasks</h1>
+    <p>Track and manage your assigned tasks by status</p>
+  </div>
+
+  <!-- Category Tabs/Cards -->
+  <div class="category-section">
+    <div 
+      class="category-card"
+      *ngFor="let cat of ['new', 'pending', 'on-work', 'complete']"
+      [class.active]="activeCategory === cat"
+      (click)="selectCategory(cat)"
+    >
+      <div class="category-icon">
+        <span *ngIf="cat === 'new'">🆕</span>
+        <span *ngIf="cat === 'pending'">⏳</span>
+        <span *ngIf="cat === 'on-work'">⚙️</span>
+        <span *ngIf="cat === 'complete'">✅</span>
+      </div>
+      <div class="category-info">
+        <div class="category-name">
+          <span *ngIf="cat === 'new'">New</span>
+          <span *ngIf="cat === 'pending'">Pending</span>
+          <span *ngIf="cat === 'on-work'">On Work</span>
+          <span *ngIf="cat === 'complete'">Complete</span>
+        </div>
+        <div class="category-count">
+          <span *ngIf="cat === 'new'">{{ categoryCounts.new }}</span>
+          <span *ngIf="cat === 'pending'">{{ categoryCounts.pending }}</span>
+          <span *ngIf="cat === 'on-work'">{{ categoryCounts['on-work'] }}</span>
+          <span *ngIf="cat === 'complete'">{{ categoryCounts.complete }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Category Display -->
+  <div class="active-category-title">
+    <span class="status-icon">
+      <span *ngIf="activeCategory === 'new'">🆕</span>
+      <span *ngIf="activeCategory === 'pending'">⏳</span>
+      <span *ngIf="activeCategory === 'on-work'">⚙️</span>
+      <span *ngIf="activeCategory === 'complete'">✅</span>
+    </span>
+    <h2>
+      <span *ngIf="activeCategory === 'new'">New Tasks</span>
+      <span *ngIf="activeCategory === 'pending'">Pending Tasks</span>
+      <span *ngIf="activeCategory === 'on-work'">Tasks On Work</span>
+      <span *ngIf="activeCategory === 'complete'">Completed Tasks</span>
+    </h2>
+  </div>
+
+  <!-- Tasks List for Active Category -->
+  <div class="tasks-list">
+    <div *ngIf="getFilteredTasks().length === 0" class="empty-state">
+      <div class="empty-icon">
+        <span *ngIf="activeCategory === 'new'">📭</span>
+        <span *ngIf="activeCategory === 'pending'">📭</span>
+        <span *ngIf="activeCategory === 'on-work'">📭</span>
+        <span *ngIf="activeCategory === 'complete'">🎉</span>
+      </div>
+      <p *ngIf="activeCategory !== 'complete'">No tasks in this category</p>
+      <p *ngIf="activeCategory === 'complete'">Great! You've completed all your tasks!</p>
+    </div>
+
+    <div 
+      *ngFor="let task of getFilteredTasks()" 
+      class="task-card"
+      [class.priority-high]="task.priority === 'High'"
+      [class.priority-medium]="task.priority === 'Medium'"
+      [class.priority-low]="task.priority === 'Low'"
+    >
+      <!-- Task Header -->
+      <div class="task-header">
+        <div class="task-title-section">
+          <h3>{{ task.service }}</h3>
+          <span class="priority-badge" *ngIf="task.priority">
+            {{ getPriorityIcon(task.priority) }} {{ task.priority }}
+          </span>
+        </div>
+        <div class="task-id">
+          Task #{{ task.id }}
+        </div>
+      </div>
+
+      <!-- Task Details -->
+      <div class="task-details">
+        <div class="detail-row">
+          <span class="detail-label">👤 Customer:</span>
+          <span class="detail-value">{{ task.customer }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">🕐 Time:</span>
+          <span class="detail-value">{{ task.time }}</span>
+        </div>
+        <div class="detail-row" *ngIf="task.description">
+          <span class="detail-label">📝 Description:</span>
+          <span class="detail-value">{{ task.description }}</span>
+        </div>
+      </div>
+
+      <!-- Task Actions -->
+      <div class="task-actions">
+        <button 
+          *ngIf="activeCategory === 'new'"
+          class="btn btn-accept"
+          (click)="startTask(task.id)"
+          title="Accept this task and mark as Pending"
+        >
+          ✋ Accept Task
+        </button>
+
+        <button 
+          *ngIf="activeCategory === 'pending'"
+          class="btn btn-start"
+          (click)="beginWork(task.id)"
+          title="Start working on this task"
+        >
+          ▶️ Start Work
+        </button>
+
+        <button 
+          *ngIf="activeCategory === 'on-work'"
+          class="btn btn-complete"
+          (click)="completeTask(task.id)"
+          title="Mark task as complete"
+        >
+          ✅ Complete Task
+        </button>
+
+        <button 
+          *ngIf="activeCategory === 'complete'"
+          class="btn btn-view"
+          disabled
+          title="Task completed"
+        >
+          ✅ Completed
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

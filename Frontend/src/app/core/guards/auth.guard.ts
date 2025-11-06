@@ -1,41 +1,50 @@
-import { inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuardService {
+  constructor(private router: Router) {}
+
+  canActivate: CanActivateFn = (route, state) => {
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('userRole');
+
+    // If no token, redirect to login
+    if (!token) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    // Check if route requires specific role
+    const requiredRole = route.data?.['role'];
+    if (requiredRole && userRole !== requiredRole) {
+      this.router.navigate(['/unauthorized']);
+      return false;
+    }
+
+    return true;
+  };
+}
+
+// Standalone guard function
 export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+  const router = new Router();
+  const token = localStorage.getItem('token');
+  const userRole = localStorage.getItem('userRole');
 
-  if (authService.isAuthenticated()) {
-    return true;
+  if (!token) {
+    localStorage.setItem('redirectUrl', state.url);
+    window.location.href = '/login';
+    return false;
   }
 
-  // Redirect to login page
-  router.navigate(['/login']);
-  return false;
-};
-
-export const adminGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  if (authService.isAuthenticated() && authService.isAdmin()) {
-    return true;
+  const requiredRole = route.data?.['role'];
+  if (requiredRole && userRole !== requiredRole) {
+    window.location.href = '/unauthorized';
+    return false;
   }
 
-  router.navigate(['/']);
-  return false;
+  return true;
 };
-
-export const workerGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  if (authService.isAuthenticated() && authService.isWorker()) {
-    return true;
-  }
-
-  router.navigate(['/']);
-  return false;
-};
-

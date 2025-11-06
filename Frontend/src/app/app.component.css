@@ -9,3 +9,8 @@
   padding: 20px;
 }
 
+.content.full-width {
+  width: 100%;
+  padding: 0;
+}
+

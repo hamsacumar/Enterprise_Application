@@ -39,10 +39,10 @@ export class FooterComponent {
   };
 
   socialLinks = [
-    { icon: '💼', name: 'LinkedIn', url: '#linkedin' },
-    { icon: '🐦', name: 'Twitter', url: '#twitter' },
-    { icon: '👾', name: 'GitHub', url: '#github' },
-    { icon: '📘', name: 'Facebook', url: '#facebook' }
+    { icon: '🔗', name: 'LinkedIn', url: '#linkedin' },
+    { icon: '𝕏', name: 'Twitter', url: '#twitter' },
+    { icon: '⌘', name: 'GitHub', url: '#github' },
+    { icon: 'f', name: 'Facebook', url: '#facebook' }
   ];
 }
 
