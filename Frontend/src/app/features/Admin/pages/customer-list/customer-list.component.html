@@ -1,0 +1,26 @@
+<div class="customer-list-container">
+  <h2 class="title">Customer Details</h2>
+
+  <div class="table-container">
+    <table class="customer-table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Car Model</th>
+          <th>License Plate</th>
+          <th>Phone Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>{{ customer.username }}</td>
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.carModel }}</td>
+          <td>{{ customer.licensePlate }}</td>
+          <td>{{ customer.phoneNumber }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
