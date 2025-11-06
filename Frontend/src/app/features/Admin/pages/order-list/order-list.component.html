@@ -1,1 +1,41 @@
-<p>order-list works!</p>
+<div class="order-list-container">
+  <h2 class="title">Car Service Orders Summary</h2>
+
+  <div class="filters">
+    <input type="text" placeholder="Search by customer or car..." [(ngModel)]="searchText" (input)="filterOrders()">
+    
+    <select [(ngModel)]="filterStatus" (change)="filterOrders()">
+      <option value="All">All</option>
+      <option value="Pending">Pending</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+
+  <div class="order-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Car Model</th>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Total ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of filteredOrders">
+          <td>{{ order.customerName }}</td>
+          <td>{{ order.carModel }}</td>
+          <td>{{ order.serviceType }}</td>
+          <td>{{ order.date }}</td>
+          <td>
+            <span class="status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+          </td>
+          <td>{{ order.total }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
