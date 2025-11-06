@@ -16,7 +16,7 @@ interface ResetPasswordResponse {
   providedIn: 'root'
 })
 export class ResetPasswordService {
-  private apiUrl = 'http://localhost:5143/api/Auth/reset-password'; // Update with backend URL
+  private apiUrl = 'http://localhost:5143/api/Auth/reset-password'; 
 
   constructor(private http: HttpClient) {}
 
