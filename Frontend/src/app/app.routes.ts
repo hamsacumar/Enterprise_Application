@@ -11,7 +11,8 @@ import { ForgotPasswordComponent } from './features/auth/pages/forgot-password/f
 import { ResetPasswordComponent } from './features/auth/pages/reset-password/reset-password.component';
 import { ChatbotComponent } from './features/chatbot/chatbot.component';
 import { WorkerListComponent } from './features/Admin/pages/worker-list/worker-list.component';
-
+import { OrderListComponent } from './features/Admin/pages/order-list/order-list.component';  
+import{CustomerListComponent} from './features/Admin/pages/customer-list/customer-list.component';
 export const routes: Routes = [
   {
     path: 'dashboard',
@@ -20,9 +21,9 @@ export const routes: Routes = [
       { path: '', component: DashboardHomeComponent },
       { path: 'services', component: ServiceListComponent },
       { path: 'workers', component: WorkerListComponent },
-      // future child routes:
-      // { path: 'workers', component: WorkersComponent },
-      // { path: 'orders', component: OrdersComponent }
+      { path:'dashboard-home',component:DashboardHomeComponent},
+     {path:'customers',component:CustomerListComponent},
+       { path: 'orders', component: OrderListComponent }
     ]
   },
   //aichatbot 
