@@ -1,14 +1,7 @@
-# Ignore development appsettings
-**/appsettings.Development.json
+# Ignore Development secrets
+appsettings.Development.json
 
-# Build folders
-bin/
-obj/
+# Ignore build folders
+**/bin/
+**/obj/
 
-
-# --------------------------------------------------------
-# Visual Studio / VS Code cache
-# --------------------------------------------------------
-.vs/
-.vscode/
-*.code-workspace
