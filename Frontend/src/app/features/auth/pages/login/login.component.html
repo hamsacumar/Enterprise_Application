@@ -25,7 +25,7 @@
         <div class="input-group">
           <input
             type="text"
-            placeholder="Username or email"
+            placeholder="Username"
             name="username"
             [(ngModel)]="username"
             required
@@ -42,14 +42,13 @@
         </div>
 
         <div class="forgot">
-          <a (click)="goToForgotPassword()">Forgot password</a>
+          <a (click)="goToForgotPassword()" class="link">Forgot password</a>
         </div>
 
         <button type="submit" [disabled]="!loginForm.valid">Login</button>
 
         <p class="register">
-          Don't have an account?
-          <a (click)="goToRegister()">CreateAccount</a>
+          <span>Don't have an account? </span><a routerLink="/register" class="link">Register now</a>
         </p>
 
         <div class="success" *ngIf="successMessage">{{ successMessage }}</div>

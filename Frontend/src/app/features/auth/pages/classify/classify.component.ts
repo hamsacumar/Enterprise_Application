@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ClassifyService } from '../../services/classify.service';
 
 @Component({
   selector: 'app-classify',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './classify.component.html',
   styleUrls: ['./classify.component.css']
 })
@@ -20,9 +20,12 @@ export class ClassifyComponent {
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(private classifyService: ClassifyService, private router: Router) {}
+  constructor(
+    private classifyService: ClassifyService, 
+    private router: Router
+  ) {}
 
-  onClassify() {
+  onClassify(): void {
     this.classifyService.classify({
       username: this.username,
       address: this.address,
@@ -33,7 +36,7 @@ export class ClassifyComponent {
       next: (res) => {
         this.successMessage = res.message || 'Details updated successfully!';
         this.errorMessage = '';
-        setTimeout(() => this.router.navigate(['/login']), 2000); // Redirect to login
+        setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err) => {
         this.errorMessage = err.error || 'Failed to update details. Please try again.';
