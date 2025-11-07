@@ -1,4 +1,5 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +17,7 @@ import { MockData } from '../../../../services/mock-data';
 export class NotificationsPage implements OnInit {
 	private notificationsSvc = inject(NotificationService);
 	private mock = inject(MockData);
+	private destroyRef = inject(DestroyRef);
 
 	notifications = computed(() => this.notificationsSvc.notifications());
 	statusMap = new Map<number, 'Accepted' | 'Rejected' | null>();
@@ -31,13 +33,18 @@ export class NotificationsPage implements OnInit {
 		notifs.forEach(n => {
 			const apptId = n.data?.appointmentId as number | undefined;
 			if (apptId) {
-				this.mock.getAppointment(apptId).subscribe({
-					next: (a) => {
-						const status = (a?.status || '').toLowerCase();
-						if (status === 'accepted') this.statusMap.set(n.id, 'Accepted');
-						else if (status === 'rejected') this.statusMap.set(n.id, 'Rejected');
-					}
-				});
+				this.mock.getAppointment(apptId)
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe({
+						next: (a: any) => {
+							const status = (a?.status || '').toLowerCase();
+							if (status === 'accepted') this.statusMap.set(n.id, 'Accepted');
+							else if (status === 'rejected') this.statusMap.set(n.id, 'Rejected');
+						},
+						error: (err: unknown) => {
+							console.error('Failed to load appointment status', err);
+						}
+					});
 			}
 		});
 	}
@@ -47,17 +54,21 @@ export class NotificationsPage implements OnInit {
 		if (!apptId || this.statusMap.has(n.id)) return;
 		
 		this.statusMap.set(n.id, 'Accepted');
-		this.mock.updateAppointmentStatus(apptId, 'Accepted').subscribe({ 
-			next: () => {
-				const vehicle = n.data?.vehicleLabel || 'Vehicle';
-				const type = n.data?.vehicleType || 'Sedan';
-				const eta = n.data?.returnDate || '';
-				this.mock.addOngoingService({ vehicle, type, progress: 0, status: 'In Progress', eta });
-			},
-			error: () => {
-				this.statusMap.delete(n.id);
-			}
-		});
+		this.mock.updateAppointmentStatus(apptId, 'Accepted')
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({ 
+				next: () => {
+					const vehicle = n.data?.vehicleLabel || 'Vehicle';
+					const type = n.data?.vehicleType || 'Sedan';
+					const eta = n.data?.returnDate || '';
+					this.mock.addOngoingService({ vehicle, type, progress: 0, status: 'In Progress', eta });
+				},
+				error: (err: unknown) => {
+					console.error('Failed to accept appointment', err);
+					this.statusMap.delete(n.id);
+					alert('Failed to accept appointment. Please try again.');
+				}
+			});
 	}
 
 	onReject(n: any){
@@ -65,11 +76,18 @@ export class NotificationsPage implements OnInit {
 		if (!apptId || this.statusMap.has(n.id)) return;
 		
 		this.statusMap.set(n.id, 'Rejected');
-		this.mock.updateAppointmentStatus(apptId, 'Rejected').subscribe({
-			error: () => {
-				this.statusMap.delete(n.id);
-			}
-		});
+		this.mock.updateAppointmentStatus(apptId, 'Rejected')
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: () => {
+					// Appointment rejected successfully
+				},
+				error: (err: unknown) => {
+					console.error('Failed to reject appointment', err);
+					this.statusMap.delete(n.id);
+					alert('Failed to reject appointment. Please try again.');
+				}
+			});
 	}
 }
 

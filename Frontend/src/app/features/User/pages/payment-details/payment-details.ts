@@ -6,6 +6,7 @@ import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-payment-details',
+  standalone: true,
   imports: [CommonModule, MatTableModule, MatButtonModule],
   templateUrl: './payment-details.html',
   styleUrl: './payment-details.css',

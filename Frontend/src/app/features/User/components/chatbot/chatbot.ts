@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-chatbot',
+  standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, MatInputModule],
   templateUrl: './chatbot.html',
   styleUrl: './chatbot.css',

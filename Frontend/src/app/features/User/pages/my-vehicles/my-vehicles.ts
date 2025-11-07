@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -11,6 +12,7 @@ import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-my-vehicles',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -24,8 +26,9 @@ import { MockData } from '../../../../services/mock-data';
   templateUrl: './my-vehicles.html',
   styleUrl: './my-vehicles.css',
 })
-export class MyVehicles {
+export class MyVehicles implements OnInit {
   private mock = inject(MockData);
+  private destroyRef = inject(DestroyRef);
   vehicles = signal<Array<{ id: number; name: string; model: string; year: number; regNumber: string; type: string; color?: string }>>([]);
 
   editingId: number | null = null;
@@ -34,12 +37,21 @@ export class MyVehicles {
   };
   formOpen = false;
 
-  constructor(){
+  ngOnInit(){
     this.refresh();
   }
 
   refresh(){
-    this.mock.getMyVehicles().subscribe(list => this.vehicles.set(list));
+    this.mock.getMyVehicles()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list: Array<{ id: number; name: string; model: string; year: number; regNumber: string; type: string; color?: string }>) => {
+          this.vehicles.set(list);
+        },
+        error: (err: unknown) => {
+          console.error('Failed to load vehicles', err);
+        }
+      });
   }
 
   startAdd(){
@@ -75,20 +87,38 @@ export class MyVehicles {
     }
     const done = () => { this.cancel(); this.refresh(); };
     if (id == null){
-      this.mock.addVehicle({ name, model, year, regNumber, type, color }).subscribe({ next: done, error: (err) => {
-        console.error('Add vehicle failed', err);
-        alert('Failed to save vehicle. Please ensure the backend is running and try again.');
-      }});
+      this.mock.addVehicle({ name, model, year, regNumber, type, color })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({ 
+          next: done, 
+          error: (err: unknown) => {
+            console.error('Add vehicle failed', err);
+            alert('Failed to save vehicle. Please ensure the backend is running and try again.');
+          }
+        });
     } else {
-      this.mock.updateVehicle({ id, name, model, year, regNumber, type, color }).subscribe({ next: done, error: (err) => {
-        console.error('Update vehicle failed', err);
-        alert('Failed to update vehicle. Please try again.');
-      }});
+      this.mock.updateVehicle({ id, name, model, year, regNumber, type, color })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({ 
+          next: done, 
+          error: (err: unknown) => {
+            console.error('Update vehicle failed', err);
+            alert('Failed to update vehicle. Please try again.');
+          }
+        });
     }
   }
 
   remove(v: { id: number }){
     if (!confirm('Delete this vehicle?')) return;
-    this.mock.deleteVehicle(v.id).subscribe(() => this.refresh());
+    this.mock.deleteVehicle(v.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.refresh(),
+        error: (err: unknown) => {
+          console.error('Delete vehicle failed', err);
+          alert('Failed to delete vehicle. Please try again.');
+        }
+      });
   }
 }

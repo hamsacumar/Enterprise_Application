@@ -1,4 +1,5 @@
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, Inject, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +14,7 @@ import { MockData } from '../../../../services/mock-data';
 })
 export class NotificationDialog implements OnInit {
 	private mock = inject(MockData);
+	private destroyRef = inject(DestroyRef);
 	constructor(
 		public dialogRef: MatDialogRef<NotificationDialog>,
 		@Inject(MAT_DIALOG_DATA) public data: { appointmentId: number; returnDate: string; vehicleLabel: string; vehicleType: string }
@@ -24,17 +26,26 @@ export class NotificationDialog implements OnInit {
 	isProcessed = false;
 
 	ngOnInit(){
-		this.mock.getAppointment(this.data.appointmentId).subscribe({ next: (a) => {
-			this.appointment = a;
-			try {
-				this.services = a?.selectedServicesJson ? JSON.parse(a.selectedServicesJson) : [];
-			} catch {
-				this.services = [];
-			}
-			const status = (a?.status || '').toLowerCase();
-			this.isProcessed = status === 'accepted' || status === 'rejected';
-			this.loading = false;
-		}});
+		this.mock.getAppointment(this.data.appointmentId)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({ 
+				next: (a: any) => {
+					this.appointment = a;
+					try {
+						this.services = a?.selectedServicesJson ? JSON.parse(a.selectedServicesJson) : [];
+					} catch {
+						this.services = [];
+					}
+					const status = (a?.status || '').toLowerCase();
+					this.isProcessed = status === 'accepted' || status === 'rejected';
+					this.loading = false;
+				},
+				error: (err: unknown) => {
+					console.error('Failed to load appointment', err);
+					this.loading = false;
+					alert('Failed to load appointment details. Please try again.');
+				}
+			});
 	}
 
 	accept(){ 

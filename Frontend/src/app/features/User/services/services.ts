@@ -7,6 +7,7 @@ import { map } from 'rxjs';
 
 @Component({
   selector: 'app-services',
+  standalone: true,
   imports: [CommonModule, MatCardModule, MatChipsModule],
   templateUrl: './services.html',
   styleUrl: './services.css',

@@ -9,6 +9,7 @@ import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
   imports: [
     CommonModule,
     RouterModule,

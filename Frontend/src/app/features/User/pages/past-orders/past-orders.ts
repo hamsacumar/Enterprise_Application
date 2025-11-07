@@ -5,6 +5,7 @@ import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-past-orders',
+  standalone: true,
   imports: [CommonModule, MatTableModule],
   templateUrl: './past-orders.html',
   styleUrl: './past-orders.css',

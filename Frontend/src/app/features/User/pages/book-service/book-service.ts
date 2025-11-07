@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -14,6 +14,7 @@ import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-book-service',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -129,7 +130,7 @@ export class BookService {
         alert('Appointment request submitted. You will receive a notification.');
         this.router.navigate(['/dashboard']);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Create appointment failed', err);
         // Still add notification even if backend fails (for testing)
         const id = Date.now();
