@@ -59,14 +59,14 @@ export class LoginComponent {
   private redirectByRole(role: string): void {
     switch (role) {
       case 'Admin':
-        this.router.navigate(['/app/admin-dashboard']);
+        this.router.navigate(['/app/admin/services']);
         break;
       case 'Worker':
-        this.router.navigate(['/app/worker-dashboard']);
+        this.router.navigate(['/app']);
         break;
       case 'User':
       default:
-        this.router.navigate(['/app/user-dashboard']);
+        this.router.navigate(['/app']);
         break;
     }
   }

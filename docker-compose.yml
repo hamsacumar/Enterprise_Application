@@ -45,6 +45,8 @@ services:
     depends_on:
       - mongo # Ensure MongoDB starts first
     restart: always
+    volumes:
+      - ./backend/CoreService/uploads:/app/uploads # Persist uploaded images
     networks:
       - enterprise-network
     healthcheck:

@@ -35,9 +35,11 @@ export class LoginComponent {
 
         setTimeout(() => {
           if (res.role === 'Admin') {
-            this.router.navigate(['/Admin/dashboard']);
-          } else if (res.role === 'Employee') {
-            this.router.navigate(['/employee/dashboard']);
+            this.router.navigate(['/app/admin/services']);
+          } else if (res.role === 'Worker') {
+            this.router.navigate(['/app']);
+          } else {
+            this.router.navigate(['/app']);
           }
         }, 1000);
       },

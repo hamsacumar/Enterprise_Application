@@ -6,6 +6,6 @@ import { LucideAngularModule, LayoutDashboard, Briefcase, Users, ShoppingCart, U
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
   standalone: true,
-  imports: [RouterLink, RouterLinkActive]
+  imports: [RouterLink, RouterLinkActive, LucideAngularModule]
 })
 export class SidebarComponent {}

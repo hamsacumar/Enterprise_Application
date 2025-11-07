@@ -1,12 +1,20 @@
 # Stage 1: Build Angular app
-FROM node:18 AS build
+FROM node:18-alpine AS build
+
 WORKDIR /app
 
+# Copy only package files first (better caching)
 COPY package*.json ./
-RUN npm install
 
+# Use npm ci for deterministic, production-grade builds
+RUN npm ci
+
+# Copy the rest of your Angular source code
 COPY . .
-RUN npm run build --prod
+
+# Build the Angular app for production
+RUN npm run build -- --configuration production
+
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
@@ -14,14 +22,18 @@ FROM nginx:alpine
 # Remove default nginx page
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy Angular dist files
+# Copy build output to nginx html folder
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
 # Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose HTTP port
+# Create a health check (good for orchestration)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -q --spider http://localhost/index.html || exit 1
+
+# Expose port 80 for HTTP
 EXPOSE 80
 
-# Start Nginx in the foreground
+# Start nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]

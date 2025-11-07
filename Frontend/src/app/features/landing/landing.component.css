@@ -17,7 +17,7 @@
 
 /* ===== HERO SECTION ===== */
 .hero {
-  background: linear-gradient(135deg, #0C4A6E 0%, #0369A1 40%, #0EA5E9 100%);
+  background: linear-gradient(135deg, rgba(12, 74, 110, 0.85) 0%, rgba(3, 105, 161, 0.85) 40%, rgba(14, 165, 233, 0.85) 100%), url('/assets/images/background.webp') center/cover no-repeat;
   background-attachment: fixed;
   color: var(--white);
   padding: 6rem 2rem;
@@ -121,8 +121,12 @@
   text-align: center;
   color: var(--medium-gray);
   margin-bottom: 3rem;
+  margin-left: auto;
+  margin-right: auto;
   font-size: 1.1rem;
   font-weight: 500;
+  width: 100%;
+  max-width: 800px;
 }
 
 .services-grid {
@@ -169,10 +173,28 @@
   opacity: 0.08;
 }
 
-.service-icon {
-  font-size: 3.5rem;
+.service-icon-container {
+  width: 100%;
+  height: 200px;
   margin-bottom: 1.5rem;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #E0F2FE 0%, #F0F7FF 100%);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.service-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+}
+
+.service-card:hover .service-icon-img {
+  transform: scale(1.05);
 }
 
 .service-card h3 {
@@ -273,12 +295,30 @@
   opacity: 1;
 }
 
-.feature-icon {
-  font-size: 3rem;
+.feature-icon-container {
+  width: 100%;
+  height: 180px;
   margin-bottom: 1.5rem;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #E0F2FE 0%, #F0F7FF 100%);
+  border-radius: 8px;
+  overflow: hidden;
   position: relative;
   z-index: 1;
+}
+
+.feature-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+}
+
+.feature-item:hover .feature-icon-img {
+  transform: scale(1.05);
 }
 
 .feature-item h4 {

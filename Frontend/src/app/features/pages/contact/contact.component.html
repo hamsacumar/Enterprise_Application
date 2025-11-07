@@ -1,0 +1,199 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Get in Touch</h1>
+    <p>We'd love to hear from you. Contact us today!</p>
+  </div>
+</section>
+
+<!-- Contact Info Section -->
+<section class="contact-info-section">
+  <div class="section-container">
+    <div class="info-grid">
+      <div class="info-card" *ngFor="let info of contactInfo">
+        <img [src]="info.image" [alt]="info.title" class="info-image">
+        <h3>{{ info.title }}</h3>
+        <p class="info-value">{{ info.value }}</p>
+        <p class="info-details">{{ info.details }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form & Map Section -->
+<section class="contact-form-section">
+  <div class="section-container">
+    <div class="contact-grid">
+      <!-- Contact Form -->
+      <div class="form-container">
+        <h2>Send us a Message</h2>
+        <p class="form-subtitle">Fill out the form below and we'll get back to you as soon as possible</p>
+
+        <!-- Success Message -->
+        <div class="alert alert-success" *ngIf="successMessage">
+          {{ successMessage }}
+        </div>
+
+        <!-- Error Message -->
+        <div class="alert alert-error" *ngIf="errorMessage && submitted">
+          {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <!-- Name Field -->
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name"
+              [class.is-invalid]="submitted && f['name'].errors"
+              placeholder="Your full name"
+            />
+            <div class="error-message" *ngIf="submitted && f['name'].errors">
+              <span *ngIf="f['name'].errors['required']">Name is required</span>
+              <span *ngIf="f['name'].errors['minlength']">Name must be at least 2 characters</span>
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email"
+              [class.is-invalid]="submitted && f['email'].errors"
+              placeholder="your.email@example.com"
+            />
+            <div class="error-message" *ngIf="submitted && f['email'].errors">
+              <span *ngIf="f['email'].errors['required']">Email is required</span>
+              <span *ngIf="f['email'].errors['email']">Please enter a valid email</span>
+            </div>
+          </div>
+
+          <!-- Phone Field -->
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              formControlName="phone"
+              [class.is-invalid]="submitted && f['phone'].errors"
+              placeholder="+1 (800) 555-0000"
+            />
+            <div class="error-message" *ngIf="submitted && f['phone'].errors">
+              <span *ngIf="f['phone'].errors['required']">Phone number is required</span>
+              <span *ngIf="f['phone'].errors['pattern']">Please enter a valid phone number</span>
+            </div>
+          </div>
+
+          <!-- Service Type -->
+          <div class="form-group">
+            <label for="serviceType">Service Type *</label>
+            <select id="serviceType" formControlName="serviceType">
+              <option value="general">General Inquiry</option>
+              <option value="booking">Booking Question</option>
+              <option value="complaint">Complaint</option>
+              <option value="feedback">Feedback</option>
+              <option value="corporate">Corporate Inquiry</option>
+            </select>
+          </div>
+
+          <!-- Subject Field -->
+          <div class="form-group">
+            <label for="subject">Subject *</label>
+            <input 
+              type="text" 
+              id="subject" 
+              formControlName="subject"
+              [class.is-invalid]="submitted && f['subject'].errors"
+              placeholder="What is this about?"
+            />
+            <div class="error-message" *ngIf="submitted && f['subject'].errors">
+              <span *ngIf="f['subject'].errors['required']">Subject is required</span>
+              <span *ngIf="f['subject'].errors['minlength']">Subject must be at least 5 characters</span>
+            </div>
+          </div>
+
+          <!-- Message Field -->
+          <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea 
+              id="message" 
+              formControlName="message"
+              [class.is-invalid]="submitted && f['message'].errors"
+              placeholder="Tell us what's on your mind..."
+              rows="6"
+            ></textarea>
+            <div class="error-message" *ngIf="submitted && f['message'].errors">
+              <span *ngIf="f['message'].errors['required']">Message is required</span>
+              <span *ngIf="f['message'].errors['minlength']">Message must be at least 10 characters</span>
+              <span *ngIf="f['message'].errors['maxlength']">Message cannot exceed 1000 characters</span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+      </div>
+
+      <!-- Map/Info Box -->
+      <div class="map-container">
+        <img src="/assets/images/visitus.webp" alt="Visit Us" class="map-image">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Locations Section -->
+<section class="locations-section">
+  <div class="section-container">
+    <h2 class="section-title">Our Service Locations</h2>
+    <p class="section-subtitle">Find the nearest AutoServeX to you</p>
+
+    <div class="locations-grid">
+      <div class="location-card" *ngFor="let location of locations">
+        <div class="location-header">
+          <h3>{{ location.name }}</h3>
+        </div>
+        <div class="location-details">
+          <p><strong>📍</strong> {{ location.address }}</p>
+          <p><strong>📞</strong> {{ location.phone }}</p>
+          <p><strong>⏰</strong> {{ location.hours }}</p>
+        </div>
+        <button class="location-btn">Get Directions</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+  <div class="section-container">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <p class="section-subtitle">Find quick answers to common questions</p>
+
+    <div class="faq-container">
+      <div class="faq-item" *ngFor="let item of faqItems; let i = index">
+        <div class="faq-question" (click)="toggleFAQ(i)">
+          <span class="faq-text">{{ item.question }}</span>
+          <span class="faq-toggle">{{ isFAQExpanded(i) ? '−' : '+' }}</span>
+        </div>
+        <div class="faq-answer" *ngIf="isFAQExpanded(i)">
+          {{ item.answer }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2>Ready to Schedule Your Service?</h2>
+    <p>Book your appointment today and experience premium vehicle care</p>
+    <button class="cta-button">Book Now</button>
+  </div>
+</section>
+
