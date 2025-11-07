@@ -73,6 +73,9 @@ export const routes: Routes = [
 
   // 🔹 Wildcard fallback
   { path: '**', redirectTo: '/login' },
+
+  
+      //( need to put guards for admin , customer , worker ) -- Hasini
 ];
 
 // Optional if you’re using a routing module
