@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { MockData } from '../../services/mock-data';
+=======
+import { MockData } from '../../mock/mock-data';
+>>>>>>> Stashed changes
 =======
 import { MockData } from '../../mock/mock-data';
 >>>>>>> Stashed changes

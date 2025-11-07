@@ -10,8 +10,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
 import { NotificationService } from '../../../../../../../autoserve/fe/src/app/services/notification.service';
+=======
+import { MockData } from '../../mock/mock-data';
+import { NotificationService } from '../../mock/notification.service';
+>>>>>>> Stashed changes
 =======
 import { MockData } from '../../mock/mock-data';
 import { NotificationService } from '../../mock/notification.service';

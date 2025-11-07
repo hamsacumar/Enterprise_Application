@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { MockData } from '../../services/mock-data';
+=======
+import { MockData } from '../mock/mock-data';
+>>>>>>> Stashed changes
 =======
 import { MockData } from '../mock/mock-data';
 >>>>>>> Stashed changes
