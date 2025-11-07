@@ -23,6 +23,9 @@ export const routes: Routes = [
       // future child routes:
       // { path: 'workers', component: WorkersComponent },
       // { path: 'orders', component: OrdersComponent }
+
+
+      //( need to put guards for admin , customer , worker ) -- Hasini
     ]
   },
   //aichatbot 

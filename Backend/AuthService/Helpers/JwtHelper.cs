@@ -17,7 +17,7 @@ namespace AuthService.Helpers
 
     }
 
-    public class JwtHelper
+    public class JwtHelper : IJwtHelper
     {
         private readonly JwtSettings _settings;
         public JwtHelper(JwtSettings settings) { _settings = settings; }
