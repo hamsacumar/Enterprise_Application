@@ -27,22 +27,27 @@ export class LoginComponent {
 
     this.loginService.login(this.username, this.password).subscribe({
       next: (res) => {
-        // Save token in local storage
+        // Save token and user data in local storage
         this.successMessage = 'Login successful!';
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
+        localStorage.setItem('userId', res.userId);
         
         setTimeout(() => {
           this.successMessage = '';
         }, 1000);
 
         setTimeout(() => {
-          if (res.role === 'Admin') {
-            this.router.navigate(['/admin/dashboard']);
-          } else if (res.role === 'Worker') {
-            this.router.navigate(['/worker/dashboard']);
-          } else if (res.role === 'Customer') {
-            this.router.navigate(['/customer/dashboard']);
+          // The backend sends role with first letter capitalized (e.g., 'Admin', 'Customer')
+          const role = res.role;
+          console.log('User role:', role); // For debugging
+          
+          if (role === 'Admin') {
+            this.router.navigate(['/admin']); // Changed from '/Admin/dashboard' to '/admin'
+          } else if (role === 'Worker') {
+            this.router.navigate(['/worker']); // Update this if you have a worker route
+          } else if (role === 'Customer') {
+            this.router.navigate(['/user']); // Changed from '/User/dashboard' to '/user'
           }
         }, 1000);
       },
