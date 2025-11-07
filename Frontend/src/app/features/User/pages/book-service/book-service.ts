@@ -9,8 +9,8 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
-import { NotificationService } from '../../../../../../../autoserve/fe/src/app/services/notification.service';
+import { MockData } from '../../../../services/mock-data';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-book-service',
