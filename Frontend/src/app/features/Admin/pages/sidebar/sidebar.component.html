@@ -1,0 +1,62 @@
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h3>Admin Panel</h3>
+  </div>
+  <ul class="sidebar-menu">
+    <li>
+      <a 
+        routerLink="/dashboard" 
+        routerLinkActive="active" 
+        [routerLinkActiveOptions]="{ exact: true }"
+        data-icon="dashboard"
+      >
+        Dashboard
+      </a>
+    </li>
+    <li>
+      <a 
+        routerLink="/dashboard/services" 
+        routerLinkActive="active"
+        data-icon="services"
+      >
+        Services
+      </a>
+    </li>
+    <li>
+      <a 
+        routerLink="/dashboard/workers" 
+        routerLinkActive="active"
+        data-icon="workers"
+      >
+        Workers
+      </a>
+    </li>
+    <li>
+      <a 
+        routerLink="/dashboard/orders" 
+        routerLinkActive="active"
+        data-icon="orders"
+      >
+        Orders
+      </a>
+    </li>
+    <li>
+      <a 
+        routerLink="/dashboard/customers" 
+        routerLinkActive="active"
+        data-icon="customers"
+      >
+        Customers
+      </a>
+    </li>
+    <li>
+      <a 
+        routerLink="/dashboard/settings" 
+        routerLinkActive="active"
+        data-icon="settings"
+      >
+        Settings
+      </a>
+    </li>
+  </ul>
+</nav>

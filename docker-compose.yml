@@ -1,29 +1,115 @@
-version: "3.8"
 services:
+  # =========================
+  # Angular frontend service
+  # =========================
   angular:
-    build: ./frontend
+    build: ./Frontend # Path to Angular project
     ports:
-      - "4200:80"
+      - "4200:80" # Map container port 80 to host 4200
     depends_on:
-      - nodeapi
-    restart: always
+      - chatbox-service # Wait for Chatbox backend
+      - core-service # Wait for Core backend
+      - admin-service # Wait for Admin backend
+    restart: always # Restart if container fails
+    networks:
+      - enterprise-network
 
-  nodeapi:
-    build: .\backend\ChatboxService
+  # =========================
+  # Node.js Chatbox Service
+  # =========================
+  chatbox-service:
+    build: ./backend/ChatboxService # Path to Node.js backend
     ports:
-      - "5000:5000"
+      - "5001:5000" # Expose on host port 5001, container 5000
     environment:
-      - MONGO_URI=mongodb://mongo:27017/Enterprice
+      - MONGO_URI=mongodb://mongo:27017/Enterprise # MongoDB connection string
+      - NODE_ENV=production
     depends_on:
-      - mongo
+      - mongo # Ensure MongoDB starts first
     restart: always
+    networks:
+      - enterprise-network
 
-  mongo:
-    image: mongo:latest
+  # =========================
+  # .NET Core Service
+  # =========================
+  core-service:
+    build: ./backend/CoreService # Path to CoreService
     ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
+      - "5000:5000" # Expose on host port 5000, container 5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
+      - MongoDbSettings__DatabaseName=Enterprise
+    depends_on:
+      - mongo # Ensure MongoDB starts first
+    restart: always
+    networks:
+      - enterprise-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
+  # =========================
+  # .NET Admin Service
+  # =========================
+  admin-service:
+    build: ./backend/AdminService # Path to Admin Service
+    ports:
+      - "5125:5125" # Admin API on dedicated port
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5125
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
+      - MongoDbSettings__DatabaseName=Enterprise
+    depends_on:
+      - mongo # Ensure MongoDB starts first
+    restart: always
+    networks:
+      - enterprise-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5125/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # =========================
+  # MongoDB service
+  # =========================
+  mongo:
+    image: mongo:7.0 # Use specific version for stability
+    ports:
+      - "27017:27017" # Expose MongoDB to host
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password # Change in production!
+      - MONGO_INITDB_DATABASE=Enterprise
+    volumes:
+      - mongo_data:/data/db # Persist MongoDB data
+    restart: always
+    networks:
+      - enterprise-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# =========================
+# Networks for service communication
+# =========================
+networks:
+  enterprise-network:
+    driver: bridge
+
+# =========================
+# Volumes for persistent data
+# =========================
 volumes:
   mongo_data:
+    driver: local
