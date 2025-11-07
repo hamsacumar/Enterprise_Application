@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
-import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-my-vehicles',

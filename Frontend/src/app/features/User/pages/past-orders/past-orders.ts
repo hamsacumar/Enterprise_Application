@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-past-orders',
