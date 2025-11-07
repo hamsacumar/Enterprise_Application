@@ -8,24 +8,21 @@ export const authenticateUser = async (req, res, next) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({ message: "No token provided" });
     }
+
     const token = authHeader.split(" ")[1];
 
-    // Call Auth service to verify token
-    const resp = await axios.post(
-      AUTH_SERVICE_URL,
-      { token },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const resp = await axios.post(AUTH_SERVICE_URL, { token });
 
-    // Expect { valid: true, user: { ... } }
-    if (!resp?.data?.valid) {
+    if (!resp?.data?.userId) {
       return res.status(401).json({ message: "Invalid token" });
     }
 
-    req.user = resp.data.user; // attach canonical user object
-    req.token = token;
+    req.user = {
+      id: resp.data.userId,
+      username: resp.data.username,
+      role: resp.data.role,
+    };
+
     next();
   } catch (err) {
     console.error("Auth middleware error:", err.response?.data || err.message);

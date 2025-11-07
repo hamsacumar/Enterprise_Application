@@ -1,83 +1,63 @@
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
-import mongoose from "mongoose";
 
-// Get chats for authenticated user
 export const getUserChats = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const chats = await Chat.find({ participants: userId }).sort({
-      updatedAt: -1,
+    const chats = await Chat.find({
+      "participants.userId": req.user.id,
     });
     res.json(chats);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// Create or return existing chat between authenticated user and receiverId
 export const createChat = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const { receiverId } = req.body;
-    if (!receiverId)
-      return res.status(400).json({ message: "receiverId required" });
+    const { receiverId, receiverUsername } = req.body;
 
-    const existing = await Chat.findOne({
-      participants: { $all: [userId, receiverId], $size: 2 },
+    let chat = await Chat.findOne({
+      "participants.userId": { $all: [req.user.id, receiverId] },
     });
-    if (existing) return res.json(existing);
 
-    const chat = new Chat({ participants: [userId, receiverId] });
-    await chat.save();
+    if (!chat) {
+      chat = new Chat({
+        participants: [
+          { userId: req.user.id, username: req.user.username },
+          { userId: receiverId, username: receiverUsername },
+        ],
+      });
+      await chat.save();
+    }
+
     res.status(201).json(chat);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// Get messages by chatId (paginated)
 export const getMessages = async (req, res) => {
   try {
     const { chatId } = req.params;
-    const limit = parseInt(req.query.limit || "50", 10);
-    const skip = parseInt(req.query.skip || "0", 10);
-
-    if (!mongoose.Types.ObjectId.isValid(chatId))
-      return res.status(400).json({ message: "Invalid chatId" });
-
-    const messages = await Message.find({ chatId })
-      .sort({ createdAt: 1 })
-      .skip(skip)
-      .limit(limit);
+    const messages = await Message.find({ chatId });
     res.json(messages);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// Send message via REST (also used by socket)
 export const sendMessage = async (req, res) => {
   try {
-    const senderId = req.user.id;
-    const { chatId, content, meta } = req.body;
-    if (!chatId || !content)
-      return res.status(400).json({ message: "chatId & content required" });
-
-    const message = new Message({ chatId, senderId, content, meta });
-    await message.save();
-    await Chat.findByIdAndUpdate(chatId, {
-      lastMessage: content,
-      updatedAt: new Date(),
+    const { chatId, content } = req.body;
+    const newMessage = new Message({
+      chatId,
+      senderId: req.user.id,
+      senderUsername: req.user.username,
+      content,
     });
-
-    // The socket layer will emit to rooms; but for REST-only, return message
-    res.json(message);
+    await newMessage.save();
+    res.status(201).json(newMessage);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };

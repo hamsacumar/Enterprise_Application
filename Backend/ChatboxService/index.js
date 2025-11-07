@@ -29,7 +29,21 @@ const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-setupSocket(io);
+io.on("connection", (socket) => {
+  console.log("🟢 User connected:", socket.id);
+
+  socket.on("joinChat", (chatId) => {
+    socket.join(chatId);
+  });
+
+  socket.on("sendMessage", (data) => {
+    io.to(data.chatId).emit("newMessage", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("🔴 User disconnected:", socket.id);
+  });
+});
 
 // Root route (optional)
 app.get("/", (req, res) => {
