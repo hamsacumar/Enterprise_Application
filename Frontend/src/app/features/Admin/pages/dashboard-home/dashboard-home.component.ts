@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxChartsModule, Color, ScaleType } from '@swimlane/ngx-charts';
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -48,4 +47,27 @@ export class DashboardHomeComponent {
     group: ScaleType.Ordinal,
     domain: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
   };
+
+  // Bar Chart Data (Monthly Revenue)
+  barChartData = [
+    { name: 'Jan', value: 12000 },
+    { name: 'Feb', value: 14500 },
+    { name: 'Mar', value: 13200 },
+    { name: 'Apr', value: 15800 },
+    { name: 'May', value: 17100 },
+    { name: 'Jun', value: 16500 }
+  ];
+
+  barChartScheme: Color = {
+    name: 'bar',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
+  };
+
+  selectedInfo: string | null = null;
+
+  onSelect(event: any) {
+    this.selectedInfo = `${event.name}: ${event.value}`;
+  }
 }

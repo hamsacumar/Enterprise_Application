@@ -70,3 +70,13 @@
   font-size: 1.1rem;
   color: #1e293b;
 }
+
+.selected-info {
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 0.75rem;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #1e293b;
+  border-radius: 0.5rem;
+  display: inline-block;
+}

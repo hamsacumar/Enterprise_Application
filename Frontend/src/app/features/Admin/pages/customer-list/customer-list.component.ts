@@ -7,6 +7,7 @@ interface Customer {
   carModel: string;
   licensePlate: string;
   phoneNumber: string;
+  address: string;
 }
 
 @Component({
@@ -17,29 +18,46 @@ interface Customer {
   styleUrls: ['./customer-list.component.css']
 })
 export class CustomerListComponent {
-
   customers: Customer[] = [
     {
-      username: 'customer 1',
-      email: 'worker1@gmail.com',
-      carModel: 'Toyota Corolla',
-      licensePlate: 'ABC-1234',
-      phoneNumber: '+94 77 123 4567'
+      username: 'Niroshan Perera',
+      email: 'niroshan.perera@gmail.com',
+      carModel: 'Toyota Axio 2018',
+      licensePlate: 'CAD-1234',
+      phoneNumber: '+94 77 456 7890',
+      address: 'No. 45, Galle Road, Colombo 03'
     },
     {
-      username: 'customer2',
-      email: 'customer2@gmail.com',
-      carModel: 'Honda Civic',
-      licensePlate: 'XYZ-5678',
-      phoneNumber: '+94 76 987 6543'
+      username: 'Dilini Fernando',
+      email: 'dilini.fernando@yahoo.com',
+      carModel: 'Honda Grace 2019',
+      licensePlate: 'KDA-8765',
+      phoneNumber: '+94 71 234 5678',
+      address: 'No. 12, Kandy Road, Kegalle'
     },
     {
-      username: 'customer3',
-      email: 'customer3@gmail.com',
-      carModel: 'Nissan Sunny',
-      licensePlate: 'JKL-4321',
-      phoneNumber: '+94 71 555 8899'
+      username: 'Sajith Kumara',
+      email: 'sajith.kumara@gmail.com',
+      carModel: 'Nissan X-Trail 2020',
+      licensePlate: 'CBB-3344',
+      phoneNumber: '+94 75 987 1122',
+      address: 'No. 20, Main Street, Matara'
+    },
+    {
+      username: 'Heshani Weerasinghe',
+      email: 'heshaniw@gmail.com',
+      carModel: 'Suzuki Wagon R 2021',
+      licensePlate: 'KBM-5512',
+      phoneNumber: '+94 78 552 4433',
+      address: 'No. 9, Temple Road, Gampaha'
+    },
+    {
+      username: 'Ravindu Jayasuriya',
+      email: 'ravindu.j@gmail.com',
+      carModel: 'Mazda Demio 2017',
+      licensePlate: 'CAX-2241',
+      phoneNumber: '+94 76 445 9876',
+      address: 'No. 78, Beach Road, Negombo'
     }
   ];
-
 }

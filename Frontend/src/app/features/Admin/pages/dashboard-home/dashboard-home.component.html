@@ -12,6 +12,8 @@
     </div>
   </div>
 
+  <div *ngIf="selectedInfo" class="selected-info">Selected: {{ selectedInfo }}</div>
+
   <!-- Charts Section -->
   <div class="charts-section">
     <div class="chart-card">
@@ -27,7 +29,8 @@
         [showXAxisLabel]="true"
         [showYAxisLabel]="true"
         [xAxisLabel]="'Date'"
-        [yAxisLabel]="'Orders'">
+        [yAxisLabel]="'Orders'"
+        (select)="onSelect($event)">
       </ngx-charts-line-chart>
     </div>
 
@@ -38,8 +41,27 @@
         [scheme]="pieChartScheme"
         [results]="serviceTypeData"
         [legend]="true"
-        [labels]="true">
+        [labels]="true"
+        (select)="onSelect($event)">
       </ngx-charts-pie-chart>
+    </div>
+
+    <div class="chart-card">
+      <h3>Monthly Revenue</h3>
+      <ngx-charts-bar-vertical
+        [view]="[400, 250]"
+        [scheme]="barChartScheme"
+        [results]="barChartData"
+        [gradient]="false"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="false"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        [xAxisLabel]="'Month'"
+        [yAxisLabel]="'Revenue'"
+        (select)="onSelect($event)">
+      </ngx-charts-bar-vertical>
     </div>
   </div>
 </div>
