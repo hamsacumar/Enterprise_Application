@@ -28,6 +28,7 @@ namespace AuthService.Helpers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id ?? string.Empty),
+                new Claim("userId", user.Id ?? string.Empty),
                 new Claim("username", user.Username),
                 new Claim(ClaimTypes.Role, user.Role.ToString()),
                 new Claim("firstName", user.FirstName)

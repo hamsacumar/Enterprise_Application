@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AuthService.Controllers
 {
@@ -217,19 +218,17 @@ namespace AuthService.Controllers
             if (principal == null)
                 return Unauthorized(new { message = "Invalid or expired token." });
 
+            var userId = principal.FindFirst("userId")?.Value;
             var username = principal.FindFirst("username")?.Value;
             var role = principal.FindFirst(ClaimTypes.Role)?.Value;
 
             return Ok(new
             {
                 message = "Token is valid.",
+                userId,
                 username,
                 role
             });
         }
-
-
-
-
     }
 }
