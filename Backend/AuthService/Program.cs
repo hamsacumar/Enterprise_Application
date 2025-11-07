@@ -120,6 +120,7 @@ builder.Services.AddSwaggerGen( c =>
 
 var app = builder.Build();
 
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -140,6 +141,8 @@ using (var scope = app.Services.CreateScope())
     var seeded = await SeedData.SeedIfNeededAsync((UserService)userService);
 
 }
+
+app.Urls.Add("http://+:5000");
 
 app.Run();
 public partial class Program { }
