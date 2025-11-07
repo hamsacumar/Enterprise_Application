@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { NotificationService } from '../../../../../../../autoserve/fe/src/app/services/notification.service';
-import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
+import { NotificationService } from '../../../../services/notification.service';
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
 	selector: 'app-notifications',

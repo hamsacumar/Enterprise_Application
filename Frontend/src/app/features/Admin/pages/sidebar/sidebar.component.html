@@ -5,58 +5,28 @@
   <ul class="sidebar-menu">
     <li>
       <a 
-        routerLink="/dashboard" 
-        routerLinkActive="active" 
+        routerLink="/admin"
+        routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        data-icon="dashboard"
       >
         Dashboard
       </a>
     </li>
+
     <li>
-      <a 
-        routerLink="/dashboard/services" 
-        routerLinkActive="active"
-        data-icon="services"
-      >
-        Services
-      </a>
+      <a routerLink="/admin/services" routerLinkActive="active">Service Details</a>
     </li>
+
     <li>
-      <a 
-        routerLink="/dashboard/workers" 
-        routerLinkActive="active"
-        data-icon="workers"
-      >
-        Workers
-      </a>
+      <a routerLink="/admin/workers" routerLinkActive="active">Worker Details</a>
     </li>
+
     <li>
-      <a 
-        routerLink="/dashboard/orders" 
-        routerLinkActive="active"
-        data-icon="orders"
-      >
-        Orders
-      </a>
+      <a routerLink="/admin/orders" routerLinkActive="active">Orders Summary</a>
     </li>
-    <li>
-      <a 
-        routerLink="/dashboard/customers" 
-        routerLinkActive="active"
-        data-icon="customers"
-      >
-        Customers
-      </a>
+ <li>
+      <a routerLink="/admin/customers" routerLinkActive="active">Customer Details</a>
     </li>
-    <li>
-      <a 
-        routerLink="/dashboard/settings" 
-        routerLinkActive="active"
-        data-icon="settings"
-      >
-        Settings
-      </a>
-    </li>
+   
   </ul>
 </nav>

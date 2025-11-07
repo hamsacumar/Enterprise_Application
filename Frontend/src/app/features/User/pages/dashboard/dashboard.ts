@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-dashboard',

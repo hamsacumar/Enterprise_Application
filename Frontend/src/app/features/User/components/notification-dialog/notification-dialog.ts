@@ -2,7 +2,7 @@ import { Component, Inject, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { MockData } from '../../services/mock-data';
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
 	selector: 'app-notification-dialog',
