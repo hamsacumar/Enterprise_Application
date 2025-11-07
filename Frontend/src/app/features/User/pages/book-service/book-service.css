@@ -1,0 +1,190 @@
+.book-service-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #212121;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.services-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #212121;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.service-card {
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+.service-card.selected {
+  border-color: #1976d2;
+  background-color: rgba(25, 118, 210, 0.05);
+}
+
+.service-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #1976d2;
+  margin-bottom: 12px;
+}
+
+.service-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212121;
+}
+
+.service-desc {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 16px;
+  min-height: 40px;
+}
+
+.service-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+.duration {
+  font-size: 14px;
+  color: #888;
+}
+
+.booking-form-section {
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+}
+
+.form-card {
+  padding: 24px;
+}
+
+.form-card h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #212121;
+}
+
+.no-selection {
+  text-align: center;
+  padding: 48px 24px;
+  color: #888;
+}
+
+.no-selection mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.selected-service-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.selected-service-info mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #1976d2;
+}
+
+.selected-service-info strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.selected-service-info p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.book-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.book-btn mat-icon {
+  margin-right: 8px;
+}
+
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-form-section {
+    position: static;
+  }
+}
+
