@@ -17,13 +17,18 @@ export class DashboardHomeComponent {
     { title: 'Active Services', value: 7, icon: '🔧', color: '#ef4444' },
   ];
 
-  // Line Chart Data (Orders over Time)
+  // Line Chart Data (Orders over Time) - multi series format required by ngx-charts-line-chart
   ordersOverTime = [
-    { name: 'Nov 1', value: 25 },
-    { name: 'Nov 2', value: 30 },
-    { name: 'Nov 3', value: 42 },
-    { name: 'Nov 4', value: 33 },
-    { name: 'Nov 5', value: 27 },
+    {
+      name: 'Orders',
+      series: [
+        { name: 'Nov 1', value: 25 },
+        { name: 'Nov 2', value: 30 },
+        { name: 'Nov 3', value: 42 },
+        { name: 'Nov 4', value: 33 },
+        { name: 'Nov 5', value: 27 },
+      ]
+    }
   ];
 
   // Pie Chart Data (Service Type Distribution)
