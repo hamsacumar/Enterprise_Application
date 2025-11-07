@@ -2,15 +2,7 @@ import { Component, Inject, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { MockData } from '../../services/mock-data';
-=======
-import { MockData } from '../../mock/mock-data';
->>>>>>> Stashed changes
-=======
-import { MockData } from '../../mock/mock-data';
->>>>>>> Stashed changes
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
 	selector: 'app-notification-dialog',
@@ -32,23 +24,17 @@ export class NotificationDialog implements OnInit {
 	isProcessed = false;
 
 	ngOnInit(){
-		this.mock.getAppointment(this.data.appointmentId).subscribe({ 
-			next: (a) => {
-				this.appointment = a;
-				try {
-					this.services = a?.selectedServicesJson ? JSON.parse(a.selectedServicesJson) : [];
-				} catch {
-					this.services = [];
-				}
-				const status = (a?.status || '').toLowerCase();
-				this.isProcessed = status === 'accepted' || status === 'rejected';
-				this.loading = false;
-			},
-			error: (err: unknown) => {
-				console.error('Failed to load appointment', err);
-				this.loading = false;
+		this.mock.getAppointment(this.data.appointmentId).subscribe({ next: (a) => {
+			this.appointment = a;
+			try {
+				this.services = a?.selectedServicesJson ? JSON.parse(a.selectedServicesJson) : [];
+			} catch {
+				this.services = [];
 			}
-		});
+			const status = (a?.status || '').toLowerCase();
+			this.isProcessed = status === 'accepted' || status === 'rejected';
+			this.loading = false;
+		}});
 	}
 
 	accept(){ 

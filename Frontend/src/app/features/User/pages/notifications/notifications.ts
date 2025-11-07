@@ -3,18 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { NotificationService } from '../../../../../../../autoserve/fe/src/app/services/notification.service';
-import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
-=======
-import { NotificationService } from '../../mock/notification.service';
-import { MockData } from '../../mock/mock-data';
->>>>>>> Stashed changes
-=======
-import { NotificationService } from '../../mock/notification.service';
-import { MockData } from '../../mock/mock-data';
->>>>>>> Stashed changes
+import { NotificationService } from '../../../../services/notification.service';
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
 	selector: 'app-notifications',

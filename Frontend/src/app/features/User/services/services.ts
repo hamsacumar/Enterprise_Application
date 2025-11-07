@@ -2,20 +2,11 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { MockData } from '../../services/mock-data';
-=======
-import { MockData } from '../mock/mock-data';
->>>>>>> Stashed changes
-=======
-import { MockData } from '../mock/mock-data';
->>>>>>> Stashed changes
+import { MockData } from '../../../services/mock-data';
 import { map } from 'rxjs';
 
 @Component({
   selector: 'app-services',
-  standalone: true,
   imports: [CommonModule, MatCardModule, MatChipsModule],
   templateUrl: './services.html',
   styleUrl: './services.css',
@@ -23,7 +14,7 @@ import { map } from 'rxjs';
 export class Services {
   private mock = inject(MockData);
   services$ = this.mock.getAppointments().pipe(
-    map(list => list.map((a: any) => {
+    map((list: any[]) => list.map((a: any) => {
       let vehicleLabel = a.vehicleName && a.vehicleModel ? `${a.vehicleName} ${a.vehicleModel}`.trim() : (a.vehicleName || a.vehicleType || 'Vehicle');
       let typeLabel = '';
       try {

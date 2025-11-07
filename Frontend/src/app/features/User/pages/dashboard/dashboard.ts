@@ -5,19 +5,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
-=======
-import { MockData } from '../../mock/mock-data';
->>>>>>> Stashed changes
-=======
-import { MockData } from '../../mock/mock-data';
->>>>>>> Stashed changes
+import { MockData } from '../../../../services/mock-data';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,

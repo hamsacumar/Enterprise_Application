@@ -18,7 +18,7 @@ interface ClassifyResponse {
   providedIn: 'root'
 })
 export class ClassifyService {
-  private apiUrl = 'http://localhost:5143/api/Auth/classify'; // Update with backend URL
+  private apiUrl = 'http://localhost:5000/api/Auth/classify';
 
   constructor(private http: HttpClient) {}
 
