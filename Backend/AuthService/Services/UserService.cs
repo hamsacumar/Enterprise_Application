@@ -13,7 +13,7 @@ namespace AuthService.Services
         public string UsersCollectionName { get; set; } = null!;
     }
 
-    public class UserService
+public class UserService : IUserService
     {
         private readonly IMongoCollection<User> _users;
         public UserService(IOptions<MongoDbSettings> settings)

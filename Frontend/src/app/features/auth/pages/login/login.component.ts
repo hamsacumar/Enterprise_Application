@@ -32,12 +32,17 @@ export class LoginComponent {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
         
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 1000);
 
         setTimeout(() => {
           if (res.role === 'Admin') {
-            this.router.navigate(['/Admin/dashboard']);
-          } else if (res.role === 'Employee') {
-            this.router.navigate(['/employee/dashboard']);
+            this.router.navigate(['/admin/dashboard']);
+          } else if (res.role === 'Worker') {
+            this.router.navigate(['/worker/dashboard']);
+          } else if (res.role === 'Customer') {
+            this.router.navigate(['/customer/dashboard']);
           }
         }, 1000);
       },
@@ -47,8 +52,15 @@ export class LoginComponent {
         } else{
         this.errorMessage = err.error || 'Login failed. Please try again.';
       }
-    }
     
+    
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 5000);
+  },
+
+
+
     });
   }
 
