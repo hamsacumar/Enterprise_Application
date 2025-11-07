@@ -1,19 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { ContactService } from './services/contact.service';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
+  providers: [ContactService],
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css']
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
   contactForm!: FormGroup;
   submitted = false;
   successMessage = '';
   errorMessage = '';
+  isSubmitting = false;
 
   // Contact information
   contactInfo = [
@@ -101,8 +105,12 @@ export class ContactComponent {
 
   expandedFAQ: { [key: number]: boolean } = {};
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private contactService: ContactService) {
     this.initializeForm();
+  }
+
+  ngOnInit(): void {
+    // Component initialization if needed
   }
 
   private initializeForm(): void {
@@ -130,18 +138,32 @@ export class ContactComponent {
       return;
     }
 
-    // Simulate API call
-    console.log('Form Data:', this.contactForm.value);
-    
-    // Show success message
-    this.successMessage = '✅ Message sent successfully! We will get back to you within 24 hours.';
-    
-    // Reset form after 2 seconds
-    setTimeout(() => {
-      this.contactForm.reset();
-      this.submitted = false;
-      this.successMessage = '';
-    }, 3000);
+    this.isSubmitting = true;
+    const formData = this.contactForm.value;
+
+    this.contactService.submitContact(formData).subscribe(
+      (response) => {
+        this.isSubmitting = false;
+        if (response.success) {
+          this.successMessage = '✅ ' + response.message;
+          console.log('Form Data Submitted:', response.data);
+          
+          // Reset form after 3 seconds
+          setTimeout(() => {
+            this.contactForm.reset();
+            this.submitted = false;
+            this.successMessage = '';
+          }, 3000);
+        } else {
+          this.errorMessage = response.message || 'An error occurred.';
+        }
+      },
+      (error) => {
+        this.isSubmitting = false;
+        console.error('Error submitting form:', error);
+        this.errorMessage = error.error?.message || 'Failed to submit form. Please try again later.';
+      }
+    );
   }
 
   toggleFAQ(index: number): void {

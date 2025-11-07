@@ -12,9 +12,10 @@ builder.Services.AddOpenApi();
 // Add JWT Service
 builder.Services.AddSingleton<JwtService>();
 
-// Add Navigation and Footer Services
+// Add Navigation, Footer, and Contact Services
 builder.Services.AddSingleton<NavigationService>();
 builder.Services.AddSingleton<FooterService>();
+builder.Services.AddSingleton<ContactService>();
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
