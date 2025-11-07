@@ -48,7 +48,7 @@ export const routes: Routes = [
   // -------------------------------------
   // 🔹 DEFAULT ROUTE
   // -------------------------------------
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // -------------------------------------
   // 🔹 ADMIN ROUTES
@@ -98,7 +98,7 @@ export const routes: Routes = [
   },
 
    // 👇 Wildcard must come LAST
-  { path: '**', redirectTo: '/admin' },
+  { path: '**', redirectTo: '/login' },
   
 ];
 
