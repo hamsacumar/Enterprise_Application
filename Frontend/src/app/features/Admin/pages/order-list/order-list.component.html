@@ -2,8 +2,12 @@
   <h2 class="title">Car Service Orders Summary</h2>
 
   <div class="filters">
-    <input type="text" placeholder="Search by customer or car..." [(ngModel)]="searchText" (input)="filterOrders()">
-    
+    <input 
+      type="text" 
+      placeholder="Search by customer, car or worker..." 
+      [(ngModel)]="searchText" 
+      (input)="filterOrders()">
+
     <select [(ngModel)]="filterStatus" (change)="filterOrders()">
       <option value="All">All</option>
       <option value="Pending">Pending</option>
@@ -18,10 +22,11 @@
         <tr>
           <th>Customer</th>
           <th>Car Model</th>
-          <th>Service</th>
+          <th>Service Type</th>
+          <th>Worker</th>
           <th>Date</th>
           <th>Status</th>
-          <th>Total ($)</th>
+          <th>Total (Rs.)</th>
         </tr>
       </thead>
       <tbody>
@@ -29,11 +34,12 @@
           <td>{{ order.customerName }}</td>
           <td>{{ order.carModel }}</td>
           <td>{{ order.serviceType }}</td>
+          <td>{{ order.workerName }}</td>
           <td>{{ order.date }}</td>
           <td>
-            <span class="status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+            <span class="status" [ngClass]="order.status.toLowerCase().replace(' ', '-')">{{ order.status }}</span>
           </td>
-          <td>{{ order.total }}</td>
+          <td>{{ order.total | number }}</td>
         </tr>
       </tbody>
     </table>
