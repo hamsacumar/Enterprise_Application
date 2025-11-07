@@ -7,10 +7,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+<<<<<<< Updated upstream
 import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
+=======
+import { MockData } from '../../mock/mock-data';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-my-vehicles',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -39,7 +44,12 @@ export class MyVehicles {
   }
 
   refresh(){
-    this.mock.getMyVehicles().subscribe(list => this.vehicles.set(list));
+    this.mock.getMyVehicles().subscribe({
+      next: (list) => this.vehicles.set(list),
+      error: (err: unknown) => {
+        console.error('Failed to load vehicles', err);
+      }
+    });
   }
 
   startAdd(){
@@ -89,6 +99,12 @@ export class MyVehicles {
 
   remove(v: { id: number }){
     if (!confirm('Delete this vehicle?')) return;
-    this.mock.deleteVehicle(v.id).subscribe(() => this.refresh());
+    this.mock.deleteVehicle(v.id).subscribe({
+      next: () => this.refresh(),
+      error: (err: unknown) => {
+        console.error('Failed to delete vehicle', err);
+        alert('Failed to delete vehicle. Please try again.');
+      }
+    });
   }
 }

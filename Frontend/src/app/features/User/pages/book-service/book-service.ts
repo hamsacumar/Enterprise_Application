@@ -1,22 +1,29 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+<<<<<<< Updated upstream
 import { MockData } from '../../../../../../../autoserve/fe/src/app/services/mock-data';
 import { NotificationService } from '../../../../../../../autoserve/fe/src/app/services/notification.service';
+=======
+import { MockData } from '../../mock/mock-data';
+import { NotificationService } from '../../mock/notification.service';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-book-service',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -127,7 +134,7 @@ export class BookService {
         });
         console.log('Notification added. Count:', this.notifications.unreadCount());
         alert('Appointment request submitted. You will receive a notification.');
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/user/dashboard']);
       },
       error: (err) => {
         console.error('Create appointment failed', err);
@@ -146,7 +153,7 @@ export class BookService {
           vehicleType
         });
         alert('Appointment request submitted (offline mode). Check notifications.');
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/user/dashboard']);
       }
     });
   }
