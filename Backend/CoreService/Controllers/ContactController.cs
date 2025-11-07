@@ -27,7 +27,7 @@ public class ContactController : ControllerBase
     /// </summary>
     [HttpPost("submit")]
     [AllowAnonymous]
-    public IActionResult SubmitContact([FromBody] ContactSubmissionRequest request)
+    public async Task<IActionResult> SubmitContact([FromBody] ContactSubmissionRequest request)
     {
         try
         {
@@ -41,7 +41,7 @@ public class ContactController : ControllerBase
                 });
             }
 
-            var submission = _contactService.SubmitContact(request);
+            var submission = await _contactService.SubmitContactAsync(request);
             
             _logger.LogInformation($"New contact submission from {request.Email} about '{request.Subject}'");
 
@@ -78,15 +78,15 @@ public class ContactController : ControllerBase
     /// </summary>
     [HttpGet("submissions")]
     [Authorize]
-    public IActionResult GetSubmissions([FromQuery] string? status, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetSubmissions([FromQuery] string? status, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         try
         {
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
 
-            var submissions = _contactService.GetAllSubmissions(status, page, pageSize);
-            var total = _contactService.GetTotalCount(status);
+            var submissions = await _contactService.GetAllSubmissionsAsync(status, page, pageSize);
+            var total = await _contactService.GetTotalCountAsync(status);
 
             _logger.LogInformation($"Retrieved {submissions.Count} contact submissions");
 
@@ -95,7 +95,7 @@ public class ContactController : ControllerBase
                 Success = true,
                 Message = "Contact submissions retrieved successfully",
                 Data = submissions,
-                Total = total,
+                Total = (int)total,
                 Page = page,
                 PageSize = pageSize
             });
@@ -117,7 +117,7 @@ public class ContactController : ControllerBase
     /// </summary>
     [HttpGet("submissions/{id}")]
     [Authorize]
-    public IActionResult GetSubmissionById(string id)
+    public async Task<IActionResult> GetSubmissionById(string id)
     {
         try
         {
@@ -130,7 +130,7 @@ public class ContactController : ControllerBase
                 });
             }
 
-            var submission = _contactService.GetSubmissionById(id);
+            var submission = await _contactService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound(new ContactResponse
@@ -164,7 +164,7 @@ public class ContactController : ControllerBase
     /// </summary>
     [HttpGet("submissions/email/{email}")]
     [Authorize]
-    public IActionResult GetSubmissionsByEmail(string email)
+    public async Task<IActionResult> GetSubmissionsByEmail(string email)
     {
         try
         {
@@ -177,7 +177,7 @@ public class ContactController : ControllerBase
                 });
             }
 
-            var submissions = _contactService.GetSubmissionsByEmail(email);
+            var submissions = await _contactService.GetSubmissionsByEmailAsync(email);
 
             return Ok(new ContactResponse
             {
@@ -203,7 +203,7 @@ public class ContactController : ControllerBase
     /// </summary>
     [HttpPut("submissions/{id}/status")]
     [Authorize]
-    public IActionResult UpdateSubmissionStatus(string id, [FromBody] UpdateStatusRequest request)
+    public async Task<IActionResult> UpdateSubmissionStatus(string id, [FromBody] UpdateStatusRequest request)
     {
         try
         {
@@ -225,7 +225,7 @@ public class ContactController : ControllerBase
                 });
             }
 
-            var success = _contactService.UpdateSubmissionStatus(id, request.Status, request.AdminNotes);
+            var success = await _contactService.UpdateSubmissionStatusAsync(id, request.Status, request.AdminNotes);
             
             if (!success)
             {
@@ -242,7 +242,7 @@ public class ContactController : ControllerBase
             {
                 Success = true,
                 Message = "Submission status updated successfully",
-                Data = _contactService.GetSubmissionById(id)
+                Data = await _contactService.GetSubmissionByIdAsync(id)
             });
         }
         catch (ArgumentException ex)
@@ -270,7 +270,7 @@ public class ContactController : ControllerBase
     /// </summary>
     [HttpDelete("submissions/{id}")]
     [Authorize]
-    public IActionResult DeleteSubmission(string id)
+    public async Task<IActionResult> DeleteSubmission(string id)
     {
         try
         {
@@ -283,7 +283,7 @@ public class ContactController : ControllerBase
                 });
             }
 
-            var success = _contactService.DeleteSubmission(id);
+            var success = await _contactService.DeleteSubmissionAsync(id);
             
             if (!success)
             {
@@ -319,12 +319,12 @@ public class ContactController : ControllerBase
     /// </summary>
     [HttpGet("statistics")]
     [Authorize]
-    public IActionResult GetStatistics()
+    public async Task<IActionResult> GetStatistics()
     {
         try
         {
-            var countByStatus = _contactService.GetCountByStatus();
-            var total = _contactService.GetTotalCount();
+            var countByStatus = await _contactService.GetCountByStatusAsync();
+            var total = await _contactService.GetTotalCountAsync();
 
             return Ok(new ContactResponse
             {
@@ -351,4 +351,3 @@ public class ContactController : ControllerBase
         }
     }
 }
-

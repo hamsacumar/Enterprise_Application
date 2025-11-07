@@ -1,6 +1,8 @@
 using Backend.Services;
+using Backend.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,13 +11,30 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+// ===== MongoDB Configuration =====
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
+
+// Support MONGO_URI environment variable (for Docker)
+var envMongo = Environment.GetEnvironmentVariable("MONGO_URI");
+var mongoSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
+var connectionString = envMongo ?? mongoSettings?.ConnectionString ?? throw new Exception("MongoDB connection string missing");
+var databaseName = mongoSettings?.DatabaseName ?? "Enterprise";
+
+// Register Mongo client (used globally)
+builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(connectionString));
+builder.Services.Configure<MongoDbSettings>(opt =>
+{
+    opt.ConnectionString = connectionString;
+    opt.DatabaseName = databaseName;
+});
+
 // Add JWT Service
 builder.Services.AddSingleton<JwtService>();
 
 // Add Navigation, Footer, and Contact Services
 builder.Services.AddSingleton<NavigationService>();
 builder.Services.AddSingleton<FooterService>();
-builder.Services.AddSingleton<ContactService>();
+builder.Services.AddScoped<ContactService>();
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

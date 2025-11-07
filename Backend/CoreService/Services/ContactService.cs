@@ -1,18 +1,55 @@
 using Backend.Models;
+using Backend.Settings;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 namespace Backend.Services;
 
 /// <summary>
-/// Service for handling contact form submissions
+/// Service for handling contact form submissions with MongoDB persistence
 /// </summary>
 public class ContactService
 {
-    private readonly List<ContactSubmission> _submissions = new();
+    private readonly IMongoCollection<ContactSubmission> _contactsCollection;
+    private readonly IMongoClient _mongoClient;
+
+    public ContactService(IMongoClient mongoClient, IOptions<MongoDbSettings> mongoDbSettings)
+    {
+        _mongoClient = mongoClient;
+        var mongoDbSettings_Value = mongoDbSettings.Value;
+        var mongoDatabase = mongoClient.GetDatabase(mongoDbSettings_Value.DatabaseName);
+        
+        _contactsCollection = mongoDatabase.GetCollection<ContactSubmission>("Contacts");
+        
+        // Create index on email for faster queries
+        var emailIndexModel = new CreateIndexModel<ContactSubmission>(
+            Builders<ContactSubmission>.IndexKeys.Ascending(c => c.Email));
+        try
+        {
+            _contactsCollection.Indexes.CreateOne(emailIndexModel);
+        }
+        catch
+        {
+            // Index might already exist
+        }
+
+        // Create index on status for filtering
+        var statusIndexModel = new CreateIndexModel<ContactSubmission>(
+            Builders<ContactSubmission>.IndexKeys.Ascending(c => c.Status));
+        try
+        {
+            _contactsCollection.Indexes.CreateOne(statusIndexModel);
+        }
+        catch
+        {
+            // Index might already exist
+        }
+    }
 
     /// <summary>
     /// Submit a new contact form
     /// </summary>
-    public ContactSubmission SubmitContact(ContactSubmissionRequest request)
+    public async Task<ContactSubmission> SubmitContactAsync(ContactSubmissionRequest request)
     {
         // Validate input
         if (string.IsNullOrWhiteSpace(request.Name))
@@ -28,7 +65,7 @@ public class ContactService
 
         var submission = new ContactSubmission
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString(),
             Name = request.Name.Trim(),
             Email = request.Email.Trim().ToLower(),
             Phone = request.Phone.Trim(),
@@ -39,124 +76,124 @@ public class ContactService
             Status = "pending"
         };
 
-        _submissions.Add(submission);
+        await _contactsCollection.InsertOneAsync(submission);
         
-        // TODO: Send email notification to admin
-        // TODO: Save to MongoDB
-
         return submission;
     }
 
     /// <summary>
-    /// Get all submissions (with optional filtering)
+    /// Get all submissions (with optional filtering and pagination)
     /// </summary>
-    public List<ContactSubmission> GetAllSubmissions(string? status = null, int page = 1, int pageSize = 10)
+    public async Task<List<ContactSubmission>> GetAllSubmissionsAsync(string? status = null, int page = 1, int pageSize = 10)
     {
-        var query = _submissions.AsEnumerable();
+        var filter = Builders<ContactSubmission>.Filter.Empty;
 
         if (!string.IsNullOrWhiteSpace(status))
         {
-            query = query.Where(s => s.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
+            filter = Builders<ContactSubmission>.Filter.Eq(s => s.Status, status.ToLower());
         }
 
-        return query
-            .OrderByDescending(s => s.SubmittedAt)
+        var submissions = await _contactsCollection
+            .Find(filter)
+            .SortByDescending(s => s.SubmittedAt)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+            .Limit(pageSize)
+            .ToListAsync();
+
+        return submissions;
     }
 
     /// <summary>
     /// Get submission by ID
     /// </summary>
-    public ContactSubmission? GetSubmissionById(string id)
+    public async Task<ContactSubmission?> GetSubmissionByIdAsync(string id)
     {
-        return _submissions.FirstOrDefault(s => s.Id == id);
+        var filter = Builders<ContactSubmission>.Filter.Eq(s => s.Id, id);
+        return await _contactsCollection.Find(filter).FirstOrDefaultAsync();
     }
 
     /// <summary>
     /// Get submissions by email
     /// </summary>
-    public List<ContactSubmission> GetSubmissionsByEmail(string email)
+    public async Task<List<ContactSubmission>> GetSubmissionsByEmailAsync(string email)
     {
-        return _submissions
-            .Where(s => s.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(s => s.SubmittedAt)
-            .ToList();
+        var filter = Builders<ContactSubmission>.Filter.Eq(s => s.Email, email.ToLower());
+        return await _contactsCollection
+            .Find(filter)
+            .SortByDescending(s => s.SubmittedAt)
+            .ToListAsync();
     }
 
     /// <summary>
     /// Get submissions by status
     /// </summary>
-    public List<ContactSubmission> GetSubmissionsByStatus(string status)
+    public async Task<List<ContactSubmission>> GetSubmissionsByStatusAsync(string status)
     {
-        return _submissions
-            .Where(s => s.Status.Equals(status, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(s => s.SubmittedAt)
-            .ToList();
+        var filter = Builders<ContactSubmission>.Filter.Eq(s => s.Status, status.ToLower());
+        return await _contactsCollection
+            .Find(filter)
+            .SortByDescending(s => s.SubmittedAt)
+            .ToListAsync();
     }
 
     /// <summary>
     /// Update submission status and notes
     /// </summary>
-    public bool UpdateSubmissionStatus(string id, string status, string? adminNotes = null)
+    public async Task<bool> UpdateSubmissionStatusAsync(string id, string status, string? adminNotes = null)
     {
-        var submission = _submissions.FirstOrDefault(s => s.Id == id);
-        if (submission == null)
-            return false;
-
         // Validate status
         var validStatuses = new[] { "pending", "read", "resolved" };
         if (!validStatuses.Contains(status.ToLower()))
             throw new ArgumentException("Invalid status");
 
-        submission.Status = status.ToLower();
-        submission.AdminNotes = adminNotes;
-        submission.UpdatedAt = DateTime.UtcNow;
+        var filter = Builders<ContactSubmission>.Filter.Eq(s => s.Id, id);
+        var update = Builders<ContactSubmission>.Update
+            .Set(s => s.Status, status.ToLower())
+            .Set(s => s.AdminNotes, adminNotes)
+            .Set(s => s.UpdatedAt, DateTime.UtcNow);
 
-        // TODO: Update in MongoDB
-
-        return true;
+        var result = await _contactsCollection.UpdateOneAsync(filter, update);
+        return result.ModifiedCount > 0;
     }
 
     /// <summary>
     /// Delete submission
     /// </summary>
-    public bool DeleteSubmission(string id)
+    public async Task<bool> DeleteSubmissionAsync(string id)
     {
-        var submission = _submissions.FirstOrDefault(s => s.Id == id);
-        if (submission == null)
-            return false;
-
-        _submissions.Remove(submission);
-        
-        // TODO: Delete from MongoDB
-
-        return true;
+        var filter = Builders<ContactSubmission>.Filter.Eq(s => s.Id, id);
+        var result = await _contactsCollection.DeleteOneAsync(filter);
+        return result.DeletedCount > 0;
     }
 
     /// <summary>
     /// Get total count of submissions
     /// </summary>
-    public int GetTotalCount(string? status = null)
+    public async Task<long> GetTotalCountAsync(string? status = null)
     {
-        if (string.IsNullOrWhiteSpace(status))
-            return _submissions.Count;
+        var filter = Builders<ContactSubmission>.Filter.Empty;
+        
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            filter = Builders<ContactSubmission>.Filter.Eq(s => s.Status, status.ToLower());
+        }
 
-        return _submissions.Count(s => s.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
+        return await _contactsCollection.CountDocumentsAsync(filter);
     }
 
     /// <summary>
     /// Get submissions count by status
     /// </summary>
-    public Dictionary<string, int> GetCountByStatus()
+    public async Task<Dictionary<string, long>> GetCountByStatusAsync()
     {
-        return new Dictionary<string, int>
+        var counts = new Dictionary<string, long>();
+        
+        foreach (var status in new[] { "pending", "read", "resolved" })
         {
-            { "pending", _submissions.Count(s => s.Status == "pending") },
-            { "read", _submissions.Count(s => s.Status == "read") },
-            { "resolved", _submissions.Count(s => s.Status == "resolved") }
-        };
+            var filter = Builders<ContactSubmission>.Filter.Eq(s => s.Status, status);
+            counts[status] = await _contactsCollection.CountDocumentsAsync(filter);
+        }
+
+        return counts;
     }
 }
-
