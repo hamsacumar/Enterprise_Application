@@ -5,28 +5,29 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import connectDB from "./config/db.js";
-
-// Import routes
 import chatRoutes from "./routes/chatRoutes.js";
-import { setupSocket } from "./socket.js";
 
-dotenv.config(); // Load .env variables
+dotenv.config();
 
 const app = express();
-
-// Middleware
-app.use(cors());
+app.use(cors({ origin: "http://localhost:4200" }));
 app.use(express.json());
 
-// Connect to MongoDB
+// Connect MongoDB
 connectDB();
 
-// Routes
+// API routes
 app.use("/api/chat", chatRoutes);
 
+// Create HTTP + WebSocket server
 const server = http.createServer(app);
+
+// Initialize Socket.io
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: "http://localhost:4200",
+    methods: ["GET", "POST"],
+  },
 });
 
 io.on("connection", (socket) => {
@@ -34,10 +35,12 @@ io.on("connection", (socket) => {
 
   socket.on("joinChat", (chatId) => {
     socket.join(chatId);
+    console.log(`👥 User ${socket.id} joined chat ${chatId}`);
   });
 
   socket.on("sendMessage", (data) => {
-    io.to(data.chatId).emit("newMessage", data);
+    console.log("💬 Received message:", data);
+    io.to(data.chatId).emit("receiveMessage", data);
   });
 
   socket.on("disconnect", () => {
@@ -45,11 +48,12 @@ io.on("connection", (socket) => {
   });
 });
 
-// Root route (optional)
 app.get("/", (req, res) => {
-  res.send("🚀 Server is running!");
+  res.send("🚀 Server is running with Socket.io!");
 });
 
-// Start server
+// ✅ Listen on the *same* server as Socket.io
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+export default app;
