@@ -6,13 +6,18 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using System.Security.Cryptography;
+using System;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+// var generatedKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+// Console.WriteLine($"Generated JWT Secret Key: {generatedKey}");
+
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<EmailService>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 var environment = builder.Environment.EnvironmentName;
 Console.WriteLine($"[ENVIRONMENT] {environment} ");
@@ -31,7 +36,7 @@ else
 //configure jwt
 
 builder.Services.AddSingleton(jwtSettings);
-builder.Services.AddSingleton<JwtHelper>();
+builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
 
 // ====== CORS Policy ======
 builder.Services.AddCors(options =>
@@ -115,6 +120,7 @@ builder.Services.AddSwaggerGen( c =>
 
 var app = builder.Build();
 
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -129,11 +135,14 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
     var Configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-    var seeded = await SeedData.SeedIfNeededAsync(userService);
+    var seeded = await SeedData.SeedIfNeededAsync((UserService)userService);
 
 }
 
+app.Urls.Add("http://+:5000");
+
 app.Run();
+public partial class Program { }

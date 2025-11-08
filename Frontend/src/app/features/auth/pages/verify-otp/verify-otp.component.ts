@@ -30,7 +30,7 @@ export class VerifyOtpComponent {
 
   startCountdown() {
     this.canResend = false;
-    this.countdown = 30;
+    this.countdown = 60;
 
     clearInterval(this.intervalId);
     this.intervalId = setInterval(() => {
@@ -55,6 +55,10 @@ export class VerifyOtpComponent {
       error: (err) => {
         this.errorMessage = err.error || 'Invalid or expired OTP. Please try again.';
         this.successMessage = '';
+
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 1000);
       }
     });
   }
@@ -66,10 +70,18 @@ export class VerifyOtpComponent {
         this.successMessage = res.message;
         this.errorMessage = '';
         this.startCountdown();
+
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 1000);
       },
       error: (err) => {
         this.errorMessage = err.error || 'Failed to resend OTP.';
         this.successMessage = '';
+
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 1000);
       }
     });
   }

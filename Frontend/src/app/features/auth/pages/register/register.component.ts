@@ -44,11 +44,22 @@ export class RegisterComponent {
           this.successMessage = res.message || 'OTP sent to email.';
           this.errorMessage = '';
           this.showOtpModal = true;
+
+
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 2000);
         },
         error: (err) => {
           this.errorMessage = err.error || 'Registration failed. Please try again.';
           this.successMessage = '';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 2000);
         }
+
+
       });
 
   }

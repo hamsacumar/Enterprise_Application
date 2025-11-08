@@ -52,10 +52,15 @@ services:
     container_name: dotnet_workerservice
     ports:
       - "7193:7193"
+      - "5125:5125"
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
+      - MongoDbSettings__DatabaseName=Enterprise
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=EADNEW2;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
     depends_on:
+      - mongo
       - sqlserver
     restart: always
 

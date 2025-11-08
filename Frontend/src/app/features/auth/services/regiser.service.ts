@@ -18,7 +18,7 @@ interface RegisterResponse {
   providedIn: 'root'
 })
 export class RegisterService {
-  private apiUrl = 'http://localhost:5143/api/Auth/register'; // Update with your backend URL
+  private apiUrl = 'http://localhost:5000/api/Auth/register'; 
 
   constructor(private http: HttpClient) {}
 

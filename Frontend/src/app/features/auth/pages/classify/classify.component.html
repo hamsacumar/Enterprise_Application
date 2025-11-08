@@ -1,39 +1,94 @@
-<div class="classify-container">
+<div class="wrapper">
+  <!-- Left Side - Form Section -->
+  <div class="left-side">
     <h2>Classify Your Details</h2>
+    <p class="subtitle">Complete your profile information</p>
+    
     <form (ngSubmit)="onClassify()" #classifyForm="ngForm">
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" [(ngModel)]="username" required placeholder="Enter your username" />
+        <label>Username</label>
+        <input 
+          type="text" 
+          [(ngModel)]="username" 
+          name="username" 
+          required 
+          placeholder="Enter your username" 
+        />
       </div>
-  
+
       <div class="form-group">
-        <label for="address">Address</label>
-        <input type="text" id="address" name="address" [(ngModel)]="address" placeholder="Enter your address" />
+        <label>Address</label>
+        <input 
+          type="text" 
+          name="address" 
+          [(ngModel)]="address" 
+          placeholder="Enter your address" 
+        />
       </div>
-  
+
       <div class="form-group">
-        <label for="carModel">Car Model</label>
-        <input type="text" id="carModel" name="carModel" [(ngModel)]="carModel" placeholder="Enter car model" />
+        <label>Model</label>
+        <input 
+          type="text" 
+          name="carModel" 
+          [(ngModel)]="carModel" 
+          placeholder="Enter car model" 
+        />
       </div>
-  
+
       <div class="form-group">
-        <label for="carLicensePlate">Car License Plate</label>
-        <input type="text" id="carLicensePlate" name="carLicensePlate" [(ngModel)]="carLicensePlate" placeholder="Enter license plate" />
+        <label>License Plate</label>
+        <input 
+          type="text" 
+          name="carLicensePlate" 
+          [(ngModel)]="carLicensePlate" 
+          placeholder="Enter license plate" 
+        />
       </div>
-  
+
       <div class="form-group">
-        <label for="phoneNumber">Phone Number</label>
-        <input type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="phoneNumber" placeholder="Enter phone number" />
+        <label>Phone Number</label>
+        <input 
+          type="text" 
+          name="phoneNumber" 
+          [(ngModel)]="phoneNumber" 
+          placeholder="Enter phone number" 
+        />
       </div>
-  
-      <button type="submit" [disabled]="!classifyForm.form.valid">Submit Details</button>
+
+      <button 
+        class="submit-btn" 
+        type="submit" 
+        [disabled]="!classifyForm.form.valid"
+      >
+        Submit Details
+      </button>
+
+      <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
     </form>
-  
-    <div class="links">
-      <a routerLink="/login">Back to Login</a>
-    </div>
-  
-    <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
-    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
   </div>
-  
+
+  <!-- Right Side - Brand Section -->
+  <div class="right-side">
+    <div class="brand-content">
+      <img src="assets/images/repair man1.jpg" alt="AutoServeX Repair" class="top-icon" />
+      
+      <h1 class="brand-title">AutoServeX</h1>
+      <p class="tagline">"Fast. Fair. Fixed right."</p>
+
+      <p class="description">
+        AutoServeX is your trusted partner for all auto repair and maintenance needs.
+        We focus on quality, reliability, and honesty in every job we do. Whether it's
+        an oil change or a full engine check, we make sure your car gets the care it
+        deserves.
+      </p>
+
+      <img src="assets/images/repair man 3.webp" class="badge" alt="Service Center Badge" />
+
+      <div class="links">
+        <a routerLink="/login">Back to Login</a>
+      </div>
+    </div>
+  </div>
+</div>

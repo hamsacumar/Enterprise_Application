@@ -1,0 +1,16 @@
+<button class="chat-fab" mat-fab color="primary" (click)="toggle()">
+  <mat-icon>{{ isOpen() ? 'close' : 'chat' }}</mat-icon>
+</button>
+
+<div class="chat-panel" [class.open]="isOpen()">
+  <div class="chat-header">AutoBot</div>
+  <div class="chat-body">
+    <div class="msg" *ngFor="let m of messages()">{{ m }}</div>
+  </div>
+  <div class="chat-input">
+    <input type="text" placeholder="Type a message" [(ngModel)]="inputText" (keyup.enter)="send()" class="chat-input-field" />
+    <button mat-icon-button color="primary" (click)="send()">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>

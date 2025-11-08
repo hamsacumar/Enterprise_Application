@@ -13,11 +13,11 @@ namespace AuthService.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserService _userService;
-        private readonly JwtHelper _jwt;
-        private readonly EmailService _emailService;
+        private readonly IUserService _userService;
+        private readonly IJwtHelper _jwt;
+        private readonly IEmailService _emailService;
 
-        public AuthController(UserService userService, JwtHelper jwt, EmailService emailService)
+        public AuthController(IUserService userService, IJwtHelper jwt, IEmailService emailService)
         {
             _userService = userService;
             _jwt = jwt;
@@ -30,8 +30,15 @@ namespace AuthService.Controllers
             if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
                 return BadRequest("Username and password are required.");
 
-            var existing = await _userService.GetByUsernameAsync(dto.Username);
-            if (existing != null) return Conflict("Username already exists.");
+        // Check if username already exists
+            var existingUsername = await _userService.GetByUsernameAsync(dto.Username);
+            if (existingUsername != null)
+            return Conflict("Username already exists. Please try a different one.");
+
+            var existingEmail = await _userService.GetByEmailAsync(dto.Email);
+            if (existingEmail != null)
+            return Conflict("Email already registered. Please try a different email or login instead.");
+
 
             var hashed = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 

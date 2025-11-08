@@ -19,6 +19,10 @@ namespace Backend.Models
         [BsonElement("price")]
         public decimal Price { get; set; }
 
+        [BsonElement("vehicleCategory")]
+        public string VehicleCategory { get; set; } = string.Empty; 
+
+
         [BsonElement("createdAt")]
         [JsonIgnore] // <- hides CreatedAt from POST body
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

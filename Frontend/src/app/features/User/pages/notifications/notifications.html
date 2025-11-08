@@ -1,0 +1,25 @@
+<div class="notifications-page">
+	<h2 class="page-title">Notifications</h2>
+	<div *ngIf="notifications() as list">
+		<mat-card class="notif-card" *ngFor="let n of list">
+			<div class="notif-content">
+				<div class="notif-text">{{ n.text }}</div>
+			</div>
+			<div class="notif-actions" *ngIf="n.data?.appointmentId">
+				<div class="actions" *ngIf="!getStatus(n)">
+					<button mat-raised-button color="primary" (click)="onAccept(n)">Accept</button>
+					<button mat-raised-button color="warn" (click)="onReject(n)">Reject</button>
+				</div>
+				<div class="status" *ngIf="getStatus(n)" [class.accepted]="getStatus(n) === 'Accepted'" [class.rejected]="getStatus(n) === 'Rejected'">
+					{{ getStatus(n) === 'Accepted' ? '✓ Accepted' : '✗ Rejected' }}
+				</div>
+			</div>
+		</mat-card>
+		<mat-card class="empty" *ngIf="!list.length">
+			<mat-icon>notifications_none</mat-icon>
+			<p>No notifications</p>
+		</mat-card>
+	</div>
+</div>
+
+

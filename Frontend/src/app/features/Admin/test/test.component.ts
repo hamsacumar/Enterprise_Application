@@ -1,7 +1,7 @@
 // src/app/features/chat/test/test.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TestService } from '../../../core/service/Admin/test.service';
+import { TestService } from '../../../core/service/test/test.service';
 
 export interface TestItem {
   id: string;

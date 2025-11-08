@@ -2,13 +2,24 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
-// Interface for ServiceItem
+// Interfaces
 export interface ServiceItem {
-  id?: string;       // optional because backend generates it
+  id?: string;
   name: string;
   description?: string;
   price: number;
+  vehicleCategory: string;
   createdAt?: string;
+}
+
+export interface Worker {
+  id?: string;
+  name: string;
+  email: string;
+  contact: string;
+  role?: string;
+  specialization?: string;
+  passwordHash?: string;
 }
 
 @Injectable({
@@ -16,45 +27,67 @@ export interface ServiceItem {
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5125/api/services'; // backend URL
+  private baseUrl = 'http://localhost:5125/api/admin'; // common base
 
-  // Normalize backend DTO (which may use PascalCase like Id/CreatedAt)
+  // ---- Services ----
   private toServiceItem = (dto: any): ServiceItem => ({
     id: dto.id ?? dto.Id,
     name: dto.name ?? dto.Name,
     description: dto.description ?? dto.Description,
     price: dto.price ?? dto.Price,
+    vehicleCategory: dto.vehicleCategory ?? dto.VehicleCategory ?? 'General',
     createdAt: dto.createdAt ?? dto.CreatedAt,
   });
 
-  /** Fetch all services */
   getAllServices(): Observable<ServiceItem[]> {
-    return this.http
-      .get<any[]>(this.apiUrl)
+    return this.http.get<any[]>(`${this.baseUrl}/services`)
       .pipe(map(items => items.map(this.toServiceItem)));
   }
 
-  /** Fetch a single service by Id */
   getServiceById(id: string): Observable<ServiceItem> {
-    return this.http
-      .get<any>(`${this.apiUrl}/${id}`)
+    return this.http.get<any>(`${this.baseUrl}/services/${id}`)
       .pipe(map(this.toServiceItem));
   }
 
-  /** Add a new service */
   addService(service: Omit<ServiceItem, 'id' | 'createdAt'>): Observable<ServiceItem> {
-    return this.http
-      .post<any>(this.apiUrl, service)
+    return this.http.post<any>(`${this.baseUrl}/services`, service)
       .pipe(map(this.toServiceItem));
   }
 
-  /** Update an existing service */
   updateService(id: string, service: Omit<ServiceItem, 'id' | 'createdAt'>): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, service);
+    return this.http.put<void>(`${this.baseUrl}/services/${id}`, service);
   }
 
-  /** Delete a service */
   deleteService(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/services/${id}`);
+  }
+
+  // ---- Workers ----
+  private toWorker = (dto: any): Worker => ({
+    id: dto.id ?? dto.Id,
+    name: dto.name ?? dto.Name,
+    email: dto.email ?? dto.Email,
+    contact: dto.contact ?? dto.Contact,
+    role: dto.role ?? dto.Role,
+    specialization: dto.specialization ?? dto.Specialization,
+    passwordHash: dto.passwordHash ?? dto.PasswordHash
+  });
+
+  getWorkers(): Observable<Worker[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/workers`)
+      .pipe(map(items => items.map(this.toWorker)));
+  }
+
+  addWorker(worker: Omit<Worker, 'id'>): Observable<Worker> {
+    return this.http.post<any>(`${this.baseUrl}/workers`, worker)
+      .pipe(map(this.toWorker));
+  }
+
+  updateWorker(id: string, worker: Omit<Worker, 'id'>): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/workers/${id}`, worker);
+  }
+
+  deleteWorker(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/workers/${id}`);
   }
 }
