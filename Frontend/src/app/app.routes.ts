@@ -11,6 +11,7 @@ import { ForgotPasswordComponent } from './features/auth/pages/forgot-password/f
 import { ResetPasswordComponent } from './features/auth/pages/reset-password/reset-password.component';
 import { ChatbotComponent } from './features/chatbot/chatbot.component';
 import { WorkerListComponent } from './features/Admin/pages/worker-list/worker-list.component';
+import { ChatboxComponent } from './features/chatbox/components/chatbox/chatbox.component';
 
 export const routes: Routes = [
   {
@@ -39,6 +40,7 @@ export const routes: Routes = [
       { path: 'classify', component: ClassifyComponent },
       { path: 'forgot-password', component: ForgotPasswordComponent },
       { path: 'reset-password', component: ResetPasswordComponent },
+      { path: 'chat', component: ChatboxComponent },
       { path: '**', redirectTo: '/login' } // Wildcard route
 
 
