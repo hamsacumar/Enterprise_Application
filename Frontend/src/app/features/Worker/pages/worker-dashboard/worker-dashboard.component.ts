@@ -28,7 +28,7 @@ interface Appointment {
   id: number;
   customerName: string;
   phoneNumber: string;
-  status: string;
+  Status: string;
 
   vehicleType: string;
   vehicleName?: string;
@@ -153,7 +153,7 @@ export class WorkerDashboardComponent implements OnInit {
     }
 
     // Update status before sending to API
-    appointment.status = 'Pending';
+    appointment.Status = 'Pending';
 
     // Calculate total payment if needed
 
@@ -162,7 +162,7 @@ export class WorkerDashboardComponent implements OnInit {
       id: appointment.id,
       customerName: appointment.customerName,
       phoneNumber: appointment.phoneNumber,
-      status: appointment.status,
+      status: appointment.Status,
 
       vehicleName: appointment.vehicleName,
       vehicleModel: appointment.vehicleModel,
@@ -232,38 +232,47 @@ export class WorkerDashboardComponent implements OnInit {
   }
 
   confirmAppointment(appointment: Appointment): void {
-    // Prepare an updated copy with both key styles
-    const updated = {
-      ...appointment,
-      status: 'OnWork',
-      Status: 'OnWork', // for backend safety
+    if (!appointment.returnDate || !appointment.returnTime) {
+      alert('Please fill return date and time');
+      return;
+    }
+
+    const payload = {
+      Id: appointment.id, // PascalCase
+      CustomerName: appointment.customerName || '', // required string
+      PhoneNumber: appointment.phoneNumber || '', // required string
+      Status: 'OnWork',
+      TotalPriceLkr: appointment.totalPriceLkr || 0,
+      ExtraPayment: appointment.extraPayment || 0,
+      ReturnDate: appointment.returnDate || null,
+      ReturnTime: appointment.returnTime || null,
+      SelectedServicesJson: appointment.selectedServicesJson || '[]',
+      Note: appointment.note || '',
+      IsPaid: appointment.isPaid ?? false, // boolean
     };
 
-    // Send PUT request
-    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
-      next: (res) => {
-        console.log('✅ PUT success:', res);
-
-        // Move in UI
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, payload).subscribe({
+      next: () => {
         this.pendingAppointments = this.pendingAppointments.filter(
           (a) => a.id !== appointment.id
         );
-        this.onWorkAppointments.push({ ...appointment, status: 'OnWork' });
-
-        // 🔄 Reload from backend to reflect DB updates
-        setTimeout(() => this.loadAppointments(), 500);
-
+        this.onWorkAppointments.push({ ...appointment, Status: 'OnWork' });
         alert('Appointment confirmed and moved to OnWork!');
       },
       error: (err) => {
-        console.error('❌ Failed to confirm appointment', err);
-        alert('Failed to update appointment. Check console for details.');
+        console.error('Failed to confirm appointment', err);
+        if (err.error?.errors) {
+          console.error('Validation errors:', err.error.errors);
+        }
+        alert(
+          'Failed to confirm appointment. Check console for validation errors.'
+        );
       },
     });
   }
 
   cancelAppointment(appointment: Appointment): void {
-    const updated = { ...appointment, status: 'Cancelled' };
+    const updated = { ...appointment, Status: 'Cancelled' };
     this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
       next: () => {
         this.pendingAppointments = this.pendingAppointments.filter(
@@ -286,7 +295,7 @@ export class WorkerDashboardComponent implements OnInit {
       (appointment.totalPriceLkr || 0) + (appointment.extraPayment || 0);
 
     // Update status
-    appointment.status = 'Completed';
+    appointment.Status = 'Completed';
 
     // Update database
     this.http
