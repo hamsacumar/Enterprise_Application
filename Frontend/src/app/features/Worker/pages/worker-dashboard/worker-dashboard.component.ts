@@ -158,23 +158,43 @@ export class WorkerDashboardComponent implements OnInit {
     // Calculate total payment if needed
 
     // Call API to update the appointment
-    this.http
-      .put(`${this.apiBaseUrl}/${appointment.id}`, appointment)
-      .subscribe({
-        next: (res) => {
-          // Remove from newAppointments
-          const index = this.newAppointments.indexOf(appointment);
-          if (index > -1) this.newAppointments.splice(index, 1);
+    const payload = {
+      id: appointment.id,
+      customerName: appointment.customerName,
+      phoneNumber: appointment.phoneNumber,
+      status: appointment.status,
 
-          // Add to pendingAppointments
-          this.pendingAppointments.push(appointment);
-          alert('Appointment updated and moved to Pending!');
-        },
-        error: (err) => {
-          console.error('Failed to update appointment', err);
-          alert('Failed to update appointment. Please try again.');
-        },
-      });
+      vehicleName: appointment.vehicleName,
+      vehicleModel: appointment.vehicleModel,
+      vehicleYear: appointment.vehicleYear,
+      vehicleType: appointment.vehicleType,
+      vehicleRegNumber: appointment.vehicleRegNumber,
+      selectedServicesJson: appointment.selectedServicesJson,
+      totalPriceLkr: appointment.totalPriceLkr,
+      appointmentDate: appointment.appointmentDate,
+      timeSlot: appointment.timeSlot,
+      returnDate: appointment.returnDate,
+      returnTime: appointment.returnTime,
+      note: appointment.note,
+      extraPayment: appointment.extraPayment,
+      isPaid: appointment.isPaid,
+      totalPayment:
+        (appointment.totalPriceLkr || 0) + (appointment.extraPayment || 0),
+    };
+
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, payload).subscribe({
+      next: (res) => {
+        // success code same as before
+        const index = this.newAppointments.indexOf(appointment);
+        if (index > -1) this.newAppointments.splice(index, 1);
+        this.pendingAppointments.push(appointment);
+        alert('Appointment updated and moved to Pending!');
+      },
+      error: (err) => {
+        console.error('Failed to update appointment', err);
+        alert('Failed to update appointment. Please try again.');
+      },
+    });
   }
 
   moveToPending(appointment: Appointment): void {
@@ -212,15 +232,33 @@ export class WorkerDashboardComponent implements OnInit {
   }
 
   confirmAppointment(appointment: Appointment): void {
-    const updated = { ...appointment, status: 'OnWork' };
+    // Prepare an updated copy with both key styles
+    const updated = {
+      ...appointment,
+      status: 'OnWork',
+      Status: 'OnWork', // for backend safety
+    };
+
+    // Send PUT request
     this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
-      next: () => {
+      next: (res) => {
+        console.log('✅ PUT success:', res);
+
+        // Move in UI
         this.pendingAppointments = this.pendingAppointments.filter(
           (a) => a.id !== appointment.id
         );
-        this.onWorkAppointments.push(updated);
+        this.onWorkAppointments.push({ ...appointment, status: 'OnWork' });
+
+        // 🔄 Reload from backend to reflect DB updates
+        setTimeout(() => this.loadAppointments(), 500);
+
+        alert('Appointment confirmed and moved to OnWork!');
       },
-      error: (err) => console.error('Failed to confirm appointment', err),
+      error: (err) => {
+        console.error('❌ Failed to confirm appointment', err);
+        alert('Failed to update appointment. Check console for details.');
+      },
     });
   }
 
