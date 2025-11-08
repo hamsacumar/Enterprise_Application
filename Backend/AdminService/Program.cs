@@ -27,7 +27,7 @@ builder.Services.Configure<MongoDbSettings>(opt =>
 // ----------------------
 // Dependency Injection
 // ----------------------
-builder.Services.AddScoped<IServiceService, ServiceService>(); // ✅ NEW: for managing Services (CRUD)
+builder.Services.AddScoped<IServiceService, ServiceService>(); // ✅ for managing Services (CRUD)
 builder.Services.AddSingleton<IWorkerService, WorkerService>();
 
 // ----------------------
@@ -80,3 +80,6 @@ app.MapControllers();
 app.MapGet("/", () => Results.Ok(new { message = "🚀 Admin API running successfully!" }));
 
 app.Run();
+
+// 👇 ADD THIS LINE for integration tests
+public partial class Program { }
