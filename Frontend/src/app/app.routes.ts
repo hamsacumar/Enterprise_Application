@@ -44,6 +44,7 @@ import { NotificationsPage } from './features/User/pages/notifications/notificat
 // ==========================
 // 🚦 ROUTE CONFIGURATION
 // ==========================
+import { WorkerDashboardComponent } from './features/Worker/pages/worker-dashboard/worker-dashboard.component';
 export const routes: Routes = [
   // -------------------------------------
   // 🔹 DEFAULT ROUTE
@@ -57,11 +58,31 @@ export const routes: Routes = [
     path: 'admin',
     component: DashboardComponent,
     children: [
-      { path: '', component: DashboardHomeComponent, title: 'Admin | Dashboard Home' },
-      { path: 'services', component: ServiceListComponent, title: 'Admin | Services' },
-      { path: 'workers', component: WorkerListComponent, title: 'Admin | Workers' },
-      { path: 'customers', component: CustomerListComponent, title: 'Admin | Customers' },
-      { path: 'orders', component: OrderListComponent, title: 'Admin | Orders' },
+      {
+        path: '',
+        component: DashboardHomeComponent,
+        title: 'Admin | Dashboard Home',
+      },
+      {
+        path: 'services',
+        component: ServiceListComponent,
+        title: 'Admin | Services',
+      },
+      {
+        path: 'workers',
+        component: WorkerListComponent,
+        title: 'Admin | Workers',
+      },
+      {
+        path: 'customers',
+        component: CustomerListComponent,
+        title: 'Admin | Customers',
+      },
+      {
+        path: 'orders',
+        component: OrderListComponent,
+        title: 'Admin | Orders',
+      },
     ],
   },
 
@@ -76,37 +97,63 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 
-  
-
-   // 🔹 AI chatbot
+  // 🔹 AI chatbot
   { path: 'ai', component: ChatbotComponent },
+  // worker
+  {
+    path: 'worker-dashboard',
+    component: WorkerDashboardComponent,
+    title: 'Worker | Dashboard',
+  },
 
-   // 🔹 User dashboard routes
+  // 🔹 User dashboard routes
   {
     path: 'user',
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: Dashboard, title: 'AutoServeX | Dashboard' },
-      { path: 'book-service', component: BookService, title: 'AutoServeX | Book Service' },
-      { path: 'services', component: Services, title: 'AutoServeX | My Bookings' },
-      { path: 'my-vehicles', component: MyVehicles, title: 'AutoServeX | My Vehicles' },
-      { path: 'past-orders', component: PastOrders, title: 'AutoServeX | Past Orders' },
-      { path: 'request-modification', component: RequestModification, title: 'AutoServeX | Request Modification' },
-      { path: 'payment-details', component: PaymentDetails, title: 'AutoServeX | Payment Details' },
-      { path: 'notifications', component: NotificationsPage, title: 'AutoServeX | Notifications' },
+      {
+        path: 'dashboard',
+        component: Dashboard,
+        title: 'AutoServeX | Dashboard',
+      },
+      {
+        path: 'book-service',
+        component: BookService,
+        title: 'AutoServeX | Book Service',
+      },
+      {
+        path: 'services',
+        component: Services,
+        title: 'AutoServeX | My Bookings',
+      },
+      {
+        path: 'my-vehicles',
+        component: MyVehicles,
+        title: 'AutoServeX | My Vehicles',
+      },
+      {
+        path: 'past-orders',
+        component: PastOrders,
+        title: 'AutoServeX | Past Orders',
+      },
+      {
+        path: 'request-modification',
+        component: RequestModification,
+        title: 'AutoServeX | Request Modification',
+      },
+      {
+        path: 'payment-details',
+        component: PaymentDetails,
+        title: 'AutoServeX | Payment Details',
+      },
+      {
+        path: 'notifications',
+        component: NotificationsPage,
+        title: 'AutoServeX | Notifications',
+      },
     ],
   },
 
-   // 👇 Wildcard must come LAST
+  // 👇 Wildcard must come LAST
   { path: '**', redirectTo: '/login' },
-  
 ];
-
-// // ==========================
-// // 🚀 ROUTING MODULE
-// // ==========================
-// @NgModule({
-//   imports: [RouterModule.forRoot(routes)],
-//   exports: [RouterModule],
-// })
-// export class AppRoutingModule {}

@@ -1,58 +1,99 @@
-
 services:
   # =========================
   # Angular frontend service
   # =========================
   angular:
-    build: ./frontend # Path to Angular project
+    build: ./frontend
+    container_name: angular_frontend
     ports:
-      - "4200:80" # Map container port 80 to host 4200
+      - "4200:80"
     depends_on:
-      - nodeapi # Wait for Node.js backend
-      - adminapi # Wait for .NET backend
-    restart: always # Restart if container fails
+      - nodeapi
+      - adminapi
+      - workerservice
+    restart: always
 
   # =========================
   # Node.js backend service
   # =========================
   nodeapi:
-    build: ./backend/ChatboxService # Path to Node.js backend
+    build: ./backend/ChatboxService
+    container_name: nodeapi_backend
     ports:
-      - "5001:5000" # Expose backend on host port 5001 docker 5000
+      - "5001:5000"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/Enterprise # MongoDB connection string
-    depends_on:
-      - mongo # Ensure MongoDB starts first
-    restart: always
-
-  # Note that connection string names are different for Node.js and .NET backends. and port changed 5000 to 5001
-   # =========================
-  # .NET backend service
-  # =========================
-  adminapi:
-    build: ./backend/AdminService
-    ports:
-      - "5125:5125"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
-      - MongoDbSettings__DatabaseName=Enterprise
+      - MONGO_URI=mongodb://mongo:27017/Enterprise
     depends_on:
       - mongo
     restart: always
 
   # =========================
-  # MongoDB service
+  # .NET Admin backend service
+  # =========================
+  adminapi:
+    build: ./backend/AdminService
+    container_name: adminapi_backend
+    ports:
+      - "5125:5125"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MONGO_URI=mongodb://mongo:27017/Enterprise
+    depends_on:
+      - mongo
+    restart: always
+
+  # =========================
+  # .NET Worker backend service
+  # =========================
+  workerservice:
+    build:
+      context: ./backend/WorkersService
+      dockerfile: Dockerfile
+    container_name: dotnet_workerservice
+    ports:
+      - "7193:7193"
+      - "5125:5125"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
+      - MongoDbSettings__DatabaseName=Enterprise
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=EADNEW2;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+    depends_on:
+      - mongo
+      - sqlserver
+    restart: always
+
+  # =========================
+  # SQL Server
+  # =========================
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MySecurePass123!
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: always
+
+  # =========================
+  # MongoDB
   # =========================
   mongo:
-    image: mongo:latest # Use latest MongoDB image
+    image: mongo:latest
+    container_name: mongo_db
     ports:
-      - "27017:27017" # Expose MongoDB to host
+      - "27017:27017"
     volumes:
-      - mongo_data:/data/db # Persist MongoDB data
+      - mongo_data:/data/db
+    restart: always
 
 # =========================
 # Volumes for persistent data
 # =========================
 volumes:
+  sql_data:
   mongo_data:
