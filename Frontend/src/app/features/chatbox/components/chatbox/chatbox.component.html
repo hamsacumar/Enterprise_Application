@@ -1,0 +1,85 @@
+<div class="chat-container">
+  <!-- Sidebar: Users List -->
+  <div class="sidebar">
+    <h3 class="sidebar-title">Chats</h3>
+
+    <div class="user-list">
+      <div
+        *ngFor="let user of users"
+        (click)="selectUser(user)"
+        [class.active]="selectedUser?.chatId === user.chatId"
+        class="user-item"
+      >
+        <div class="avatar">
+          <img
+            [src]="user.profileImage || 'assets/default-avatar.png'"
+            alt="User Avatar"
+          />
+        </div>
+        <div class="user-info">
+          <div class="username">{{ user.username }}</div>
+          <small class="status"
+            >{{ user.status ? user.status : 'offline' }}</small
+          >
+        </div>
+        <span *ngIf="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Section -->
+  <div class="chat-section" *ngIf="selectedUser; else selectUserMsg">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="chat-header-user">
+        <img
+          [src]="selectedUser.profileImage || 'assets/default-avatar.png'"
+          alt="User Avatar"
+        />
+        <div>
+          <h4>{{ selectedUser.username }}</h4>
+          <small>Chat ID: {{ selectedUser.chatId }}</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-box" class="chat-box">
+      <div
+        *ngFor="let msg of messages"
+        [ngClass]="{
+          'message-row': true,
+          me: (msg.senderRole ? (msg.senderRole === (currentUser?.role === 'Customer' ? 'Customer' : 'Company')) : (msg.senderId === currentUser?._id)),
+          other: (msg.senderRole ? (msg.senderRole !== (currentUser?.role === 'Customer' ? 'Customer' : 'Company')) : (msg.senderId !== currentUser?._id))
+        }"
+      >
+        <div class="message-bubble">
+          <p class="message-text">{{ msg.content }}</p>
+          <small class="message-time">
+            {{ msg.createdAt | date: 'shortTime' }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message Input -->
+    <div class="chat-input">
+      <input
+        [(ngModel)]="newMessage"
+        type="text"
+        placeholder="Type your message..."
+        (keyup.enter)="sendMessage()"
+      />
+      <button (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        Send
+      </button>
+    </div>
+  </div>
+
+  <!-- No User Selected -->
+  <ng-template #selectUserMsg>
+    <div class="no-user-selected">
+      <p>Select a user to start chatting 💬</p>
+    </div>
+  </ng-template>
+</div>
