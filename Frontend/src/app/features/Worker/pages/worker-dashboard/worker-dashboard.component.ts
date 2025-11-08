@@ -1,292 +1,55 @@
-// worker-dashboard.component.ts
-/*import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
-interface Appointment {
-  id: string;
+interface ApiAppointment {
+  id: number;
   customerName: string;
   phoneNumber: string;
-  vehicleName: string;
-  vehicleType: string;
-  vehicleModel: string;
-  vehicleYear: number;
-  vehicleRegNumber: string;
-  services: string[];
+  status: string;
+  vehicleName?: string;
+  vehicleModel?: string;
+  vehicleYear?: number;
+  vehicleType?: string;
+  vehicleRegNumber?: string;
+  selectedServicesJson?: string;
+  totalPriceLkr?: number;
   appointmentDate: string;
   timeSlot: string;
   returnDate?: string;
   returnTime?: string;
   note?: string;
   extraPayment?: number;
-  totalPayment?: number;
   isPaid?: boolean;
-  completedServices?: string[];
-  additionalServices?: string[];
-}
-
-@Component({
-  selector: 'app-worker-dashboard',
-  standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
-  templateUrl: './worker-dashboard.component.html',
-  styleUrls: ['./worker-dashboard.component.css'],
-})
-export class WorkerDashboardComponent {
-  activeTab: string = 'new';
-
-  availableServices: string[] = [
-    'Washing',
-    'Painting',
-    'Battery Changing',
-    'Oil Change',
-    'Tire Replacement',
-    'Engine Repair',
-    'Brake Service',
-    'Wheel Alignment',
-    'Air Filter Replacement',
-    'Coolant Refill',
-    'AC Gas Refill',
-    'Suspension Check',
-    'Full Inspection',
-  ];
-
-  newAppointments: Appointment[] = [
-    {
-      id: '1',
-      customerName: 'John Doe',
-      phoneNumber: '0712345678',
-      vehicleName: 'Toyota Camry',
-      vehicleModel: '2020',
-      vehicleYear: 2020,
-      vehicleType: 'Car',
-      vehicleRegNumber: 'ABC-1234',
-      services: ['Washing', 'Oil Change'],
-      appointmentDate: '2025-11-10',
-      timeSlot: '8-10 AM',
-    },
-    {
-      id: '2',
-      customerName: 'Sarah Smith',
-      phoneNumber: '0776543210',
-      vehicleName: 'Honda CBR',
-      vehicleModel: '2021',
-      vehicleYear: 2021,
-      vehicleType: 'Bike',
-      vehicleRegNumber: 'XYZ-5678',
-      services: ['Battery Changing'],
-      appointmentDate: '2025-11-10',
-      timeSlot: '10-12 PM',
-    },
-    {
-      id: '3',
-      customerName: 'Sarah Smith',
-      phoneNumber: '0776543210',
-      vehicleName: 'Honda CBR',
-      vehicleModel: '2021',
-      vehicleYear: 2021,
-      vehicleType: 'Bike',
-      vehicleRegNumber: 'XYZ-5678',
-      services: ['Battery Changing'],
-      appointmentDate: '2025-11-10',
-      timeSlot: '10-12 PM',
-    },
-    {
-      id: '4',
-      customerName: 'Sarah Smith',
-      phoneNumber: '0776543210',
-      vehicleName: 'Honda CBR',
-      vehicleModel: '2021',
-      vehicleYear: 2021,
-      vehicleType: 'Bike',
-      vehicleRegNumber: 'XYZ-5678',
-      services: ['Battery Changing'],
-      appointmentDate: '2025-11-10',
-      timeSlot: '10-12 PM',
-    },
-    {
-      id: '5',
-      customerName: 'Sarah Smith',
-      phoneNumber: '0776543210',
-      vehicleName: 'Honda CBR',
-      vehicleModel: '2021',
-      vehicleYear: 2021,
-      vehicleType: 'Bike',
-      vehicleRegNumber: 'XYZ-5678',
-      services: ['Battery Changing'],
-      appointmentDate: '2025-11-10',
-      timeSlot: '10-12 PM',
-    },
-  ];
-
-  pendingAppointments: Appointment[] = [];
-  onWorkAppointments: Appointment[] = [];
-  completedAppointments: Appointment[] = [];
-
-  newServiceToAdd: { [key: string]: string } = {};
-  extraCharges: { [key: string]: number } = {};
-
-  setActiveTab(tab: string): void {
-    this.activeTab = tab;
-  }
-
-  moveToOnWork(appointment: Appointment): void {
-    if (!appointment.returnDate || !appointment.returnTime) {
-      alert('Please fill return date and time');
-      return;
-    }
-
-    const index = this.newAppointments.indexOf(appointment);
-    if (index > -1) {
-      this.newAppointments.splice(index, 1);
-      appointment.completedServices = [];
-      appointment.additionalServices = [];
-      appointment.totalPayment = this.calculatePayment(appointment);
-      appointment.isPaid = false;
-      this.pendingAppointments.push(appointment);
-    }
-  }
-
-  confirmAppointment(appointment: Appointment): void {
-    const index = this.pendingAppointments.indexOf(appointment);
-    if (index > -1) {
-      this.pendingAppointments.splice(index, 1);
-      this.onWorkAppointments.push(appointment);
-    }
-  }
-
-  cancelAppointment(appointment: Appointment): void {
-    const index = this.pendingAppointments.indexOf(appointment);
-    if (index > -1) {
-      this.pendingAppointments.splice(index, 1);
-    }
-  }
-
-  toggleServiceCompletion(appointment: Appointment, service: string): void {
-    if (!appointment.completedServices) {
-      appointment.completedServices = [];
-    }
-
-    const index = appointment.completedServices.indexOf(service);
-    if (index > -1) {
-      appointment.completedServices.splice(index, 1);
-    } else {
-      appointment.completedServices.push(service);
-    }
-  }
-
-  isServiceCompleted(appointment: Appointment, service: string): boolean {
-    return appointment.completedServices?.includes(service) || false;
-  }
-
-  addService(appointment: Appointment): void {
-    const service = this.newServiceToAdd[appointment.id];
-    if (service && service.trim()) {
-      if (!appointment.additionalServices) {
-        appointment.additionalServices = [];
-      }
-      appointment.additionalServices.push(service);
-      appointment.totalPayment = this.calculatePayment(appointment);
-      this.newServiceToAdd[appointment.id] = '';
-    }
-  }
-
-  calculatePayment(appointment: Appointment): number {
-    const basePrice = 50;
-    const totalServices =
-      appointment.services.length +
-      (appointment.additionalServices?.length || 0);
-    return basePrice * totalServices + (appointment.extraPayment || 0);
-  }
-
-  updateExtraCharges(appointment: Appointment): void {
-    const extra = this.extraCharges[appointment.id] || 0;
-    appointment.extraPayment = extra;
-    appointment.totalPayment = this.calculatePayment(appointment);
-  }
-
-  togglePaidStatus(appointment: Appointment): void {
-    appointment.isPaid = !appointment.isPaid;
-  }
-
-  finishWork(appointment: Appointment): void {
-    const allServices = [
-      ...appointment.services,
-      ...(appointment.additionalServices || []),
-    ];
-    const allCompleted = allServices.every((s) =>
-      appointment.completedServices?.includes(s)
-    );
-
-    if (!allCompleted) {
-      alert('Please complete all services before finishing');
-      return;
-    }
-
-    const index = this.onWorkAppointments.indexOf(appointment);
-    if (index > -1) {
-      this.onWorkAppointments.splice(index, 1);
-      this.completedAppointments.push(appointment);
-    }
-  }
-
-  getAllServices(appointment: Appointment): string[] {
-    return [...appointment.services, ...(appointment.additionalServices || [])];
-  }
-}
-*/
-
-// worker-dashboard.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-
-interface AppointmentService {
-  appointmentId: number;
-  serviceId: number;
-  service: {
-    id: number;
-    serviceName: string;
-    basePrice: number;
-  };
 }
 
 interface Appointment {
   id: number;
   customerName: string;
   phoneNumber: string;
-  vehicleName: string;
-  vehicleType: string;
-  vehicleModel: string;
-  vehicleYear: number;
-  vehicleRegNumber: string;
+  status: string;
 
+  vehicleType: string;
+  vehicleName?: string;
+  vehicleModel?: string;
+  vehicleYear?: number;
+  vehicleRegNumber?: string;
+  selectedServicesJson?: string;
+  totalPriceLkr?: number;
   appointmentDate: string;
   timeSlot: string;
-  returnDate?: string;
-  returnTime?: string;
+  returnDate?: string | null;
+  returnTime?: string | null;
   note?: string;
   extraPayment?: number;
+  extraCharges?: number;
   totalPayment?: number;
+  basePrice?: number;
   isPaid?: boolean;
-  status?: 'New' | 'Pending' | 'OnWork' | 'Completed';
-  totalPriceLkr?: number;
-
-  vehicle?: {
-    id: number;
-    name: string;
-    model: string;
-    year: number;
-    regNumber: string;
-    type: string;
-    color: string;
-  };
-
-  appointmentServices?: AppointmentService[]; // ✅ changed from string[] to object[]
-  additionalServices?: Service[];
   completedServices?: string[];
+  additionalServices?: string[];
+  services?: string[];
 }
 
 @Component({
@@ -297,59 +60,77 @@ interface Appointment {
   styleUrls: ['./worker-dashboard.component.css'],
 })
 export class WorkerDashboardComponent implements OnInit {
-  activeTab: string = 'new';
+  apiBaseUrl = 'https://localhost:7193/api/Appointments';
 
-  availableServices: Service[] = [];
+  activeTab: string = 'new';
+  availableServices = [
+    { name: 'Washing', basePrice: 1000 },
+    { name: 'Painting', basePrice: 8000 },
+    { name: 'Battery Changing', basePrice: 2500 },
+    { name: 'Oil Change', basePrice: 2000 },
+    { name: 'Tire Replacement', basePrice: 3500 },
+    { name: 'Engine Repair', basePrice: 12000 },
+    { name: 'Brake Service', basePrice: 4000 },
+  ];
 
   newAppointments: Appointment[] = [];
   pendingAppointments: Appointment[] = [];
   onWorkAppointments: Appointment[] = [];
   completedAppointments: Appointment[] = [];
 
-  newServiceToAdd: { [appointmentId: string]: Service | null } = {};
-  extraCharges: { [key: string]: number } = {};
-
-  // Backend API URLs
-  private apiUrl = 'https://localhost:7193/api/Appointments';
-  private servicesApiUrl = 'https://localhost:7193/api/Services';
+  newServiceToAdd: { [key: number]: string } = {};
+  extraCharges: { [key: number]: number } = {};
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.loadServices();
     this.loadAppointments();
   }
 
-  /** Load list of available services from backend */
-  loadServices(): void {
-    this.http.get<Service[]>(this.servicesApiUrl).subscribe({
-      next: (data) => {
-        this.availableServices = data;
-        console.log('Loaded services:', data);
-      },
-      error: (err) => {
-        console.error('Failed to load services', err);
-        alert('Could not load service list from backend.');
-      },
-    });
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
   }
 
-  /** Load all appointments from backend */
   loadAppointments(): void {
-    this.http.get<Appointment[]>(this.apiUrl).subscribe({
-      next: (data) => {
-        // Format data to avoid undefined/null issues
-        const appointments = data.map((a) => ({
-          ...a,
-          appointmentDate: a.appointmentDate || '',
-          timeSlot: a.timeSlot || '',
-          returnDate: a.returnDate || '',
-          returnTime: a.returnTime || '',
-          appointmentServices: a.appointmentServices || [],
-          totalPayment: a.totalPriceLkr || 0,
-        }));
+    this.http.get<any>(this.apiBaseUrl).subscribe({
+      next: (res) => {
+        const appointments: any[] = res.$values || [];
 
-        // Separate by status
+        // Parse services for each appointment
+
+        appointments.forEach((a) => {
+          try {
+            let parsed: any[] = [];
+
+            if (a.selectedServicesJson) {
+              // First, parse the string
+              parsed = JSON.parse(a.selectedServicesJson);
+
+              // Handle double-serialized strings
+              if (typeof parsed === 'string') {
+                parsed = JSON.parse(parsed);
+              }
+
+              // Convert to service names
+              a.services = parsed.map((s: any) => {
+                if (typeof s === 'string') return s; // string service
+                if (s && s.name) return s.name; // object with name
+                return 'Unknown';
+              });
+            } else {
+              a.services = [];
+            }
+          } catch (err) {
+            console.error(
+              'Failed to parse services',
+              err,
+              a.selectedServicesJson
+            );
+            a.services = [];
+          }
+        });
+
+        // Filter by status
         this.newAppointments = appointments.filter((a) => a.status === 'New');
         this.pendingAppointments = appointments.filter(
           (a) => a.status === 'Pending'
@@ -360,167 +141,262 @@ export class WorkerDashboardComponent implements OnInit {
         this.completedAppointments = appointments.filter(
           (a) => a.status === 'Completed'
         );
-
-        // Calculate payment
-        appointments.forEach(
-          (a) => (a.totalPayment = this.calculatePayment(a))
-        );
       },
-      error: (err) => {
-        console.error('Error fetching appointments', err);
-        alert('Failed to load appointments from backend.');
-      },
+      error: (err) => console.error('Failed to load appointments', err),
     });
   }
 
-  setActiveTab(tab: string): void {
-    this.activeTab = tab;
-  }
-
-  /** Move appointment from New → Pending */
   moveToOnWork(appointment: Appointment): void {
-    const hasDate =
-      appointment.returnDate && appointment.returnDate.trim() !== '';
-    const hasTime =
-      appointment.returnTime && appointment.returnTime.trim() !== '';
-
-    if (!hasDate || !hasTime) {
+    if (!appointment.returnDate || !appointment.returnTime) {
       alert('Please fill return date and time');
       return;
     }
 
+    // Update status before sending to API
     appointment.status = 'Pending';
 
-    this.http.put(`${this.apiUrl}/${appointment.id}`, appointment).subscribe({
-      next: () => {
-        const index = this.newAppointments.indexOf(appointment);
-        if (index > -1) {
-          this.newAppointments.splice(index, 1);
+    // Calculate total payment if needed
+
+    // Call API to update the appointment
+    this.http
+      .put(`${this.apiBaseUrl}/${appointment.id}`, appointment)
+      .subscribe({
+        next: (res) => {
+          // Remove from newAppointments
+          const index = this.newAppointments.indexOf(appointment);
+          if (index > -1) this.newAppointments.splice(index, 1);
+
+          // Add to pendingAppointments
           this.pendingAppointments.push(appointment);
-        }
+          alert('Appointment updated and moved to Pending!');
+        },
+        error: (err) => {
+          console.error('Failed to update appointment', err);
+          alert('Failed to update appointment. Please try again.');
+        },
+      });
+  }
+
+  moveToPending(appointment: Appointment): void {
+    if (!appointment.returnDate || !appointment.returnTime) {
+      alert('Please fill return date and time');
+      return;
+    }
+
+    const updated = { ...appointment, status: 'Pending' };
+
+    // Parse services for the updated object
+    try {
+      const parsed = updated.selectedServicesJson
+        ? JSON.parse(updated.selectedServicesJson)
+        : [];
+      updated.services = parsed.map((s: any) =>
+        typeof s === 'string' ? s : s.name || 'Unknown'
+      );
+    } catch {
+      updated.services = [];
+    }
+
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
+      next: () => {
+        // Remove from newAppointments
+        this.newAppointments = this.newAppointments.filter(
+          (a) => a.id !== appointment.id
+        );
+
+        // Push into pendingAppointments **as a new array**
+        this.pendingAppointments = [...this.pendingAppointments, updated];
       },
-      error: (err) => {
-        console.error('Failed to move appointment to Pending', err);
-        alert('Could not update appointment. Try again.');
-      },
+      error: (err) => console.error('Failed to update appointment', err),
     });
   }
 
-  /** Move appointment from Pending → OnWork */
   confirmAppointment(appointment: Appointment): void {
-    const index = this.pendingAppointments.indexOf(appointment);
-    if (index > -1) {
-      this.pendingAppointments.splice(index, 1);
-      appointment.status = 'OnWork';
-      this.onWorkAppointments.push(appointment);
-
-      this.http.put(`${this.apiUrl}/${appointment.id}`, appointment).subscribe({
-        next: () => console.log('Appointment status updated to OnWork'),
-        error: (err) => console.error('Error updating appointment:', err),
-      });
-    }
+    const updated = { ...appointment, status: 'OnWork' };
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
+      next: () => {
+        this.pendingAppointments = this.pendingAppointments.filter(
+          (a) => a.id !== appointment.id
+        );
+        this.onWorkAppointments.push(updated);
+      },
+      error: (err) => console.error('Failed to confirm appointment', err),
+    });
   }
 
   cancelAppointment(appointment: Appointment): void {
-    const index = this.pendingAppointments.indexOf(appointment);
-    if (index > -1) {
-      this.pendingAppointments.splice(index, 1);
-    }
+    const updated = { ...appointment, status: 'Cancelled' };
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
+      next: () => {
+        this.pendingAppointments = this.pendingAppointments.filter(
+          (a) => a.id !== appointment.id
+        );
+      },
+      error: (err) => console.error('Failed to cancel appointment', err),
+    });
   }
 
-  /** Mark service as completed/uncompleted */
-  toggleServiceCompletion(appointment: Appointment, serviceName: string): void {
+  finishWork(appointment: Appointment): void {
+    // Ensure extraPayment and extraCharges are numbers
+    const extraPayment = appointment.extraPayment || 0;
+    const extraCharges = this.extraCharges[appointment.id] || 0;
+    const basePrice = appointment.basePrice || 3000; // default if basePrice not set
+
+    // Calculate totalPayment
+    // After updating services or extra payment
+    appointment.totalPayment =
+      (appointment.totalPriceLkr || 0) + (appointment.extraPayment || 0);
+
+    // Update status
+    appointment.status = 'Completed';
+
+    // Update database
+    this.http
+      .put(`${this.apiBaseUrl}/${appointment.id}`, appointment)
+      .subscribe({
+        next: () => {
+          // Remove from On Work tab
+          this.onWorkAppointments = this.onWorkAppointments.filter(
+            (a) => a.id !== appointment.id
+          );
+
+          // Add to Completed tab
+          this.completedAppointments = [
+            ...this.completedAppointments,
+            appointment,
+          ];
+
+          // Switch to Completed tab
+          this.activeTab = 'complete';
+
+          alert('Appointment marked as Completed!');
+        },
+        error: (err) => {
+          console.error('Failed to finish appointment', err);
+          alert('Failed to mark appointment as Completed.');
+        },
+      });
+  }
+
+  toggleServiceCompletion(appointment: Appointment, service: string): void {
     if (!appointment.completedServices) {
       appointment.completedServices = [];
     }
 
-    const idx = appointment.completedServices.indexOf(serviceName);
-    if (idx > -1) {
-      appointment.completedServices.splice(idx, 1);
+    const index = appointment.completedServices.indexOf(service);
+    if (index > -1) {
+      appointment.completedServices.splice(index, 1); // uncheck
     } else {
-      appointment.completedServices.push(serviceName);
+      appointment.completedServices.push(service); // check
     }
+
+    // Optionally, update the database if you want to persist
+    const payload = { ...appointment };
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, payload).subscribe({
+      next: () =>
+        console.log(`Service status updated for ${appointment.customerName}`),
+      error: (err) => console.error('Failed to update service status', err),
+    });
   }
 
-  isServiceCompleted(appointment: Appointment, serviceName: string): boolean {
-    return appointment.completedServices?.includes(serviceName) || false;
-  }
-
-  /** Add extra service dynamically */
-  addService(appointment: Appointment): void {
-    const selectedService = this.newServiceToAdd[appointment.id];
-    if (selectedService) {
-      if (!appointment.additionalServices) {
-        appointment.additionalServices = [];
-      }
-
-      appointment.additionalServices.push(selectedService);
-      appointment.totalPayment = this.calculatePayment(appointment);
-      this.newServiceToAdd[appointment.id] = null;
+  // Utility methods
+  getAllServices(appointment: Appointment): string[] {
+    let parsed: any[] = [];
+    try {
+      parsed = appointment.selectedServicesJson
+        ? JSON.parse(appointment.selectedServicesJson)
+        : [];
+    } catch {
+      parsed = [];
     }
-  }
 
-  /** Calculate total payment */
-  calculatePayment(appointment: Appointment): number {
-    // Convert string services into Service-like objects with basePrice = 0
-    const baseServices = (appointment.appointmentServices || []).map(
-      (name) => ({
-        id: 0,
-        serviceName: name,
-        basePrice: 0,
-      })
+    // Convert parsed array to strings
+    const selectedServices = parsed.map((s: any) =>
+      typeof s === 'string' ? s : s.name || 'Unknown'
     );
 
-    const extraServices = appointment.additionalServices || [];
+    // Combine with additionalServices (strings)
+    return [...selectedServices, ...(appointment.additionalServices || [])];
+  }
 
-    const total = [...baseServices, ...extraServices].reduce(
-      (sum, s) => sum + (s.basePrice || 0),
+  togglePaidStatus(appointment: Appointment) {
+    // Toggle boolean in frontend
+    appointment.isPaid = !appointment.isPaid;
+
+    // Convert to 0 or 1 for database
+    const payload = {
+      ...appointment,
+      isPaid: appointment.isPaid ? 1 : 0, // store as 1 (paid) or 0 (unpaid)
+    };
+
+    // Update in DB
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, payload).subscribe({
+      next: () =>
+        console.log(`Paid status updated for appointment ${appointment.id}`),
+      error: (err) => console.error('Failed to update paid status', err),
+    });
+  }
+
+  isServiceCompleted(appointment: Appointment, service: string): boolean {
+    return appointment.completedServices?.includes(service) || false;
+  }
+
+  addService(appointment: Appointment): void {
+    const selectedName = this.newServiceToAdd[appointment.id];
+    if (!selectedName) return;
+
+    const serviceObj = this.availableServices.find(
+      (s) => s.name === selectedName
+    );
+    if (!serviceObj) return;
+
+    if (!appointment.additionalServices) appointment.additionalServices = [];
+
+    appointment.additionalServices.push(serviceObj.name);
+
+    // Update SelectedServicesJson for backend
+    const currentServices = JSON.parse(
+      appointment.selectedServicesJson || '[]'
+    );
+    currentServices.push({
+      name: serviceObj.name,
+      basePrice: serviceObj.basePrice,
+    });
+    appointment.selectedServicesJson = JSON.stringify(currentServices);
+
+    // Update TotalPriceLkr dynamically
+    const totalBasePrice = currentServices.reduce(
+      (sum: number, s: any) => sum + (s.basePrice || 0),
       0
     );
+    appointment.totalPriceLkr = totalBasePrice;
 
-    return total + (appointment.extraPayment || 0);
+    // Update total payment (TotalPrice + ExtraPayment)
+    appointment.totalPayment = appointment.totalPayment =
+      (appointment.totalPriceLkr || 0) + (appointment.extraPayment || 0);
+
+    // Clear selected
+    this.newServiceToAdd[appointment.id] = '';
   }
 
-  /** Update extra payment input */
-  updateExtraCharges(appointment: Appointment): void {
-    const extra = this.extraCharges[appointment.id] || 0;
-    appointment.extraPayment = extra;
-    appointment.totalPayment = this.calculatePayment(appointment);
+  updateExtraPayment(appointment: Appointment) {
+    if (appointment.extraPayment == null) appointment.extraPayment = 0;
+
+    // Save the updated extraPayment to DB
+    this.http
+      .put(`${this.apiBaseUrl}/${appointment.id}`, appointment)
+      .subscribe({
+        next: () => {
+          console.log('Extra payment updated:', appointment.extraPayment);
+        },
+        error: (err) => console.error('Failed to update extra payment', err),
+      });
   }
 
-  togglePaidStatus(appointment: Appointment): void {
-    appointment.isPaid = !appointment.isPaid;
-  }
-
-  /** Finish work (OnWork → Completed) */
-  finishWork(appointment: Appointment): void {
-    const allServices = [
-      ...(appointment.appointmentServices || []),
-      ...(appointment.additionalServices || []),
-    ].map((s) => (typeof s === 'string' ? { serviceName: s } : s));
-
-    const allCompleted = allServices.every((s) =>
-      appointment.completedServices?.includes(s.serviceName)
-    );
-
-    if (!allCompleted) {
-      alert('Please complete all services before finishing');
-      return;
-    }
-
-    const index = this.onWorkAppointments.indexOf(appointment);
-    if (index > -1) {
-      this.onWorkAppointments.splice(index, 1);
-      this.completedAppointments.push(appointment);
-    }
-  }
-
-  /** Combine both base and added services */
-  getAllServices(appointment: Appointment): Service[] {
-    const baseServices: Service[] = (appointment.appointmentServices || []).map(
-      (as) => as.service // ✅ extract actual service
-    );
-
-    return [...baseServices, ...(appointment.additionalServices || [])];
+  getTotalPayment(appointment: Appointment): number {
+    const basePrice = 3000; // example: replace with actual base price
+    const extraPayment = appointment.extraPayment || 0; // from NEW tab
+    const extraCharges = this.extraCharges[appointment.id] || 0; // from ON WORK tab
+    return basePrice + extraPayment + extraCharges;
   }
 }

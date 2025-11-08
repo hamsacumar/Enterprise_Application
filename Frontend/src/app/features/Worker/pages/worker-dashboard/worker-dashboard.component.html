@@ -1,3 +1,4 @@
+<!-- worker-dashboard.component.html -->
 <div class="dashboard-container">
   <div class="dashboard-header">
     <h1>Worker Dashboard</h1>
@@ -39,6 +40,7 @@
   </div>
 
   <!-- NEW APPOINTMENTS TAB -->
+  <!-- NEW APPOINTMENTS TAB -->
   <div class="tab-content" *ngIf="activeTab === 'new'">
     <div class="appointments-grid">
       <div class="appointment-card" *ngFor="let appointment of newAppointments">
@@ -48,54 +50,53 @@
         </div>
 
         <div class="card-body">
+          <!-- Customer Details -->
           <div class="info-row">
-            <span class="label">Vehicle Model:</span>
-            <span class="value">{{ appointment.vehicleModel }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">📞 Phone:</span>
+            <span class="label">Phone Number:</span>
             <span class="value">{{ appointment.phoneNumber }}</span>
           </div>
 
+          <!-- Vehicle Details -->
           <div class="info-row">
-            <span class="label">🚗 Vehicle:</span>
-            <span class="value">
-              {{ appointment.vehicleName }} – {{ appointment.vehicleModel }} ({{
-                appointment.vehicleYear
-              }})
-            </span>
+            <span class="label">Vehicle Name:</span>
+            <span class="value">{{ appointment.vehicleName }}</span>
           </div>
-
           <div class="info-row">
-            <span class="label">Type:</span>
-            <span class="value">{{ appointment.vehicleType }}</span>
+            <span class="label">Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
           </div>
-
           <div class="info-row">
-            <span class="label">Reg No:</span>
+            <span class="label">Year:</span>
+            <span class="value">{{ appointment.vehicleYear }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Registration Number:</span>
             <span class="value">{{ appointment.vehicleRegNumber }}</span>
           </div>
 
+          <!-- Services -->
           <div class="info-row">
             <span class="label">Services:</span>
             <div class="services-list">
               <span
                 class="service-tag"
-                *ngFor="let service of appointment.appointmentServices"
+                *ngFor="let service of appointment.services"
               >
-                {{ service.name }} – LKR {{ service.basePrice }}
+                {{ service }}
               </span>
             </div>
           </div>
 
+          <!-- Appointment Date & Time -->
           <div class="info-row">
             <span class="label">Appointment:</span>
-            <span class="value"
-              >{{ appointment.appointmentDate }} |
-              {{ appointment.timeSlot }}</span
-            >
+            <span class="value">
+              {{ appointment.appointmentDate | date : "yyyy-MM-dd" }} |
+              {{ appointment.timeSlot }}
+            </span>
           </div>
 
+          <!-- Editable Fields -->
           <div class="form-section">
             <div class="form-group">
               <label>Return Date:</label>
@@ -131,6 +132,7 @@
                 [(ngModel)]="appointment.extraPayment"
                 class="form-input"
                 placeholder="0"
+                (change)="updateExtraPayment(appointment)"
               />
             </div>
           </div>
@@ -138,7 +140,7 @@
 
         <div class="card-footer">
           <button class="btn btn-primary" (click)="moveToOnWork(appointment)">
-            Move to Pending
+            Save & Move to Pending
           </button>
         </div>
       </div>
@@ -169,9 +171,9 @@
             <div class="services-list">
               <span
                 class="service-tag"
-                *ngFor="let service of appointment.appointmentServices"
+                *ngFor="let service of appointment.services"
               >
-                {{ service.name }} – LKR {{ service.basePrice }}
+                {{ service }}
               </span>
             </div>
           </div>
@@ -243,20 +245,18 @@
             <h4>Services Checklist:</h4>
             <div
               class="checklist-item"
-              *ngFor="let service of appointment.selectedServices"
+              *ngFor="let service of getAllServices(appointment)"
             >
               <label class="checkbox-label">
                 <input
                   type="checkbox"
-                  [checked]="isServiceCompleted(appointment, service.name)"
-                  (change)="toggleServiceCompletion(appointment, service.name)"
+                  [checked]="isServiceCompleted(appointment, service)"
+                  (change)="toggleServiceCompletion(appointment, service)"
                 />
                 <span
-                  [class.completed]="
-                    isServiceCompleted(appointment, service.name)
-                  "
+                  [class.completed]="isServiceCompleted(appointment, service)"
                 >
-                  {{ service.name }} – LKR {{ service.basePrice }}
+                  {{ service }}
                 </span>
               </label>
             </div>
@@ -272,12 +272,13 @@
                 <option value="">Select service...</option>
                 <option
                   *ngFor="let service of availableServices"
-                  [ngValue]="service"
+                  [value]="service.name"
                 >
-                  {{ service.serviceName }} – LKR {{ service.basePrice }}
+                  {{ service.name }} ({{
+                    service.basePrice | currency : "LKR"
+                  }})
                 </option>
               </select>
-
               <button class="btn btn-small" (click)="addService(appointment)">
                 Add
               </button>
@@ -286,19 +287,27 @@
 
           <div class="payment-section">
             <div class="form-group">
-              <label>Extra Charges:</label>
+              <div class="info-row">
+                <span class="label">Base Price:</span>
+                <span class="value">{{
+                  appointment.totalPriceLkr | currency : "LKR"
+                }}</span>
+              </div>
+              <label>Extra Payment / Charges:</label>
+              <span class="label">Extra Payment:</span>
               <input
                 type="number"
-                [(ngModel)]="extraCharges[appointment.id]"
-                (input)="updateExtraCharges(appointment)"
-                class="form-input"
-                placeholder="0"
+                [(ngModel)]="appointment.extraPayment"
+                (change)="updateExtraPayment(appointment)"
               />
             </div>
 
-            <div class="total-payment">
+            <div class="info-row">
               <span class="label">Total Payment:</span>
-              <span class="amount">${{ appointment.totalPayment || 0 }}</span>
+              <span class="value">{{
+                (appointment.totalPriceLkr ?? 0) +
+                  (appointment.extraPayment ?? 0) | currency : "LKR"
+              }}</span>
             </div>
 
             <div class="payment-toggle">
@@ -360,13 +369,13 @@
           </div>
 
           <div class="info-row">
-            <span class="label">Services:</span>
+            <span class="label">Services Completed:</span>
             <div class="services-list">
               <span
-                class="service-tag"
-                *ngFor="let service of appointment.appointmentServices"
+                class="service-tag completed"
+                *ngFor="let service of getAllServices(appointment)"
               >
-                {{ service }}
+                ✓ {{ service }}
               </span>
             </div>
           </div>
@@ -379,7 +388,7 @@
           <div class="payment-summary">
             <div class="summary-row">
               <span>Total Payment:</span>
-              <span class="amount">${{ appointment.totalPayment }}</span>
+              <span class="amount">${{ appointment.totalPayment || 0 }}</span>
             </div>
             <div class="summary-row">
               <span>Status:</span>

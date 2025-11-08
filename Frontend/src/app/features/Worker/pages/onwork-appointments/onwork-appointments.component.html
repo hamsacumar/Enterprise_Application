@@ -1,1 +1,529 @@
-<p>onwork-appointments works!</p>
+<!-- worker-dashboard.component.html -->
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Worker Dashboard</h1>
+  </div>
+
+  <div class="tabs">
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'new'"
+      (click)="setActiveTab('new')"
+    >
+      New Appointments
+      <span class="badge">{{ newAppointments.length }}</span>
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'pending'"
+      (click)="setActiveTab('pending')"
+    >
+      Pending
+      <span class="badge">{{ pendingAppointments.length }}</span>
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'onwork'"
+      (click)="setActiveTab('onwork')"
+    >
+      On Work
+      <span class="badge">{{ onWorkAppointments.length }}</span>
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'complete'"
+      (click)="setActiveTab('complete')"
+    >
+      Completed
+      <span class="badge">{{ completedAppointments.length }}</span>
+    </button>
+  </div>
+
+  <!-- NEW APPOINTMENTS TAB -->
+  <!-- NEW APPOINTMENTS TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'new'">
+    <div class="appointments-grid">
+      <div class="appointment-card" *ngFor="let appointment of newAppointments">
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+        </div>
+
+        <div class="card-body">
+          <!-- Customer Details -->
+          <div class="info-row">
+            <span class="label">Phone Number:</span>
+            <span class="value">{{ appointment.phoneNumber }}</span>
+          </div>
+
+          <!-- Vehicle Details -->
+          <div class="info-row">
+            <span class="label">Vehicle Name:</span>
+            <span class="value">{{ appointment.vehicleName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Year:</span>
+            <span class="value">{{ appointment.vehicleYear }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Registration Number:</span>
+            <span class="value">{{ appointment.vehicleRegNumber }}</span>
+          </div>
+
+          <!-- Services -->
+          <div class="info-row">
+            <span class="label">Services:</span>
+            <div class="services-list">
+              <span
+                class="service-tag"
+                *ngFor="let service of appointment.services"
+              >
+                {{ service }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Appointment Date & Time -->
+          <div class="info-row">
+            <span class="label">Appointment:</span>
+            <span class="value">
+              {{ appointment.appointmentDate | date : "yyyy-MM-dd" }} |
+              {{ appointment.timeSlot }}
+            </span>
+          </div>
+
+          <!-- Editable Fields -->
+          <div class="form-section">
+            <div class="form-group">
+              <label>Return Date:</label>
+              <input
+                type="date"
+                [(ngModel)]="appointment.returnDate"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Return Time:</label>
+              <input
+                type="time"
+                [(ngModel)]="appointment.returnTime"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label>Note:</label>
+              <textarea
+                [(ngModel)]="appointment.note"
+                class="form-textarea"
+                placeholder="Add notes here..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Extra Payment (Optional):</label>
+              <input
+                type="number"
+                [(ngModel)]="appointment.extraPayment"
+                class="form-input"
+                placeholder="0"
+                (change)="updateExtraPayment(appointment)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-primary" (click)="moveToOnWork(appointment)">
+            Save & Move to Pending
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENDING TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'pending'">
+    <div class="appointments-grid">
+      <div
+        class="appointment-card"
+        *ngFor="let appointment of pendingAppointments"
+      >
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+          <span class="status-badge pending">Pending Confirmation</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Vehicle Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Services:</span>
+            <div class="services-list">
+              <span
+                class="service-tag"
+                *ngFor="let service of appointment.services"
+              >
+                {{ service }}
+              </span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Appointment:</span>
+            <span class="value"
+              >{{ appointment.appointmentDate }} |
+              {{ appointment.timeSlot }}</span
+            >
+          </div>
+
+          <div class="info-row">
+            <span class="label">Return:</span>
+            <span class="value"
+              >{{ appointment.returnDate }} | {{ appointment.returnTime }}</span
+            >
+          </div>
+
+          <div class="info-row" *ngIf="appointment.note">
+            <span class="label">Note:</span>
+            <span class="value">{{ appointment.note }}</span>
+          </div>
+
+          <div class="info-row" *ngIf="appointment.extraPayment">
+            <span class="label">Extra Payment:</span>
+            <span class="value highlight">${{ appointment.extraPayment }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button
+            class="btn btn-success"
+            (click)="confirmAppointment(appointment)"
+          >
+            Confirm & Start Work
+          </button>
+          <button
+            class="btn btn-danger"
+            (click)="cancelAppointment(appointment)"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ON WORK TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'onwork'">
+    <div class="appointments-grid">
+      <div
+        class="appointment-card work-card"
+        *ngFor="let appointment of onWorkAppointments"
+      >
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+          <span class="status-badge working">In Progress</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Vehicle Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+
+          <div class="services-checklist">
+            <h4>Services Checklist:</h4>
+            <div
+              class="checklist-item"
+              *ngFor="let service of getAllServices(appointment)"
+            >
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  [checked]="isServiceCompleted(appointment, service)"
+                  (change)="toggleServiceCompletion(appointment, service)"
+                />
+                <span
+                  [class.completed]="isServiceCompleted(appointment, service)"
+                >
+                  {{ service }}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="add-service-section">
+            <label>Add Service:</label>
+            <div class="add-service-controls">
+              <select
+                [(ngModel)]="newServiceToAdd[appointment.id]"
+                class="form-select"
+              >
+                <option value="">Select service...</option>
+                <option
+                  *ngFor="let service of availableServices"
+                  [value]="service"
+                >
+                  {{ service }}
+                </option>
+              </select>
+              <button class="btn btn-small" (click)="addService(appointment)">
+                Add
+              </button>
+            </div>
+          </div>
+
+          <div class="payment-section">
+            <div class="form-group">
+              <label>Extra Payment / Charges:</label>
+              <input
+                type="number"
+                [(ngModel)]="appointment.extraPayment"
+                class="form-input"
+                placeholder="0"
+                (change)="updateExtraPayment(appointment)"
+              />
+            </div>
+
+            <div class="info-row">
+              <span class="label">Total Payment:</span>
+              <span class="value">${{ getTotalPayment(appointment) }}</span>
+            </div>
+
+            <div class="payment-toggle">
+              <label class="toggle-label">
+                <input
+                  type="checkbox"
+                  [checked]="appointment.isPaid"
+                  (change)="togglePaidStatus(appointment)"
+                />
+                <span class="toggle-text">
+                  {{ appointment.isPaid ? "Paid" : "Unpaid" }}
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-success" (click)="finishWork(appointment)">
+            Finish Work
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETED TAB -->
+  <div class="tab-content" *ngIf="activeTab === 'complete'">
+    <div class="appointments-grid">
+      <div
+        class="appointment-card completed-card"
+        *ngFor="let appointment of completedAppointments"
+      >
+        <div class="card-header">
+          <h3>{{ appointment.customerName }}</h3>
+          <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
+          <span class="status-badge completed">Completed</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Vehicle Model:</span>
+            <span class="value">{{ appointment.vehicleModel }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Appointment:</span>
+            <span class="value"
+              >{{ appointment.appointmentDate }} |
+              {{ appointment.timeSlot }}</span
+            >
+          </div>
+
+          <div class="info-row">
+            <span class="label">Return:</span>
+            <span class="value"
+              >{{ appointment.returnDate }} | {{ appointment.returnTime }}</span
+            >
+          </div>
+
+          <div class="info-row">
+            <span class="label">Services Completed:</span>
+            <div class="services-list">
+              <span
+                class="service-tag completed"
+                *ngFor="let service of getAllServices(appointment)"
+              >
+                ✓ {{ service }}
+              </span>
+            </div>
+          </div>
+
+          <div class="info-row" *ngIf="appointment.note">
+            <span class="label">Note:</span>
+            <span class="value">{{ appointment.note }}</span>
+          </div>
+
+          <div class="payment-summary">
+            <div class="summary-row">
+              <span>Total Payment:</span>
+              <span class="amount">${{ appointment.totalPayment || 0 }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Status:</span>
+              <span
+                [class]="appointment.isPaid ? 'paid-badge' : 'unpaid-badge'"
+              >
+                {{ appointment.isPaid ? "Paid" : "Unpaid" }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+import { Component, OnInit } from '@angular/core'; import { CommonModule } from
+'@angular/common'; import { FormsModule } from '@angular/forms'; import {
+HttpClient, HttpClientModule } from '@angular/common/http'; interface
+ApiAppointment { id: number; customerName: string; phoneNumber: string; status:
+string; vehicleName?: string; vehicleModel?: string; vehicleYear?: number;
+vehicleType?: string; vehicleRegNumber?: string; selectedServicesJson?: string;
+totalPriceLkr?: number; appointmentDate: string; timeSlot: string; returnDate?:
+string; returnTime?: string; note?: string; extraPayment?: number; isPaid?:
+boolean; } interface Appointment { id: number; customerName: string;
+phoneNumber: string; status: string; vehicleType: string; vehicleName?: string;
+vehicleModel?: string; vehicleYear?: number; vehicleRegNumber?: string;
+selectedServicesJson?: string; totalPriceLkr?: number; appointmentDate: string;
+timeSlot: string; returnDate?: string | null; returnTime?: string | null; note?:
+string; extraPayment?: number; extraCharges?: number; totalPayment?: number;
+basePrice?: number; isPaid?: boolean; completedServices?: string[];
+additionalServices?: string[]; services?: string[]; } @Component({ selector:
+'app-worker-dashboard', standalone: true, imports: [CommonModule, FormsModule,
+HttpClientModule], templateUrl: './worker-dashboard.component.html', styleUrls:
+['./worker-dashboard.component.css'], }) export class WorkerDashboardComponent
+implements OnInit { apiBaseUrl = 'https://localhost:7193/api/Appointments';
+activeTab: string = 'new'; availableServices: string[] = [ 'Washing',
+'Painting', 'Battery Changing', 'Oil Change', 'Tire Replacement', 'Engine
+Repair', 'Brake Service', ]; newAppointments: Appointment[] = [];
+pendingAppointments: Appointment[] = []; onWorkAppointments: Appointment[] = [];
+completedAppointments: Appointment[] = []; newServiceToAdd: { [key: number]:
+string } = {}; extraCharges: { [key: number]: number } = {}; constructor(private
+http: HttpClient) {} ngOnInit(): void { this.loadAppointments(); }
+setActiveTab(tab: string): void { this.activeTab = tab; } loadAppointments():
+void { this.http.get<any
+  >(this.apiBaseUrl).subscribe({ next: (res) => { const appointments: any[] =
+  res.$values || []; // Parse services for each appointment
+  appointments.forEach((a) => { try { const parsed = a.selectedServicesJson ?
+  JSON.parse(a.selectedServicesJson) : []; a.services = parsed.map((s: any) =>
+  typeof s === 'string' ? s : s.name || 'Unknown' ); } catch { a.services = [];
+  } }); // Filter by status this.newAppointments = appointments.filter((a) =>
+  a.status === 'New'); this.pendingAppointments = appointments.filter( (a) =>
+  a.status === 'Pending' ); this.onWorkAppointments = appointments.filter( (a)
+  => a.status === 'OnWork' ); this.completedAppointments = appointments.filter(
+  (a) => a.status === 'Completed' ); }, error: (err) => console.error('Failed to
+  load appointments', err), }); } moveToOnWork(appointment: Appointment): void {
+  if (!appointment.returnDate || !appointment.returnTime) { alert('Please fill
+  return date and time'); return; } // Update status before sending to API
+  appointment.status = 'Pending'; // Calculate total payment if needed // Call
+  API to update the appointment this.http
+  .put(`${this.apiBaseUrl}/${appointment.id}`, appointment) .subscribe({ next:
+  (res) => { // Remove from newAppointments const index =
+  this.newAppointments.indexOf(appointment); if (index > -1)
+  this.newAppointments.splice(index, 1); // Add to pendingAppointments
+  this.pendingAppointments.push(appointment); alert('Appointment updated and
+  moved to Pending!'); }, error: (err) => { console.error('Failed to update
+  appointment', err); alert('Failed to update appointment. Please try again.');
+  }, }); } moveToPending(appointment: Appointment): void { if
+  (!appointment.returnDate || !appointment.returnTime) { alert('Please fill
+  return date and time'); return; } const updated = { ...appointment, status:
+  'Pending' }; // Parse services for the updated object try { const parsed =
+  updated.selectedServicesJson ? JSON.parse(updated.selectedServicesJson) : [];
+  updated.services = parsed.map((s: any) => typeof s === 'string' ? s : s.name
+  || 'Unknown' ); } catch { updated.services = []; }
+  this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
+  next: () => { // Remove from newAppointments this.newAppointments =
+  this.newAppointments.filter( (a) => a.id !== appointment.id ); // Push into
+  pendingAppointments **as a new array** this.pendingAppointments =
+  [...this.pendingAppointments, updated]; }, error: (err) =>
+  console.error('Failed to update appointment', err), }); }
+  confirmAppointment(appointment: Appointment): void { const updated = {
+  ...appointment, status: 'OnWork' };
+  this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
+  next: () => { this.pendingAppointments = this.pendingAppointments.filter( (a)
+  => a.id !== appointment.id ); this.onWorkAppointments.push(updated); }, error:
+  (err) => console.error('Failed to confirm appointment', err), }); }
+  cancelAppointment(appointment: Appointment): void { const updated = {
+  ...appointment, status: 'Cancelled' };
+  this.http.put(`${this.apiBaseUrl}/${appointment.id}`, updated).subscribe({
+  next: () => { this.pendingAppointments = this.pendingAppointments.filter( (a)
+  => a.id !== appointment.id ); }, error: (err) => console.error('Failed to
+  cancel appointment', err), }); } finishWork(appointment: Appointment): void {
+  // Ensure extraPayment and extraCharges are numbers const extraPayment =
+  appointment.extraPayment || 0; const extraCharges =
+  this.extraCharges[appointment.id] || 0; const basePrice =
+  appointment.basePrice || 3000; // default if basePrice not set // Calculate
+  totalPayment appointment.totalPayment = basePrice + extraPayment +
+  extraCharges; // Update status appointment.status = 'Completed'; // Update the
+  database this.http.put(`${this.apiBaseUrl}/${appointment.id}`,
+  appointment).subscribe({ next: () => { // Remove from onWorkAppointments using
+  filter (safe even if object reference differs) this.onWorkAppointments =
+  this.onWorkAppointments.filter(a => a.id !== appointment.id); // Add to
+  completedAppointments this.completedAppointments =
+  [...this.completedAppointments, appointment]; // Optional: switch to Completed
+  tab immediately this.activeTab = 'complete'; }, error: (err) =>
+  console.error('Failed to finish appointment', err), }); }
+  toggleServiceCompletion(appointment: Appointment, service: string): void { if
+  (!appointment.completedServices) { appointment.completedServices = []; } const
+  index = appointment.completedServices.indexOf(service); if (index > -1) {
+  appointment.completedServices.splice(index, 1); // uncheck } else {
+  appointment.completedServices.push(service); // check } // Optionally, update
+  the database if you want to persist const payload = { ...appointment };
+  this.http.put(`${this.apiBaseUrl}/${appointment.id}`, payload).subscribe({
+  next: () => console.log(`Service status updated for
+  ${appointment.customerName}`), error: (err) => console.error('Failed to update
+  service status', err), }); } // Utility methods getAllServices(appointment:
+  Appointment): string[] { let parsed: any[] = []; try { parsed =
+  appointment.selectedServicesJson ?
+  JSON.parse(appointment.selectedServicesJson) : []; } catch { parsed = []; } //
+  Convert parsed array to strings const selectedServices = parsed.map((s: any)
+  => typeof s === 'string' ? s : s.name || 'Unknown' ); // Combine with
+  additionalServices (strings) return [...selectedServices,
+  ...(appointment.additionalServices || [])]; } togglePaidStatus(appointment:
+  Appointment) { // Toggle boolean in frontend appointment.isPaid =
+  !appointment.isPaid; // Convert to 0 or 1 for database const payload = {
+  ...appointment, isPaid: appointment.isPaid ? 1 : 0, // store as 1 (paid) or 0
+  (unpaid) }; // Update in DB
+  this.http.put(`${this.apiBaseUrl}/${appointment.id}`, payload).subscribe({
+  next: () => console.log(`Paid status updated for appointment
+  ${appointment.id}`), error: (err) => console.error('Failed to update paid
+  status', err), }); } isServiceCompleted(appointment: Appointment, service:
+  string): boolean { return appointment.completedServices?.includes(service) ||
+  false; } addService(appointment: Appointment): void { const service =
+  this.newServiceToAdd[appointment.id]; if (service) { if
+  (!appointment.additionalServices) appointment.additionalServices = [];
+  appointment.additionalServices.push(service);
+  this.newServiceToAdd[appointment.id] = ''; } } updateExtraPayment(appointment:
+  Appointment) { if (appointment.extraPayment == null) appointment.extraPayment
+  = 0; // Save the updated extraPayment to DB this.http
+  .put(`${this.apiBaseUrl}/${appointment.id}`, appointment) .subscribe({ next:
+  () => { console.log('Extra payment updated:', appointment.extraPayment); },
+  error: (err) => console.error('Failed to update extra payment', err), }); }
+  getTotalPayment(appointment: Appointment): number { const basePrice = 3000; //
+  example: replace with actual base price const extraPayment =
+  appointment.extraPayment || 0; // from NEW tab const extraCharges =
+  this.extraCharges[appointment.id] || 0; // from ON WORK tab return basePrice +
+  extraPayment + extraCharges; } }
+</any>
