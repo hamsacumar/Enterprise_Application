@@ -6,6 +6,8 @@ const chatSchema = new mongoose.Schema(
       {
         userId: String,
         username: String,
+        role: String, // 'Customer' or 'Company'
+        lastReadAt: { type: Date, default: null },
       },
     ],
   },
