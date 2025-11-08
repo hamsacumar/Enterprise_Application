@@ -1,0 +1,101 @@
+<div class="dashboard-page">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <h1 class="welcome-title">Welcome back!</h1>
+    <p class="welcome-subtitle">Track your vehicle service progress and manage your bookings</p>
+  </div>
+
+  <!-- Quick Action -->
+  <div class="quick-action">
+    <mat-card class="action-card">
+      <mat-icon class="action-icon">book_online</mat-icon>
+      <div class="action-content">
+        <h2>Need a Service?</h2>
+        <p>Book a new service for your vehicle from AutoServeX</p>
+        <button mat-raised-button color="primary" routerLink="/book-service" class="book-btn">
+          <mat-icon>add</mat-icon>
+          Book Service Now
+        </button>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Service Progress Section -->
+  <div class="progress-section" *ngIf="ongoing$ | async as ongoingList">
+    <h2 class="section-title">Your Service Progress</h2>
+    <div *ngIf="ongoingList.length > 0; else noOngoing">
+      <div class="cards">
+        <mat-card class="service-card" *ngFor="let s of ongoingList">
+          <div class="vehicle-info">
+            <mat-icon class="vehicle-icon">directions_car</mat-icon>
+            <div>
+              <div class="title">{{ s.vehicle }}</div>
+              <div class="type">{{ s.type }}</div>
+            </div>
+          </div>
+          <div class="progress-section-card">
+            <div class="progress-header">
+              <span class="status-badge" [class.in-progress]="s.status === 'In Progress'">{{ s.status }}</span>
+              <span class="eta">ETA: {{ s.eta }}</span>
+            </div>
+            <mat-progress-bar mode="determinate" [value]="s.progress" class="progress-bar"></mat-progress-bar>
+            <div class="progress-text">{{ s.progress }}% Complete</div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+    <ng-template #noOngoing>
+      <mat-card class="empty-state">
+        <mat-icon>inbox</mat-icon>
+        <p>No ongoing services. Book a service to get started!</p>
+        <button mat-button color="primary" routerLink="/book-service">Book Service</button>
+      </mat-card>
+    </ng-template>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary" *ngIf="summary$ | async as s">
+    <mat-card class="sum-card stat-card">
+      <div class="stat-item">
+        <mat-icon>assignment</mat-icon>
+        <div>
+          <div class="stat-num">{{ s.total }}</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <mat-icon>check_circle</mat-icon>
+        <div>
+          <div class="stat-num">{{ s.completed }}</div>
+          <div class="stat-label">Completed</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <mat-icon>schedule</mat-icon>
+        <div>
+          <div class="stat-num">{{ s.pending }}</div>
+          <div class="stat-label">Pending</div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="quick-links">
+    <h2 class="section-title">Quick Links</h2>
+    <div class="links-grid">
+      <mat-card class="link-card" routerLink="/services">
+        <mat-icon>build</mat-icon>
+        <span>My Bookings</span>
+      </mat-card>
+      <mat-card class="link-card" routerLink="/past-orders">
+        <mat-icon>history</mat-icon>
+        <span>Past Orders</span>
+      </mat-card>
+      <mat-card class="link-card" routerLink="/payment-details">
+        <mat-icon>payments</mat-icon>
+        <span>Payments</span>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+.notifications-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #212121;
+}
+
+.notif-card {
+  margin-bottom: 16px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid #2196F3;
+}
+
+.notif-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.notif-content {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.notif-text {
+  font-size: 15px;
+  color: #212121;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.notif-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.status {
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status.accepted {
+  color: #4caf50;
+  background-color: #e8f5e9;
+}
+
+.status.rejected {
+  color: #f44336;
+  background-color: #ffebee;
+}
+
+.empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: #777;
+  font-size: 16px;
+}
+
+.empty mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+

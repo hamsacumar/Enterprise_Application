@@ -1,0 +1,60 @@
+<div class="login-page">
+  <div class="left-section">
+    <div class="image-grid">
+      <img src="../../../../../assets/images/mechanic2.jpg" alt="Mechanic working" />
+      <div class="small-images">
+        <img src="assets/images/mechanic3.jpg" alt="Car Wash" />
+        <img src="assets/images/repair.jpg" alt="Repair" />
+      </div>
+    </div>
+    <div class="tagline">
+      <h3>Smooth rides, trusted service</h3>
+      <p>"Welcome back, let's drive further together."</p>
+    </div>
+  </div>
+
+  <div class="right-section">
+    <div class="login-card">
+      <div class="logo">
+        <img src="../../../../../../assets/images/logo.png" alt="AutoServeX logo" />
+      </div>
+      <h2>Welcome to AutoServeX</h2>
+      <p>Login to continue</p>
+
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <div class="input-group">
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
+            [(ngModel)]="username"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            [(ngModel)]="password"
+            required
+          />
+        </div>
+
+        <div class="forgot">
+          <a (click)="goToForgotPassword()" class="link">Forgot password</a>
+        </div>
+
+        <button type="submit" [disabled]="!loginForm.valid">Login</button>
+
+        <p class="register">
+          <span>Don't have an account? </span><a routerLink="/register" class="link">Register now</a>
+        </p>
+
+        <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+
+        <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+      </form>
+    </div>
+  </div>
+</div>

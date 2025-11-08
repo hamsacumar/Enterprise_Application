@@ -1,0 +1,14 @@
+<div class="dashboard" [class.mobile-open]="sidebarOpen">
+  <header class="topbar">
+    <button class="menu-toggle" (click)="toggleSidebar()">☰</button>
+    <h1 class="brand">Admin Panel</h1>
+  </header>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+
+  <div class="overlay" *ngIf="sidebarOpen" (click)="closeSidebar()"></div>
+</div>
