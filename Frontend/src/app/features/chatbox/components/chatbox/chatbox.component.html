@@ -1,7 +1,11 @@
 <div class="chat-container">
   <!-- Sidebar: Users List -->
   <div class="sidebar">
-    <h3 class="sidebar-title">Chats</h3>
+    <div class="sidebar-header">
+      <h3 class="sidebar-title">Messages</h3>
+    </div>
+
+    
 
     <div class="user-list">
       <div
@@ -10,19 +14,18 @@
         [class.active]="selectedUser?.chatId === user.chatId"
         class="user-item"
       >
-        <div class="avatar">
-          <img
-            [src]="user.profileImage || 'assets/default-avatar.png'"
-            alt="User Avatar"
-          />
-        </div>
         <div class="user-info">
-          <div class="username">{{ user.username }}</div>
-          <small class="status"
-            >{{ user.status ? user.status : 'offline' }}</small
-          >
+          <div class="user-header">
+            <span class="username">{{ mySideRole === 'Customer' ? companyName : user.username }}</span>
+            <span class="last-message-time">{{ user.lastMessageAt ? (user.lastMessageAt | date: 'shortTime') : '' }}</span>
+          </div>
+          <div class="last-message">
+            <span class="message-preview">{{ user.lastMessage || 'Start a conversation...' }}</span>
+          </div>
         </div>
-        <span *ngIf="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</span>
+        <div class="user-meta">
+          <span *ngIf="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -31,55 +34,84 @@
   <div class="chat-section" *ngIf="selectedUser; else selectUserMsg">
     <!-- Chat Header -->
     <div class="chat-header">
-      <div class="chat-header-user">
-        <img
-          [src]="selectedUser.profileImage || 'assets/default-avatar.png'"
-          alt="User Avatar"
-        />
-        <div>
-          <h4>{{ selectedUser.username }}</h4>
-          <small>Chat ID: {{ selectedUser.chatId }}</small>
+      <div class="chat-header-left">
+        <div class="chat-user-info">
+          <h4>{{ mySideRole === 'Customer' ? companyName : selectedUser.username }}</h4>
         </div>
       </div>
     </div>
 
     <!-- Messages -->
     <div id="chat-box" class="chat-box">
+      <div class="date-divider">
+        <span>Today</span>
+      </div>
+      
       <div
-        *ngFor="let msg of messages"
+        *ngFor="let msg of messages; let i = index"
         [ngClass]="{
           'message-row': true,
-          me: (msg.senderRole ? (msg.senderRole === (currentUser?.role === 'Customer' ? 'Customer' : 'Company')) : (msg.senderId === currentUser?._id)),
-          other: (msg.senderRole ? (msg.senderRole !== (currentUser?.role === 'Customer' ? 'Customer' : 'Company')) : (msg.senderId !== currentUser?._id))
+          me: (msg.senderRole ? (msg.senderRole === mySideRole) : (msg.senderId === currentUser?._id)),
+          other: (msg.senderRole ? (msg.senderRole !== mySideRole) : (msg.senderId !== currentUser?._id))
         }"
       >
-        <div class="message-bubble">
-          <p class="message-text">{{ msg.content }}</p>
-          <small class="message-time">
-            {{ msg.createdAt | date: 'shortTime' }}
-          </small>
+        <div class="message-content">
+          <div class="message-bubble">
+            <p class="message-text">{{ msg.content }}</p>
+            <div class="message-footer">
+              <small class="message-time">
+                {{ msg.createdAt | date: 'shortTime' }}
+              </small>
+              <span 
+                *ngIf="(msg.senderRole ? (msg.senderRole === mySideRole) : (msg.senderId === currentUser?._id))"
+                class="message-status"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                  <polyline points="20 6 9 17 4 12" transform="translate(3, 0)"/>
+                </svg>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Message Input -->
-    <div class="chat-input">
-      <input
-        [(ngModel)]="newMessage"
-        type="text"
-        placeholder="Type your message..."
-        (keyup.enter)="sendMessage()"
-      />
-      <button (click)="sendMessage()" [disabled]="!newMessage.trim()">
-        Send
-      </button>
+    <div class="chat-input-container">
+      <div class="chat-input">
+        <input
+          [(ngModel)]="newMessage"
+          type="text"
+          placeholder="Type a message..."
+          (keyup.enter)="sendMessage()"
+          class="message-input"
+        />
+        <button 
+          (click)="sendMessage()" 
+          [disabled]="!newMessage.trim()"
+          class="send-btn"
+          title="Send message"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- No User Selected -->
   <ng-template #selectUserMsg>
     <div class="no-user-selected">
-      <p>Select a user to start chatting 💬</p>
+      <div class="empty-state">
+        <svg class="empty-icon" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <h3>Welcome to Messages</h3>
+        <p>Select a conversation from the left to start chatting</p>
+      </div>
     </div>
   </ng-template>
 </div>
