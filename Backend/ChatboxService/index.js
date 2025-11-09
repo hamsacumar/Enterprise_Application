@@ -3,6 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
+import axios from "axios";
 
 import connectDB from "./config/db.js";
 import chatRoutes from "./routes/chatRoutes.js";
@@ -30,6 +31,39 @@ const io = new Server(server, {
   },
 });
 
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake?.auth?.token;
+    if (!token) return next(new Error("Unauthorized"));
+    const resp = await axios.post(process.env.AUTH_SERVICE_URL, { token });
+    if (!resp?.data?.userId) return next(new Error("Unauthorized"));
+    socket.data.user = {
+      id: resp.data.userId,
+      username: resp.data.username,
+      role: resp.data.role,
+    };
+    return next();
+  } catch (e) {
+    return next(new Error("Unauthorized"));
+  }
+});
+
+const normalizeRole = (role) => {
+  if (typeof role === "number") {
+    return role === 0 ? "Customer" : role === 1 ? "Worker" : "Admin";
+  }
+  if (typeof role === "string") {
+    const t = role.trim();
+    if (/^\d+$/.test(t)) {
+      const n = parseInt(t, 10);
+      return n === 0 ? "Customer" : n === 1 ? "Worker" : "Admin";
+    }
+    const l = t.toLowerCase();
+    return l === "customer" ? "Customer" : l === "worker" ? "Worker" : "Admin";
+  }
+  return "Customer";
+};
+
 io.on("connection", (socket) => {
   console.log("🟢 User connected:", socket.id);
 
@@ -39,8 +73,24 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (data) => {
-    console.log("💬 Received message:", data);
-    io.to(data.chatId).emit("receiveMessage", data);
+    const user = socket.data?.user || {};
+    const roleNorm = normalizeRole(user.role);
+    const senderRole = roleNorm === "Customer" ? "Customer" : "Company";
+    const payload = {
+      chatId: data.chatId,
+      content: data.content,
+      senderRole,
+      senderId: user.id || undefined,
+      createdAt: new Date().toISOString(),
+    };
+    console.log("💬 Received message:", payload);
+    io.to(payload.chatId).emit("receiveMessage", payload);
+    io.emit("conversationUpdate", {
+      chatId: payload.chatId,
+      lastMessage: payload.content,
+      lastMessageAt: payload.createdAt,
+      senderRole: payload.senderRole,
+    });
   });
 
   socket.on("disconnect", () => {

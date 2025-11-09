@@ -57,6 +57,10 @@ export const getUserChats = async (req, res) => {
       }
       if (lastReadAt) unreadQuery.createdAt = { $gt: lastReadAt };
       const unreadCount = await Message.countDocuments(unreadQuery);
+      // Last message preview/time
+      const lastMsg = await Message.findOne({ chatId: chat._id }).sort({ createdAt: -1 });
+      cObj.lastMessage = lastMsg?.content || "";
+      cObj.lastMessageAt = lastMsg?.createdAt || chat.updatedAt;
       cObj.unreadCount = unreadCount;
       enriched.push(cObj);
     }
