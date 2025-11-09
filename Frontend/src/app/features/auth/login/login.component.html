@@ -1,0 +1,79 @@
+<!-- Login Page -->
+<div class="login-container">
+  <div class="login-card">
+    <!-- Logo -->
+    <div class="login-logo">
+      <span class="logo-icon">🚗</span>
+      <h1>AutoServex</h1>
+    </div>
+
+    <!-- Login Form -->
+    <form (ngSubmit)="login()" class="login-form">
+      <h2>Login to Your Account</h2>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Enter your email"
+          class="form-control"
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Enter your password"
+          class="form-control"
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" class="btn-login" [disabled]="isLoading">
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+
+    <!-- Test Credentials -->
+    <div class="test-credentials">
+      <p>Test Credentials:</p>
+      <div class="test-buttons">
+        <button class="test-btn admin" (click)="loginAsAdmin()" [disabled]="isLoading">
+          👨‍💼 Login as Admin
+        </button>
+        <button class="test-btn worker" (click)="loginAsWorker()" [disabled]="isLoading">
+          👷 Login as Worker
+        </button>
+        <button class="test-btn user" (click)="loginAsUser()" [disabled]="isLoading">
+          👤 Login as User
+        </button>
+      </div>
+    </div>
+
+    <!-- Back to Landing -->
+    <div class="login-footer">
+      <p>
+        Don't have an account?
+        <button type="button" class="link-btn" (click)="goToLanding()">
+          Back to Home
+        </button>
+      </p>
+    </div>
+  </div>
+</div>

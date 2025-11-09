@@ -12,6 +12,7 @@ COPY package*.json ./
 RUN npm ci
 
 # Copy the rest of your Angular source code
+# Copy the rest of your Angular source code
 COPY . .
 
 # Build the Angular app for production
@@ -26,6 +27,7 @@ FROM nginx:alpine
 # Remove default nginx page
 RUN rm -rf /usr/share/nginx/html/*
 
+# Copy build output to nginx html folder
 # Copy build output to nginx html folder
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 

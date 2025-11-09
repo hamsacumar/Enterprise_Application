@@ -1,0 +1,69 @@
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>{{ heroTitle }}</h1>
+    <p>{{ heroSubtitle }}</p>
+    <button class="cta-button" (click)="bookNow()">Book Now</button>
+  </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section class="services" id="services">
+  <div class="section-container">
+    <h2 class="section-title">Our Premium Services</h2>
+    <p class="section-subtitle">Professional care for your vehicle</p>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services">
+        <div class="service-icon-container">
+          <img [src]="service.icon" [alt]="service.title" class="service-icon-img">
+        </div>
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features" id="features">
+  <div class="section-container">
+    <h2 class="section-title">Why Choose AutoServex?</h2>
+    <p class="section-subtitle">Excellence in every detail</p>
+
+    <div class="features-grid">
+      <div class="feature-item" *ngFor="let feature of features">
+        <div class="feature-icon-container">
+          <img [src]="feature.icon" [alt]="feature.title" class="feature-icon-img">
+        </div>
+        <h4>{{ feature.title }}</h4>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section class="testimonials" id="testimonials">
+  <div class="section-container">
+    <h2 class="section-title">What Our Customers Say</h2>
+    <p class="section-subtitle">Real feedback from satisfied clients</p>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+        <div class="stars">
+          <span *ngFor="let star of getStars(testimonial.stars)">⭐</span>
+        </div>
+        <p class="testimonial-text">{{ testimonial.text }}</p>
+        <p class="testimonial-author">- {{ testimonial.author }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section" id="contact">
+  <h2>Ready to Treat Your Vehicle Right?</h2>
+  <p>Book your service appointment today and get 20% off your first visit</p>
+  <a href="tel:+15551234567" class="cta-button-secondary">Call Us Now</a>
+</section>

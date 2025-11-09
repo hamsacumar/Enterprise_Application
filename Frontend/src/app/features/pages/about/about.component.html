@@ -1,0 +1,121 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>About AutoServeX</h1>
+    <p>Delivering Excellence in Vehicle Care Since 2018</p>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section">
+  <div class="section-container">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>{{ aboutTitle }}</h2>
+        <p class="intro-text">{{ aboutIntro }}</p>
+        
+        <p class="description">
+          AutoServeX is a leading vehicle care service provider dedicated to keeping your car in pristine condition. 
+          With a team of certified professionals and state-of-the-art facilities, we've been serving thousands of 
+          satisfied customers across the city since 2018.
+        </p>
+
+        <p class="description">
+          Our commitment to quality, sustainability, and customer satisfaction drives us to continuously innovate 
+          and improve our services. We believe that every vehicle deserves premium care, and every customer deserves 
+          exceptional service.
+        </p>
+
+        <div class="highlight-box">
+          <p><strong>🏆 Award-Winning Service</strong></p>
+          <p>Recognized for excellence in vehicle care and eco-friendly practices</p>
+        </div>
+      </div>
+
+      <div class="about-image">
+        <img src="/assets/images/premium.jpg" alt="Premium Vehicle Care" class="about-img">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+  <div class="section-container">
+    <h2 class="section-title">Our Impact by Numbers</h2>
+    
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of stats">
+        <div class="stat-number">{{ stat.number }}</div>
+        <div class="stat-label">{{ stat.label }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Our Story (Timeline) -->
+<section class="story-section">
+  <div class="section-container">
+    <h2 class="section-title">Our Journey</h2>
+    <p class="section-subtitle">From a startup vision to industry leaders</p>
+
+    <div class="timeline">
+      <div class="timeline-item" *ngFor="let item of companyStory; let i = index">
+        <div class="timeline-marker">
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-year">{{ item.year }}</div>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Values -->
+<section class="values-section">
+  <div class="section-container">
+    <h2 class="section-title">Our Core Values</h2>
+    <p class="section-subtitle">What drives us every single day</p>
+
+    <div class="values-grid">
+      <div class="value-card" *ngFor="let value of values">
+        <img [src]="value.image" [alt]="value.title" class="value-image">
+        <h3>{{ value.title }}</h3>
+        <p>{{ value.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section">
+  <div class="section-container">
+    <h2 class="section-title">Meet Our Leadership Team</h2>
+    <p class="section-subtitle">Experienced professionals dedicated to your satisfaction</p>
+
+    <div class="team-grid">
+      <div class="team-card" *ngFor="let member of teamMembers">
+        <img [src]="member.image" [alt]="member.name" class="team-image">
+        <h3>{{ member.name }}</h3>
+        <p class="role">{{ member.role }}</p>
+        <p class="bio">{{ member.bio }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2>Ready to Experience Premium Vehicle Care?</h2>
+    <p>Join thousands of satisfied customers who trust AutoServeX</p>
+    <div class="cta-buttons">
+      <button class="cta-button" routerLink="/booking">Book Now</button>
+      <button class="cta-button-secondary" routerLink="/contact">Get in Touch</button>
+    </div>
+  </div>
+</section>
+
