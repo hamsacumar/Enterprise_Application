@@ -27,4 +27,4 @@ ENV ASPNETCORE_URLS=http://+:80
 EXPOSE 80
 
 # Set the entry point
-ENTRYPOINT ["dotnet", "UserDashboard.dll"]
+ENTRYPOINT ["dotnet", "be.dll"]

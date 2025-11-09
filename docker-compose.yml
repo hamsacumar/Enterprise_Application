@@ -1,11 +1,10 @@
-version: '3.8'
 
 services:
   # =========================
   # Frontend Service (Angular)
   # =========================
   frontend:
-    build: 
+    build:
       context: ./Frontend
       dockerfile: Dockerfile
     container_name: enterprise_frontend
@@ -22,8 +21,9 @@ services:
   # =========================
   # Auth Service (.NET)
   # =========================
+
   auth-service:
-    build: 
+    build:
       context: ./Backend/AuthService
       dockerfile: Dockerfile
     container_name: auth_service
@@ -32,17 +32,23 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AuthDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
-      - Jwt__Key=YourSecureKeyForJWTTokenGeneration
-      - Jwt__Issuer=EnterpriseApp
+      - JwtSettings__Secret=MySuperSecretKey123
+      - JwtSettings__Issuer=EnterpriseApp
+      - JwtSettings__Audience=EnterpriseApp
+      # Add MongoDB environment variables
+      - MongoDbSettings__ConnectionString=mongodb://mongo_db:27017/authdb
+      - MongoDbSettings__DatabaseName=authdb
+      - MongoDbSettings__UsersCollectionName=Users
     depends_on:
       - sqlserver
+      - mongo
     restart: unless-stopped
 
   # =========================
   # Admin Service (.NET)
   # =========================
   admin-service:
-    build: 
+    build:
       context: ./Backend/AdminService
       dockerfile: Dockerfile
     container_name: admin_service
@@ -60,7 +66,7 @@ services:
   # Chatbox Service (Node.js)
   # =========================
   chatbox-service:
-    build: 
+    build:
       context: ./Backend/ChatboxService
       dockerfile: Dockerfile
     container_name: chatbox_service
@@ -78,7 +84,7 @@ services:
   # Worker Service (.NET)
   # =========================
   worker-service:
-    build: 
+    build:
       context: ./Backend/WorkersService
       dockerfile: Dockerfile
     container_name: worker_service
@@ -88,23 +94,6 @@ services:
     depends_on:
       - sqlserver
       - redis
-    restart: unless-stopped
-
-  # =========================
-  # User Dashboard Service (.NET)
-  # =========================
-  user-dashboard:
-    build: 
-      context: ./Backend/UserDashboard
-      dockerfile: Dockerfile
-    container_name: user_dashboard
-    ports:
-      - "5002:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=UserDashboardDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
-    depends_on:
-      - sqlserver
     restart: unless-stopped
 
   # =========================
@@ -139,7 +128,7 @@ services:
   # Chatbot Service (Python)
   # =========================
   chatbot-service:
-    build: 
+    build:
       context: ./Backend/ChatbotService
       dockerfile: Dockerfile
     container_name: chatbot_service
@@ -155,6 +144,28 @@ services:
     restart: unless-stopped
     command: >
       sh -c "python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+
+  # =========================
+  # User Dashboard Service (.NET)
+  # =========================
+  user-dashboard:
+    build:
+      context: ./Backend/UserDashboard
+      dockerfile: Dockerfile
+    container_name: user_dashboard
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=UserDashboardDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+    restart: unless-stopped
+
+
+      
+      
+      
 
   # =========================
   # Redis (for caching and message brokering)
