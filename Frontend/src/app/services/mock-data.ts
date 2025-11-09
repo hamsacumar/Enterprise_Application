@@ -1,15 +1,21 @@
-import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, of, map } from 'rxjs';
+import { UserDashboardService } from '../features/User/services/user-dashboard.service';
+import { Vehicle, Appointment, CreateAppointmentDto } from '../features/User/models/user-dashboard.models';
 
+/**
+ * MockData Service - Now connected to real backend APIs
+ * 
+ * This service maintains backward compatibility with existing components
+ * while using the real UserDashboardService for HTTP calls.
+ * 
+ * All vehicle and appointment operations now connect to the backend API.
+ */
 @Injectable({ providedIn: 'root' })
 export class MockData {
-  private vehicles$ = new BehaviorSubject<Array<any>>([
-    { id: 1, name: 'Toyota', model: 'Corolla', year: 2018, regNumber: 'ABC-1234', type: 'Sedan', color: 'White' },
-    { id: 2, name: 'Honda', model: 'Civic', year: 2020, regNumber: 'XYZ-5678', type: 'Sedan', color: 'Black' },
-  ]);
-
-  private appointments$ = new BehaviorSubject<Array<any>>([]);
-  private ongoing$ = new BehaviorSubject<Array<any>>([]);
+  private userDashboardService = inject(UserDashboardService);
+  
+  // Keep mock data for services that don't have backend endpoints yet
   private pastOrders$ = new BehaviorSubject<Array<any>>([
     { id: 201, vehicle: 'Toyota Corolla', type: 'Sedan', completedOn: '2024-09-12' },
     { id: 202, vehicle: 'Honda Civic', type: 'Sedan', completedOn: '2024-10-08' },
@@ -19,69 +25,108 @@ export class MockData {
     { date: '2024-09-12', amount: 5000, method: 'Cash', status: 'Paid', invoice: 'INV-0991' },
   ]);
 
-  private idSeq = 1000;
-
+  // ==================== Services (Hardcoded - needs backend endpoint) ====================
+  
   getAvailableServices(): Observable<Array<any>> {
-    return of([
-      { id: 1, name: 'Oil Change', price: 5000 },
-      { id: 2, name: 'Tire Rotation', price: 3000 },
-      { id: 3, name: 'Brake Inspection', price: 4500 },
-      { id: 4, name: 'Full Service', price: 15000 },
-    ]);
+    return this.userDashboardService.getAvailableServices();
   }
 
-  getMyVehicles(): Observable<Array<any>> { return this.vehicles$.asObservable(); }
+  // ==================== Vehicles (Connected to Backend) ====================
+
+  getMyVehicles(): Observable<Array<any>> {
+    return this.userDashboardService.getVehicles();
+  }
 
   addVehicle(v: any): Observable<any> {
-    const id = ++this.idSeq;
-    this.vehicles$.next([ ...this.vehicles$.value, { id, ...v } ]);
-    return of({ id, ...v });
+    // Remove id if present (backend will assign it)
+    const { id, ...vehicleData } = v;
+    return this.userDashboardService.createVehicle(vehicleData);
   }
 
   updateVehicle(v: any): Observable<any> {
-    this.vehicles$.next(this.vehicles$.value.map(x => x.id === v.id ? { ...x, ...v } : x));
-    return of(v);
+    return this.userDashboardService.updateVehicle(v as Vehicle).pipe(
+      // Return the updated vehicle data
+      map(() => v)
+    );
   }
 
   deleteVehicle(id: number): Observable<void> {
-    this.vehicles$.next(this.vehicles$.value.filter(x => x.id !== id));
-    return of(void 0);
+    return this.userDashboardService.deleteVehicle(id);
   }
+
+  // ==================== Appointments (Connected to Backend) ====================
 
   createAppointment(payload: any): Observable<any> {
-    const id = ++this.idSeq;
-    const selectedServicesJson = JSON.stringify(payload.services || []);
-    const rec = { id, ...payload, selectedServicesJson, status: 'Pending' };
-    this.appointments$.next([ ...this.appointments$.value, rec ]);
-    return of(rec);
+    // Transform payload to match CreateAppointmentDto
+    const dto: CreateAppointmentDto = {
+      customerName: payload.customerName,
+      phoneNumber: payload.phoneNumber,
+      specialInstructions: payload.specialInstructions || null,
+      vehicleId: payload.vehicleId || null,
+      vehicleName: payload.vehicleName || null,
+      vehicleModel: payload.vehicleModel || null,
+      vehicleYear: payload.vehicleYear || null,
+      vehicleRegNumber: payload.vehicleRegNumber || null,
+      vehicleType: payload.vehicleType || null,
+      services: payload.services || [],
+      totalPriceLkr: payload.totalPriceLkr || 0
+    };
+    
+    return this.userDashboardService.createAppointment(dto);
   }
 
-  getAppointments(): Observable<Array<any>> { return this.appointments$.asObservable(); }
+  getAppointments(): Observable<Array<any>> {
+    return this.userDashboardService.getAppointments();
+  }
 
   getAppointment(id: number): Observable<any | undefined> {
-    return of(this.appointments$.value.find(a => a.id === id));
+    return this.userDashboardService.getAppointment(id);
   }
 
   updateAppointmentStatus(id: number, status: string): Observable<any> {
-    this.appointments$.next(this.appointments$.value.map(a => a.id === id ? { ...a, status } : a));
-    return of({ id, status });
+    return this.userDashboardService.updateAppointmentStatus(id, status).pipe(
+      // Return the status update
+      map(() => ({ id, status }))
+    );
   }
+
+  // ==================== Ongoing Services (Connected to Backend) ====================
 
   addOngoingService(item: any): void {
-    this.ongoing$.next([ ...this.ongoing$.value, item ]);
+    // This is now handled by the backend - appointments with status "Accepted" or "In Progress"
+    // No need to maintain separate list
+    console.warn('addOngoingService is deprecated. Use createAppointment instead.');
   }
 
-  getOngoingServices(): Observable<Array<any>> { return this.ongoing$.asObservable(); }
+  getOngoingServices(): Observable<Array<any>> {
+    return this.userDashboardService.getOngoingServices();
+  }
 
-  getPastOrders(): Observable<Array<any>> { return this.pastOrders$.asObservable(); }
-
-  getPayments(): Observable<Array<any>> { return this.payments$.asObservable(); }
+  // ==================== Summary (Connected to Backend) ====================
 
   getSummary(): Observable<any> {
-    return of({
-      totalAppointments: this.appointments$.value.length,
-      ongoingCount: this.ongoing$.value.length,
-      myVehicles: this.vehicles$.value.length,
-    });
+    return this.userDashboardService.getSummary();
+  }
+
+  // ==================== Past Orders (Mock Data - needs backend endpoint) ====================
+
+  getPastOrders(): Observable<Array<any>> {
+    // TODO: Create backend endpoint for past orders
+    // For now, return mock data or filter appointments with status "Completed"
+    return this.userDashboardService.getAppointments().pipe(
+      map(appointments => {
+        // Filter completed appointments
+        const completed = appointments.filter(a => a.status === 'Completed' || a.status === 'completed');
+        // If no completed appointments, return mock data
+        return completed.length > 0 ? completed : this.pastOrders$.value;
+      })
+    );
+  }
+
+  // ==================== Payments (Mock Data - needs backend endpoint) ====================
+
+  getPayments(): Observable<Array<any>> {
+    // TODO: Create backend endpoint for payments
+    return this.payments$.asObservable();
   }
 }
