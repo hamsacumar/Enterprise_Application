@@ -15,7 +15,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/publish .
 
-ENV ASPNETCORE_URLS=http://+:80
-EXPOSE 80
+ENV ASPNETCORE_URLS=http://+:5003
+EXPOSE 5003
 
 ENTRYPOINT ["dotnet", "AuthService.dll"]

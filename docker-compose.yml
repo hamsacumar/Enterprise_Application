@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
     container_name: auth_service
     ports:
-      - "5003:80"
+      - "5003:5003"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AuthDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
@@ -40,7 +40,7 @@ services:
       - MongoDbSettings__DatabaseName=authdb
       - MongoDbSettings__UsersCollectionName=Users
     depends_on:
-      - sqlserver
+      
       - mongo
     restart: unless-stopped
 
@@ -89,7 +89,7 @@ services:
       dockerfile: Dockerfile
     container_name: worker_service
     ports:
-      - "7193:80"
+      - "7193:7193"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
