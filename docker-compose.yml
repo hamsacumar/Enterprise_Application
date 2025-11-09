@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
     container_name: auth_service
     ports:
-      - "5000:80"
+      - "5003:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AuthDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
@@ -53,7 +53,7 @@ services:
       dockerfile: Dockerfile
     container_name: admin_service
     ports:
-      - "5001:80"
+      - "5125:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AdminDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
@@ -71,7 +71,7 @@ services:
       dockerfile: Dockerfile
     container_name: chatbox_service
     ports:
-      - "3000:3000"
+      - "3000:80"
     environment:
       - NODE_ENV=development
       - MONGO_URI=mongodb://mongo:27017/ChatDB
@@ -88,6 +88,8 @@ services:
       context: ./Backend/WorkersService
       dockerfile: Dockerfile
     container_name: worker_service
+    ports:
+      - "7193:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
