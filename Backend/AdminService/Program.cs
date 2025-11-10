@@ -15,6 +15,9 @@ var envMongo = Environment.GetEnvironmentVariable("MONGO_URI");
 var cfg = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
 var connectionString = envMongo ?? cfg?.ConnectionString ?? throw new Exception("Mongo connection string missing");
 var databaseName = cfg?.DatabaseName ?? "Enterprise";
+var authServiceUrl = builder.Configuration["AuthServiceUrl"];
+builder.Services.AddSingleton(new AuthServiceClientConfig(authServiceUrl));
+builder.Services.AddHttpClient();
 
 // Register Mongo client (used globally)
 builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(connectionString));
@@ -29,6 +32,7 @@ builder.Services.Configure<MongoDbSettings>(opt =>
 // ----------------------
 builder.Services.AddScoped<IServiceService, ServiceService>(); // ✅ for managing Services (CRUD)
 builder.Services.AddSingleton<IWorkerService, WorkerService>();
+builder.Services.AddHttpClient<ICustomerService, CustomerService>();
 
 // ----------------------
 // Controllers + Swagger
