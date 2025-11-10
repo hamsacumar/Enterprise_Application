@@ -1,25 +1,22 @@
-using Backend.Services;              // Existing + new services
+using Backend.Services;              // Service interfaces & implementations
 using Backend.Settings;              // MongoDbSettings
+using AdminService.Services;         // ICustomerService, CustomerService
+using AdminService.Settings;         // AuthServiceClientConfig
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ----------------------
-// MongoDB Configuration
-// ----------------------
+// MongoDB configuration
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
-
-// Support MONGO_URI environment variable (for Docker)
 var envMongo = Environment.GetEnvironmentVariable("MONGO_URI");
 var cfg = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
 var connectionString = envMongo ?? cfg?.ConnectionString ?? throw new Exception("Mongo connection string missing");
 var databaseName = cfg?.DatabaseName ?? "Enterprise";
-var authServiceUrl = builder.Configuration["AuthServiceUrl"];
-builder.Services.AddSingleton(new AuthServiceClientConfig(authServiceUrl));
-builder.Services.AddHttpClient();
 
-// Register Mongo client (used globally)
+
+
+// Register Mongo client
 builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(connectionString));
 builder.Services.Configure<MongoDbSettings>(opt =>
 {
@@ -27,16 +24,13 @@ builder.Services.Configure<MongoDbSettings>(opt =>
     opt.DatabaseName = databaseName;
 });
 
-// ----------------------
 // Dependency Injection
-// ----------------------
-builder.Services.AddScoped<IServiceService, ServiceService>(); // ✅ for managing Services (CRUD)
+builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddSingleton<IWorkerService, WorkerService>();
-builder.Services.AddHttpClient<ICustomerService, CustomerService>();
+// Register HttpClient
+builder.Services.AddHttpClient<CustomerService>();
 
-// ----------------------
 // Controllers + Swagger
-// ----------------------
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -44,9 +38,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Admin Service API", Version = "v1" });
 });
 
-// ----------------------
-// CORS Configuration
-// ----------------------
+// CORS policy for Angular frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
@@ -60,9 +52,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// ----------------------
 // Middleware
-// ----------------------
 app.UseCors("AllowAngular");
 
 if (app.Environment.IsDevelopment())
@@ -78,12 +68,10 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
-// ----------------------
-// Root route (test)
-// ----------------------
+// Root route for testing
 app.MapGet("/", () => Results.Ok(new { message = "🚀 Admin API running successfully!" }));
 
 app.Run();
 
-// 👇 ADD THIS LINE for integration tests
+// For integration tests
 public partial class Program { }

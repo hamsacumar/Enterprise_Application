@@ -12,5 +12,9 @@ namespace AuthService.Services
         Task UpdateAsync(string id, User updated);
         Task<User?> GetByOtpAsync(string otpCode);
         Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetClassifiedUserByUsernameAsync(string username);
+
+        
+        
     }
 }
