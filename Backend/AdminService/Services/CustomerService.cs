@@ -1,31 +1,33 @@
 using AdminService.Models;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 
-public class CustomerService : ICustomerService
+namespace AdminService.Services
 {
-    private readonly HttpClient _httpClient;
-    private readonly AuthServiceClientConfig _config;
-    private static List<Customer> _customers = new();
-
-    public CustomerService(HttpClient httpClient, AuthServiceClientConfig config)
+    public class CustomerService
     {
-        _httpClient = httpClient;
-        _config = config;
-    }
+        private readonly HttpClient _httpClient;
 
-    public async Task<Customer> ClassifyCustomerAsync(Customer request)
-    {
-        // CALLING THE AUTH SERVICE USING URL FROM SETTINGS
-        var response = await _httpClient.PostAsJsonAsync(_config.ClassifyUrl, request);
+        public CustomerService(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
-        var customer = await response.Content.ReadFromJsonAsync<Customer>();
+        public async Task<CustomerDto?> GetCustomerDetailsAsync(string username)
+        {
+            string url = $"http://localhost:5143/api/Auth/classify/{username}"; // AuthService endpoint
 
-        _customers.Add(customer);
-
-        return customer;
-    }
-
-    public List<Customer> GetAllCustomers()
-    {
-        return _customers;
+            try
+            {
+                var customer = await _httpClient.GetFromJsonAsync<CustomerDto>(url);
+                return customer;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error fetching customer: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

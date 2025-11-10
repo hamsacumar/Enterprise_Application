@@ -1,27 +1,28 @@
-using Microsoft.AspNetCore.Mvc;
 using AdminService.Models;
+using AdminService.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
-[ApiController]
-[Route("api/[controller]")]
-public class CustomerController : ControllerBase
+namespace AdminService.Controllers
 {
-    private readonly ICustomerService _customerService;
-
-    public CustomerController(ICustomerService customerService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CustomerController : ControllerBase
     {
-        _customerService = customerService;
-    }
+        private readonly CustomerService _customerService;
 
-    [HttpPost("classify")]
-    public async Task<IActionResult> Classify([FromBody] Customer request)
-    {
-        var result = await _customerService.ClassifyCustomerAsync(request);
-        return Ok(result);
-    }
+        public CustomerController(CustomerService customerService)
+        {
+            _customerService = customerService;
+        }
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        return Ok(_customerService.GetAllCustomers());
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetCustomer(string username)
+        {
+            var customer = await _customerService.GetCustomerDetailsAsync(username);
+            if (customer == null) return NotFound("Customer not found.");
+
+            return Ok(customer);
+        }
     }
 }
