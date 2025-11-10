@@ -3,6 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
+interface Service {
+  name: string;
+  basePrice: number;
+}
+
 interface ApiAppointment {
   id: number;
   customerName: string;
@@ -63,7 +68,7 @@ export class WorkerDashboardComponent implements OnInit {
   apiBaseUrl = 'https://localhost:7193/api/Appointments';
 
   activeTab: string = 'new';
-  availableServices = [
+  availableServices: Service[] = [
     { name: 'Washing', basePrice: 1000 },
     { name: 'Painting', basePrice: 8000 },
     { name: 'Battery Changing', basePrice: 2500 },
@@ -96,41 +101,53 @@ export class WorkerDashboardComponent implements OnInit {
       next: (res) => {
         const appointments: any[] = res.$values || [];
 
-        // Parse services for each appointment
-
         appointments.forEach((a) => {
           try {
             let parsed: any[] = [];
 
+            // ✅ Step 1: Parse JSON safely
             if (a.selectedServicesJson) {
-              // First, parse the string
-              parsed = JSON.parse(a.selectedServicesJson);
+              let jsonStr = a.selectedServicesJson.trim();
 
-              // Handle double-serialized strings
+              // 🧹 Fix invalid JSON fragments (e.g., K"Service": or missing braces)
+              jsonStr = jsonStr
+                .replace(/^K/, '') // remove stray 'K'
+                .replace(/([A-Za-z0-9]+)\s*:/g, '"$1":') // ensure proper keys
+                .replace(/}\s*{/g, '},{') // fix missing commas
+                .replace(/(\.\")/g, ',"'); // fix dots between key-values
+
+              // Parse once
+              parsed = JSON.parse(jsonStr);
+
+              // Handle if result is a string (double stringified)
               if (typeof parsed === 'string') {
                 parsed = JSON.parse(parsed);
               }
-
-              // Convert to service names
-              a.services = parsed.map((s: any) => {
-                if (typeof s === 'string') return s; // string service
-                if (s && s.name) return s.name; // object with name
-                return 'Unknown';
-              });
-            } else {
-              a.services = [];
             }
+
+            // ✅ Step 2: Normalize services to names
+            a.services = parsed.map((s: any) => {
+              if (typeof s === 'string') return s;
+              if (s?.name) return s.name;
+              if (s?.Service) return s.Service; // legacy format
+              return 'Unknown';
+            });
+
+            // ✅ Step 3: Normalize pricing info
+            a.totalPriceLkr = a.totalPriceLkr || 0;
+            a.extraPayment = a.extraPayment || 0;
+            a.totalPayment = (a.totalPriceLkr || 0) + (a.extraPayment || 0);
           } catch (err) {
             console.error(
-              'Failed to parse services',
-              err,
-              a.selectedServicesJson
+              '❌ Failed to parse services JSON:',
+              a.selectedServicesJson,
+              err
             );
             a.services = [];
           }
         });
 
-        // Filter by status
+        // ✅ Step 4: Split into tabs
         this.newAppointments = appointments.filter((a) => a.status === 'New');
         this.pendingAppointments = appointments.filter(
           (a) => a.status === 'Pending'
@@ -141,9 +158,29 @@ export class WorkerDashboardComponent implements OnInit {
         this.completedAppointments = appointments.filter(
           (a) => a.status === 'Completed'
         );
+
+        console.log('✅ Appointments loaded successfully');
       },
-      error: (err) => console.error('Failed to load appointments', err),
+      error: (err) => {
+        console.error('❌ Failed to load appointments', err);
+      },
     });
+  }
+
+  getAllServiceObjects(appointment: Appointment): any[] {
+    try {
+      const parsed = appointment.selectedServicesJson
+        ? JSON.parse(appointment.selectedServicesJson)
+        : [];
+
+      // Normalize into { name, basePrice }
+      return parsed.map((s: any) => ({
+        name: s?.name || s?.Service || 'Unknown',
+        basePrice: s?.basePrice || s?.Price || 0,
+      }));
+    } catch {
+      return [];
+    }
   }
 
   moveToOnWork(appointment: Appointment): void {
@@ -284,45 +321,51 @@ export class WorkerDashboardComponent implements OnInit {
   }
 
   finishWork(appointment: Appointment): void {
-    // Ensure extraPayment and extraCharges are numbers
+    if (!appointment) return;
+
+    // Ensure numeric values
     const extraPayment = appointment.extraPayment || 0;
-    const extraCharges = this.extraCharges[appointment.id] || 0;
-    const basePrice = appointment.basePrice || 3000; // default if basePrice not set
+    const totalPriceLkr = appointment.totalPriceLkr || 0;
 
-    // Calculate totalPayment
-    // After updating services or extra payment
-    appointment.totalPayment =
-      (appointment.totalPriceLkr || 0) + (appointment.extraPayment || 0);
+    // Prepare payload for API (match backend property names)
+    const payload = {
+      id: appointment.id,
+      customerName: appointment.customerName,
+      phoneNumber: appointment.phoneNumber,
+      status: 'Completed', // lowercase 'status' is important
+      totalPriceLkr: totalPriceLkr,
+      extraPayment: extraPayment,
+      totalPayment: totalPriceLkr + extraPayment,
+      returnDate: appointment.returnDate || null,
+      returnTime: appointment.returnTime || null,
+      selectedServicesJson: appointment.selectedServicesJson || '[]',
+      note: appointment.note || '',
+      isPaid: appointment.isPaid ?? false,
+    };
 
-    // Update status
-    appointment.Status = 'Completed';
+    this.http.put(`${this.apiBaseUrl}/${appointment.id}`, payload).subscribe({
+      next: () => {
+        // Remove from OnWork
+        this.onWorkAppointments = this.onWorkAppointments.filter(
+          (a) => a.id !== appointment.id
+        );
 
-    // Update database
-    this.http
-      .put(`${this.apiBaseUrl}/${appointment.id}`, appointment)
-      .subscribe({
-        next: () => {
-          // Remove from On Work tab
-          this.onWorkAppointments = this.onWorkAppointments.filter(
-            (a) => a.id !== appointment.id
-          );
+        // Push new object into Completed
+        this.completedAppointments = [
+          ...this.completedAppointments,
+          { ...appointment, Status: 'Completed' },
+        ];
 
-          // Add to Completed tab
-          this.completedAppointments = [
-            ...this.completedAppointments,
-            appointment,
-          ];
+        // Switch tab
+        this.activeTab = 'completed';
 
-          // Switch to Completed tab
-          this.activeTab = 'complete';
-
-          alert('Appointment marked as Completed!');
-        },
-        error: (err) => {
-          console.error('Failed to finish appointment', err);
-          alert('Failed to mark appointment as Completed.');
-        },
-      });
+        alert('Appointment marked as Completed!');
+      },
+      error: (err) => {
+        console.error('Failed to finish appointment', err);
+        alert('Failed to mark appointment as Completed.');
+      },
+    });
   }
 
   toggleServiceCompletion(appointment: Appointment, service: string): void {
@@ -363,7 +406,9 @@ export class WorkerDashboardComponent implements OnInit {
     );
 
     // Combine with additionalServices (strings)
-    return [...selectedServices, ...(appointment.additionalServices || [])];
+    return Array.from(
+      new Set([...selectedServices, ...(appointment.additionalServices || [])])
+    );
   }
 
   togglePaidStatus(appointment: Appointment) {
@@ -388,56 +433,54 @@ export class WorkerDashboardComponent implements OnInit {
     return appointment.completedServices?.includes(service) || false;
   }
 
-  addService(appointment: Appointment): void {
-    const selectedName = this.newServiceToAdd[appointment.id];
-    if (!selectedName) return;
+  addService(appointment: any): void {
+    const serviceName = this.newServiceToAdd[appointment.id];
+    if (!serviceName) return;
 
-    const serviceObj = this.availableServices.find(
-      (s) => s.name === selectedName
+    const serviceToAdd = this.availableServices.find(
+      (s) => s.name === serviceName
     );
-    if (!serviceObj) return;
+    if (!serviceToAdd) return;
 
-    if (!appointment.additionalServices) appointment.additionalServices = [];
+    // Parse current services
+    let services = [];
+    try {
+      services = JSON.parse(appointment.selectedServicesJson || '[]');
+    } catch {
+      services = [];
+    }
 
-    appointment.additionalServices.push(serviceObj.name);
-
-    // Update SelectedServicesJson for backend
-    const currentServices = JSON.parse(
-      appointment.selectedServicesJson || '[]'
-    );
-    currentServices.push({
-      name: serviceObj.name,
-      basePrice: serviceObj.basePrice,
+    // Add new service object
+    services.push({
+      name: serviceToAdd.name,
+      basePrice: serviceToAdd.basePrice,
     });
-    appointment.selectedServicesJson = JSON.stringify(currentServices);
 
-    // Update TotalPriceLkr dynamically
-    const totalBasePrice = currentServices.reduce(
-      (sum: number, s: any) => sum + (s.basePrice || 0),
-      0
-    );
-    appointment.totalPriceLkr = totalBasePrice;
+    appointment.selectedServicesJson = JSON.stringify(services);
 
-    // Update total payment (TotalPrice + ExtraPayment)
-    appointment.totalPayment = appointment.totalPayment =
-      (appointment.totalPriceLkr || 0) + (appointment.extraPayment || 0);
+    // Update totals
+    appointment.totalPriceLkr =
+      (appointment.totalPriceLkr || 0) + serviceToAdd.basePrice;
 
-    // Clear selected
+    // Reset dropdown
     this.newServiceToAdd[appointment.id] = '';
+
+    // Save to backend
+    this.updateAppointment(appointment);
   }
 
-  updateExtraPayment(appointment: Appointment) {
-    if (appointment.extraPayment == null) appointment.extraPayment = 0;
+  updateAppointment(appointment: any): void {
+    const url = `${this.apiBaseUrl}/${appointment.id}`;
+    this.http.put(url, appointment).subscribe({
+      next: () => console.log('Appointment updated'),
+      error: (err) => console.error('Update failed', err),
+    });
+  }
 
-    // Save the updated extraPayment to DB
-    this.http
-      .put(`${this.apiBaseUrl}/${appointment.id}`, appointment)
-      .subscribe({
-        next: () => {
-          console.log('Extra payment updated:', appointment.extraPayment);
-        },
-        error: (err) => console.error('Failed to update extra payment', err),
-      });
+  updateExtraPayment(appointment: any): void {
+    appointment.totalPayment =
+      (appointment.totalPriceLkr || 0) + (appointment.extraPayment || 0);
+    this.updateAppointment(appointment);
   }
 
   getTotalPayment(appointment: Appointment): number {

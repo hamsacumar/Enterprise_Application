@@ -31,8 +31,8 @@
     </button>
     <button
       class="tab-button"
-      [class.active]="activeTab === 'complete'"
-      (click)="setActiveTab('complete')"
+      [class.active]="activeTab === 'completed'"
+      (click)="setActiveTab('completed')"
     >
       Completed
       <span class="badge">{{ completedAppointments.length }}</span>
@@ -85,6 +85,21 @@
                 {{ service }}
               </span>
             </div>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Total Price:</span>
+            <span class="value">{{
+              appointment.totalPriceLkr | currency : "LKR"
+            }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Total Payment:</span>
+            <span class="value">{{
+              (appointment.totalPriceLkr ?? 0) + (appointment.extraPayment ?? 0)
+                | currency : "LKR"
+            }}</span>
           </div>
 
           <!-- Appointment Date & Time -->
@@ -223,6 +238,7 @@
   </div>
 
   <!-- ON WORK TAB -->
+  <!-- ✅ ON WORK TAB -->
   <div class="tab-content" *ngIf="activeTab === 'onwork'">
     <div class="appointments-grid">
       <div
@@ -236,32 +252,40 @@
         </div>
 
         <div class="card-body">
+          <!-- Vehicle Info -->
           <div class="info-row">
             <span class="label">Vehicle Model:</span>
             <span class="value">{{ appointment.vehicleModel }}</span>
           </div>
 
+          <!-- ✅ Current Services with Prices -->
           <div class="services-checklist">
-            <h4>Services Checklist:</h4>
+            <h4>Selected Services:</h4>
             <div
               class="checklist-item"
-              *ngFor="let service of getAllServices(appointment)"
+              *ngFor="let service of getAllServiceObjects(appointment)"
             >
               <label class="checkbox-label">
                 <input
                   type="checkbox"
-                  [checked]="isServiceCompleted(appointment, service)"
-                  (change)="toggleServiceCompletion(appointment, service)"
+                  [checked]="isServiceCompleted(appointment, service.name)"
+                  (change)="toggleServiceCompletion(appointment, service.name)"
                 />
                 <span
-                  [class.completed]="isServiceCompleted(appointment, service)"
+                  [class.completed]="
+                    isServiceCompleted(appointment, service.name)
+                  "
                 >
-                  {{ service }}
+                  {{ service.name }}
                 </span>
               </label>
+              <span class="price-tag">
+                {{ service.basePrice | currency : "LKR" }}
+              </span>
             </div>
           </div>
 
+          <!-- ✅ Add Service Dropdown -->
           <div class="add-service-section">
             <label>Add Service:</label>
             <div class="add-service-controls">
@@ -285,31 +309,38 @@
             </div>
           </div>
 
+          <!-- ✅ Payment Section -->
           <div class="payment-section">
-            <div class="form-group">
-              <div class="info-row">
-                <span class="label">Base Price:</span>
-                <span class="value">{{
-                  appointment.totalPriceLkr | currency : "LKR"
-                }}</span>
-              </div>
-              <label>Extra Payment / Charges:</label>
-              <span class="label">Extra Payment:</span>
+            <h4>Payment Summary</h4>
+
+            <div class="info-row">
+              <span class="label">Service Total:</span>
+              <span class="value">{{
+                appointment.totalPriceLkr | currency : "LKR"
+              }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="label">Extra Charges:</span>
               <input
                 type="number"
                 [(ngModel)]="appointment.extraPayment"
                 (change)="updateExtraPayment(appointment)"
+                placeholder="Enter extra charge"
               />
             </div>
 
-            <div class="info-row">
-              <span class="label">Total Payment:</span>
-              <span class="value">{{
-                (appointment.totalPriceLkr ?? 0) +
-                  (appointment.extraPayment ?? 0) | currency : "LKR"
-              }}</span>
+            <div class="info-row total">
+              <span class="label">Final Total:</span>
+              <span class="value total-amount">
+                {{
+                  (appointment.totalPriceLkr ?? 0) +
+                    (appointment.extraPayment ?? 0) | currency : "LKR"
+                }}
+              </span>
             </div>
 
+            <!-- ✅ Paid / Unpaid toggle -->
             <div class="payment-toggle">
               <label class="toggle-label">
                 <input
@@ -335,7 +366,7 @@
   </div>
 
   <!-- COMPLETED TAB -->
-  <div class="tab-content" *ngIf="activeTab === 'complete'">
+  <div class="tab-content" *ngIf="activeTab === 'completed'">
     <div class="appointments-grid">
       <div
         class="appointment-card completed-card"
