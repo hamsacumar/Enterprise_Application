@@ -1,0 +1,154 @@
+
+services:
+  # =========================
+  # Frontend Service (Angular)
+  # =========================
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: enterprise_frontend
+    ports:
+      - "4200:80"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - auth-service
+      - admin-service
+      - chatbox-service
+    restart: unless-stopped
+
+  # =========================
+  # Auth Service (.NET)
+  # =========================
+
+  auth-service:
+    build:
+      context: ./Backend/AuthService
+      dockerfile: Dockerfile
+    container_name: auth_service
+    ports:
+      - "5003:5003"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AuthDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+      - JwtSettings__Secret=MySuperSecretKey123
+      - JwtSettings__Issuer=EnterpriseApp
+      - JwtSettings__Audience=EnterpriseApp
+      # Add MongoDB environment variables
+      - MongoDbSettings__ConnectionString=mongodb://mongo_db:27017/authdb
+      - MongoDbSettings__DatabaseName=authdb
+      - MongoDbSettings__UsersCollectionName=Users
+    depends_on:
+      
+      - mongo
+    restart: unless-stopped
+
+  # =========================
+  # Admin Service (.NET)
+  # =========================
+  admin-service:
+    build:
+      context: ./Backend/AdminService
+      dockerfile: Dockerfile
+    container_name: admin_service
+    ports:
+      - "5125:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AdminDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+      - mongo
+    restart: unless-stopped
+
+  # =========================
+  # Chatbox Service (Node.js)
+  # =========================
+  chatbox-service:
+    build:
+      context: ./Backend/ChatboxService
+      dockerfile: Dockerfile
+    container_name: chatbox_service
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/ChatDB
+      - JWT_SECRET=YourJwtSecretKey
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  
+  # =========================
+  # SQL Server
+  # =========================
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MySecurePass123!
+      - MSSQL_PID=Express
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+  # =========================
+  # MongoDB
+  # =========================
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  # =========================
+  # Chatbot Service (Python)
+  # =========================
+  chatbot-service:
+    build:
+      context: ./Backend/ChatbotService
+      dockerfile: Dockerfile
+    container_name: chatbot_service
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MONGO_URI=mongodb://mongo:27017/ChatbotDB
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - mongo
+      - redis
+    restart: unless-stopped
+    command: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+  
+      
+      
+
+  # =========================
+  # Redis (for caching and message brokering)
+  # =========================
+  redis:
+    image: redis:alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+# =========================
+# Volumes for persistent data
+# =========================
+volumes:
+  sql_data:
+  mongo_data:
+  redis_data:
