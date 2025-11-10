@@ -31,39 +31,88 @@ namespace WorkersService.Controllers
             return Ok(appointment);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Appointment>> AddAppointment(Appointment appointment)
-        {
-            // Recalculate TotalPayment before saving
-            appointment.TotalPayment = appointment.TotalPriceLkr + appointment.ExtraPayment;
+     [HttpPost]
+public async Task<ActionResult<Appointment>> AddAppointment(Appointment appointment)
+{
+    try
+    {
+        // Parse services JSON string
+        var services = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, object>>>(
+            appointment.SelectedServicesJson ?? "[]"
+        );
 
-            _context.Appointments.Add(appointment);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointment);
+        // Sum all base prices
+        int total = 0;
+        foreach (var s in services)
+        {
+            if (s.TryGetValue("basePrice", out var priceObj) && int.TryParse(priceObj.ToString(), out var price))
+                total += price;
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAppointment(int id, Appointment updated)
-        {
-            var existing = await _context.Appointments.FindAsync(id);
-            if (existing == null) return NotFound();
+        appointment.TotalPriceLkr = total;
+        appointment.TotalPayment = total + appointment.ExtraPayment;
 
-            // Update fields
-            existing.Status = updated.Status;
-            existing.ExtraPayment = updated.ExtraPayment;
-            existing.Note = updated.Note;
-            existing.IsPaid = updated.IsPaid;
-            existing.ReturnDate = updated.ReturnDate;
-            existing.ReturnTime = updated.ReturnTime;
+        _context.Appointments.Add(appointment);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointment);
+    }
+    catch (Exception ex)
+    {
+        return BadRequest($"Failed to save appointment: {ex.Message}");
+    }
+}
+
+[HttpPut("{id}")]
+public async Task<IActionResult> UpdateAppointment(int id, [FromBody] Appointment updated)
+{
+    if (updated == null)
+        return BadRequest("Invalid appointment data");
+
+    var existing = await _context.Appointments.FindAsync(id);
+    if (existing == null)
+        return NotFound($"Appointment with ID {id} not found");
+
+    // ✅ Safely update fields
+    existing.Status = updated.Status ?? existing.Status;
+    existing.ExtraPayment = updated.ExtraPayment >= 0 ? updated.ExtraPayment : existing.ExtraPayment;
+    existing.Note = updated.Note ?? existing.Note;
+    existing.IsPaid = updated.IsPaid;
+    existing.ReturnDate = updated.ReturnDate ?? existing.ReturnDate;
+    existing.ReturnTime = updated.ReturnTime ?? existing.ReturnTime;
+
+    // ✅ Validate & sanitize JSON
+    if (!string.IsNullOrWhiteSpace(updated.SelectedServicesJson))
+    {
+        try
+        {
+            // Just test if it's valid JSON
+            System.Text.Json.JsonDocument.Parse(updated.SelectedServicesJson);
             existing.SelectedServicesJson = updated.SelectedServicesJson;
-            existing.TotalPriceLkr = updated.TotalPriceLkr;
-
-            // Recalculate TotalPayment
-            existing.TotalPayment = existing.TotalPriceLkr + existing.ExtraPayment;
-
-            await _context.SaveChangesAsync();
-            return NoContent();
         }
+        catch
+        {
+            return BadRequest("Invalid SelectedServicesJson format");
+        }
+    }
+
+    // ✅ Price calculations
+    existing.TotalPriceLkr = updated.TotalPriceLkr >= 0
+        ? updated.TotalPriceLkr
+        : existing.TotalPriceLkr;
+
+    // ✅ Recalculate total payment
+    existing.TotalPayment = (existing.TotalPriceLkr) + (existing.ExtraPayment);
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new
+    {
+        Message = "Appointment updated successfully",
+        Updated = existing
+    });
+}
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)

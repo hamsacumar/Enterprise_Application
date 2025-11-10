@@ -71,7 +71,7 @@ services:
       dockerfile: Dockerfile
     container_name: chatbox_service
     ports:
-      - "3000:80"
+      - "5000:5000"
     environment:
       - NODE_ENV=development
       - MONGO_URI=mongodb://mongo:27017/ChatDB
@@ -80,24 +80,7 @@ services:
       - mongo
     restart: unless-stopped
 
-  # =========================
-  # Worker Service (.NET)
-  # =========================
-  worker-service:
-    build:
-      context: ./Backend/WorkersService
-      dockerfile: Dockerfile
-    container_name: worker_service
-    ports:
-      - "7193:7193"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
-    depends_on:
-      - sqlserver
-      - redis
-    restart: unless-stopped
-
+  
   # =========================
   # SQL Server
   # =========================
@@ -127,6 +110,25 @@ services:
     restart: unless-stopped
 
   # =========================
+  # Worker Service (.NET)
+  # =========================
+  worker-service:
+    build:
+      context: ./Backend/WorkersService
+      dockerfile: Dockerfile
+    container_name: worker_service
+    ports:
+      - "7193:7193"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+      - redis
+    restart: unless-stopped
+
+
+  # =========================
   # Chatbot Service (Python)
   # =========================
   chatbot-service:
@@ -145,27 +147,8 @@ services:
       - redis
     restart: unless-stopped
     command: >
-      sh -c "python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-
-  # =========================
-  # User Dashboard Service (.NET)
-  # =========================
-  user-dashboard:
-    build:
-      context: ./Backend/UserDashboard
-      dockerfile: Dockerfile
-    container_name: user_dashboard
-    ports:
-      - "5002:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=UserDashboardDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
-    depends_on:
-      - sqlserver
-    restart: unless-stopped
-
-
-      
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+  
       
       
 

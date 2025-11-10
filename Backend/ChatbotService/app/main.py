@@ -7,16 +7,17 @@ from contextlib import asynccontextmanager
 # 👇 Define lifespan first so it's available when creating FastAPI
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    from .core.db import db  # Import inside to avoid circular import
+    from .core.db import get_db    # Import inside to avoid circular import
 
     print("🚀 App starting up")
     try:
+        db = get_db()
         # Test MongoDB connection
         await db.command("ping")
         print("✅ MongoDB connection successful")
 
         # Create unique index on username
-        await db.users.create_index("username", unique=True)
+        await get_db.users.create_index("username", unique=True)
         print("✅ Index created on username")
     except Exception as e:
         print(f"❌ MongoDB connection error: {e}")
