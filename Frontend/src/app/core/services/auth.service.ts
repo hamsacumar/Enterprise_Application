@@ -14,6 +14,7 @@ import {
 })
 export class AuthService {
   private apiUrl = 'http://localhost:5155/api/auth'; // HTTP endpoint
+  private coreApiUrl = 'http://localhost:5000/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -49,6 +50,18 @@ export class AuthService {
       tap(response => {
         if (response.success && response.user) {
           this.currentUserSubject.next(response.user);
+        }
+      })
+    );
+  }
+
+  getMeFromCore(): Observable<any> {
+    return this.http.get<any>(`${this.coreApiUrl}/me`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      tap(res => {
+        if (res?.success && res.user) {
+          this.currentUserSubject.next(res.user);
         }
       })
     );
@@ -147,7 +160,7 @@ export class AuthService {
   private loadUserFromToken(): void {
     const token = this.getToken();
     if (token && !this.isTokenExpired(token)) {
-      this.decodeToken(token).subscribe({
+      this.getMeFromCore().subscribe({
         next: (response) => {
           if (response.success) {
             this.currentUserSubject.next(response.user);
