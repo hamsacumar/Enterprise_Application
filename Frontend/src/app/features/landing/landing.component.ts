@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 
@@ -9,8 +9,20 @@ import { RouterModule, Router } from '@angular/router';
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.css']
 })
-export class LandingComponent {
+export class LandingComponent implements OnInit {
   constructor(private router: Router) {}
+
+  showRoleSidebar = false;
+  demoMode = false;
+
+  ngOnInit() {
+    // Check if we're in demo mode
+    this.demoMode = localStorage.getItem('demoMode') === 'true';
+  }
+
+  getCurrentDemoRole(): string {
+    return localStorage.getItem('userRole') || 'User';
+  }
 
   // Hero section
   heroTitle = 'Professional Vehicle Care Services';
@@ -103,8 +115,30 @@ export class LandingComponent {
     }
   }
 
-  // Book now
-  bookNow(): void {
-    this.scrollToSection('contact');
+  // Role selection methods
+  toggleRoleSidebar(): void {
+    this.showRoleSidebar = !this.showRoleSidebar;
+  }
+
+  selectRole(role: string): void {
+    localStorage.setItem('userRole', role);
+    localStorage.setItem('demoMode', 'true');
+    this.showRoleSidebar = false;
+    this.demoMode = true;
+    // Navigate to the appropriate dashboard based on role
+    if (role === 'Admin') {
+      this.router.navigate(['/app/admin/dashboard']);
+    } else if (role === 'Worker') {
+      this.router.navigate(['/app/worker/dashboard']);
+    } else {
+      this.router.navigate(['/app/user/dashboard']);
+    }
+  }
+
+  exitDemoMode(): void {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('demoMode');
+    this.demoMode = false;
+    this.router.navigate(['/']);
   }
 }

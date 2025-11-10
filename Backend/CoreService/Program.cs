@@ -31,9 +31,7 @@ builder.Services.Configure<MongoDbSettings>(opt =>
 // Add JWT Service
 builder.Services.AddSingleton<JwtService>();
 
-// Add Navigation, Footer, and Contact Services
-builder.Services.AddSingleton<NavigationService>();
-builder.Services.AddSingleton<FooterService>();
+// Add Contact Service
 builder.Services.AddScoped<ContactService>();
 
 // Configure JWT Authentication

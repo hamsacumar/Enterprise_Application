@@ -51,7 +51,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   navigateToSignup() {
-    this.router.navigate(['/signup']);
+    this.router.navigate(['/register']);
     this.isMenuOpen = false;
   }
 

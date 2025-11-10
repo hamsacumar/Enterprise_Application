@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../../core/services/auth.service';
+import { User } from '../../../core/models/auth.models';
 
 interface NavItem {
   id: string;
@@ -19,18 +22,27 @@ interface NavItem {
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   navItems: NavItem[] = [];
-  userRole: string | null = 'User';
+  userRole: string = 'User';
+  currentUser: User | null = null;
   isOpen = true;
   expandedItems: Set<string> = new Set();
+  private userSubscription?: Subscription;
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    // Get user role from localStorage
-    this.userRole = localStorage.getItem('userRole') || 'User';
-    this.loadNavigation();
+    // Subscribe to current user changes
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.userRole = user?.role || 'User';
+      this.loadNavigation();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription?.unsubscribe();
   }
 
   loadNavigation(): void {
@@ -42,53 +54,174 @@ export class SidebarComponent implements OnInit {
   // Default navigation if backend call fails
   private getDefaultNavigation(): NavItem[] {
     // Get the user role to determine which menu to show
-    const role = localStorage.getItem('userRole') || 'User';
-    
+    const role = this.userRole;
+
     if (role === 'Admin') {
-      // Admin-only navigation: Services, Workers
-      return [
-        {
-          id: '1',
-          label: 'Services',
-          route: '/app/admin/services',
-          icon: '🔧',
-          order: 1,
-          requiredRole: 'Admin'
-        },
-        {
-          id: '2',
-          label: 'Workers',
-          route: '/app/admin/workers',
-          icon: '👷',
-          order: 2,
-          requiredRole: 'Admin'
-        }
-      ];
+      return this.getAdminNavigation();
     } else if (role === 'Worker') {
-      // Worker-only navigation
-      return [
-        {
-          id: '1',
-          label: 'Home',
-          route: '/app',
-          icon: '🏠',
-          order: 1,
-          requiredRole: 'Worker'
-        }
-      ];
+      return this.getWorkerNavigation();
     } else {
-      // User/Customer navigation
-      return [
-        {
-          id: '1',
-          label: 'Home',
-          route: '/app',
-          icon: '🏠',
-          order: 1,
-          requiredRole: 'User'
-        }
-      ];
+      return this.getUserNavigation();
     }
+  }
+
+  private getAdminNavigation(): NavItem[] {
+    return [
+      {
+        id: 'admin-dashboard',
+        label: 'Dashboard',
+        route: '/app/admin/dashboard',
+        icon: '📊',
+        order: 1,
+        requiredRole: 'Admin'
+      },
+      {
+        id: 'admin-services',
+        label: 'Services',
+        route: '/app/admin/services',
+        icon: '🔧',
+        order: 2,
+        requiredRole: 'Admin'
+      },
+      {
+        id: 'admin-workers',
+        label: 'Workers',
+        route: '/app/admin/workers',
+        icon: '👷',
+        order: 3,
+        requiredRole: 'Admin'
+      },
+      {
+        id: 'admin-orders',
+        label: 'Orders',
+        route: '/app/admin/orders',
+        icon: '📋',
+        order: 4,
+        requiredRole: 'Admin'
+      },
+      {
+        id: 'admin-customers',
+        label: 'Customers',
+        route: '/app/admin/customers',
+        icon: '👥',
+        order: 5,
+        requiredRole: 'Admin'
+      },
+      {
+        id: 'admin-settings',
+        label: 'Settings',
+        route: '/app/admin/settings',
+        icon: '⚙️',
+        order: 6,
+        requiredRole: 'Admin'
+      }
+    ];
+  }
+
+  private getWorkerNavigation(): NavItem[] {
+    return [
+      {
+        id: 'worker-new',
+        label: 'New',
+        route: '/app/worker/new',
+        icon: '🆕',
+        order: 1,
+        requiredRole: 'Worker'
+      },
+      {
+        id: 'worker-pending',
+        label: 'Pending',
+        route: '/app/worker/pending',
+        icon: '⏳',
+        order: 2,
+        requiredRole: 'Worker'
+      },
+      {
+        id: 'worker-on-work',
+        label: 'On Work',
+        route: '/app/worker/on-work',
+        icon: '🔧',
+        order: 3,
+        requiredRole: 'Worker'
+      },
+      {
+        id: 'worker-complete',
+        label: 'Complete',
+        route: '/app/worker/complete',
+        icon: '✅',
+        order: 4,
+        requiredRole: 'Worker'
+      }
+    ];
+  }
+
+  private getUserNavigation(): NavItem[] {
+    return [
+      {
+        id: 'user-dashboard',
+        label: 'Dashboard',
+        route: '/app/user/dashboard',
+        icon: '📊',
+        order: 1,
+        requiredRole: 'User'
+      },
+      {
+        id: 'user-book-service',
+        label: 'Book Service',
+        route: '/app/user/book-service',
+        icon: '🔧',
+        order: 2,
+        requiredRole: 'User'
+      },
+      {
+        id: 'user-notifications',
+        label: 'Notifications',
+        route: '/app/user/notifications',
+        icon: '🔔',
+        order: 3,
+        requiredRole: 'User'
+      },
+      {
+        id: 'user-my-bookings',
+        label: 'My Bookings',
+        route: '/app/user/my-bookings',
+        icon: '📅',
+        order: 4,
+        requiredRole: 'User'
+      },
+      {
+        id: 'user-my-vehicles',
+        label: 'My Vehicles',
+        route: '/app/user/my-vehicles',
+        icon: '🚗',
+        order: 5,
+        requiredRole: 'User'
+      },
+      {
+        id: 'user-past-orders',
+        label: 'Past Orders',
+        route: '/app/user/past-orders',
+        icon: '📚',
+        order: 6,
+        requiredRole: 'User'
+      },
+      {
+        id: 'user-request-modification',
+        label: 'Request Modification',
+        route: '/app/user/request-modification',
+        icon: '✏️',
+        order: 7,
+        requiredRole: 'User'
+      },
+      {
+        id: 'user-payment-details',
+        label: 'Payment Details',
+        route: '/app/user/payment-details',
+        icon: '💳',
+        order: 8,
+        requiredRole: 'User'
+      }
+    ];
   }
 
   // Check if item should be visible based on role
@@ -116,10 +249,31 @@ export class SidebarComponent implements OnInit {
     this.isOpen = !this.isOpen;
   }
 
+  // Get user initials for avatar
+  getUserInitials(): string {
+    if (!this.currentUser) return '?';
+    const names = this.currentUser.name.split(' ');
+    if (names.length >= 2) {
+      return names[0][0] + names[1][0];
+    }
+    return this.currentUser.name[0];
+  }
+
+  // Check if in demo mode
+  isDemoMode(): boolean {
+    return localStorage.getItem('demoMode') === 'true';
+  }
+
+  // Exit demo mode
+  exitDemoMode(): void {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('demoMode');
+    window.location.href = '/';
+  }
+
   // Logout function
   logout(): void {
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('token');
+    this.authService.logout();
     window.location.href = '/login';
   }
 }

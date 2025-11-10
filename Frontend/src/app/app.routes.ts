@@ -6,6 +6,7 @@ import { Routes } from '@angular/router';
 import { LandingComponent } from './features/landing/landing.component';
 import { AboutComponent } from './features/pages/about/about.component';
 import { ContactComponent } from './features/pages/contact/contact.component';
+import { ServicesComponent } from './features/pages/services/services.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 // ==========================
@@ -62,7 +63,7 @@ export const routes: Routes = [
   { path: 'classify', component: ClassifyComponent, title: 'AutoServeX | Classify User' },
   { path: 'forgot-password', component: ForgotPasswordComponent, title: 'AutoServeX | Forgot Password' },
   { path: 'reset-password', component: ResetPasswordComponent, title: 'AutoServeX | Reset Password' },
-  { path: 'services', component: LandingComponent, title: 'AutoServeX | Services' },
+  { path: 'services', component: ServicesComponent, title: 'AutoServeX | Services' },
   { path: 'pricing', component: LandingComponent, title: 'AutoServeX | Pricing' },
   { path: 'about', component: AboutComponent, title: 'AutoServeX | About Us' },
   { path: 'contact', component: ContactComponent, title: 'AutoServeX | Contact' },

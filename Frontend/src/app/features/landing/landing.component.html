@@ -1,9 +1,54 @@
+<!-- ROLE SELECTION SIDEBAR -->
+<div class="role-sidebar" [class.open]="showRoleSidebar">
+  <div class="role-sidebar-header">
+    <h3>Select Your Role</h3>
+    <button class="close-btn" (click)="toggleRoleSidebar()">×</button>
+  </div>
+  <div class="role-options">
+    <button class="role-btn user-btn" (click)="selectRole('User')">
+      <div class="role-icon">👤</div>
+      <div class="role-info">
+        <h4>Customer</h4>
+        <p>Book services and manage appointments</p>
+      </div>
+    </button>
+    <button class="role-btn worker-btn" (click)="selectRole('Worker')">
+      <div class="role-icon">👷</div>
+      <div class="role-info">
+        <h4>Worker</h4>
+        <p>Manage tasks and service assignments</p>
+      </div>
+    </button>
+    <button class="role-btn admin-btn" (click)="selectRole('Admin')">
+      <div class="role-icon">👑</div>
+      <div class="role-info">
+        <h4>Admin</h4>
+        <p>Manage services, workers, and system settings</p>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- DEMO MODE INDICATOR -->
+<div class="demo-mode-indicator" *ngIf="demoMode">
+  <div class="demo-banner">
+    <span class="demo-icon">🎭</span>
+    <span class="demo-text">Demo Mode Active - Viewing as {{ getCurrentDemoRole() }}</span>
+    <button class="exit-demo-btn" (click)="exitDemoMode()">Exit Demo</button>
+  </div>
+</div>
+
+<!-- ROLE SELECTION BUTTON -->
+<button class="role-select-btn" (click)="toggleRoleSidebar()" title="Select Role to View Demo" *ngIf="!demoMode">
+  <span class="role-icon">⚙️</span>
+  <span class="role-text">Demo</span>
+</button>
+
 <!-- HERO SECTION -->
 <section class="hero">
   <div class="hero-content">
     <h1>{{ heroTitle }}</h1>
     <p>{{ heroSubtitle }}</p>
-    <button class="cta-button" (click)="bookNow()">Book Now</button>
   </div>
 </section>
 
