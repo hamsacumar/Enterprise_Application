@@ -1,94 +1,79 @@
-import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { NotificationService } from '../../../../services/notification.service';
-import { MockData } from '../../../../services/mock-data';
+import { RouterModule } from '@angular/router';
 
 @Component({
-	selector: 'app-notifications',
-	standalone: true,
-	imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
-	templateUrl: './notifications.html',
-	styleUrl: './notifications.css',
+  selector: 'app-notifications',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './notifications.html',
+  styleUrls: ['./notifications.css']
 })
-export class NotificationsPage implements OnInit {
-	private notificationsSvc = inject(NotificationService);
-	private mock = inject(MockData);
-	private destroyRef = inject(DestroyRef);
+export class NotificationsComponent implements OnInit {
+  notifications = [
+    {
+      id: 1,
+      title: 'Service Completed',
+      message: 'Your oil change service for Toyota Camry has been completed successfully.',
+      date: '2024-11-12',
+      time: '2:30 PM',
+      type: 'success',
+      read: false
+    },
+    {
+      id: 2,
+      title: 'Appointment Reminder',
+      message: 'You have an upcoming service appointment on November 15, 2024 at 10:00 AM.',
+      date: '2024-11-10',
+      time: '9:00 AM',
+      type: 'info',
+      read: false
+    },
+    {
+      id: 3,
+      title: 'Payment Received',
+      message: 'Payment of Rs. 2,000 for your recent service has been received.',
+      date: '2024-11-08',
+      time: '3:15 PM',
+      type: 'success',
+      read: true
+    },
+    {
+      id: 4,
+      title: 'Service Update',
+      message: 'Your brake service is in progress. Estimated completion: 2 hours.',
+      date: '2024-11-05',
+      time: '11:00 AM',
+      type: 'info',
+      read: true
+    },
+    {
+      id: 5,
+      title: 'Vehicle Registration',
+      message: 'Your new vehicle Honda Civic has been successfully registered.',
+      date: '2024-11-01',
+      time: '4:00 PM',
+      type: 'success',
+      read: true
+    }
+  ];
 
-	notifications = computed(() => this.notificationsSvc.notifications());
-	statusMap = new Map<number, 'Accepted' | 'Rejected' | null>();
+  ngOnInit(): void {
+  }
 
-	getStatus(n: any): 'Accepted' | 'Rejected' | null {
-		return this.statusMap.get(n.id) || null;
-	}
+  markAsRead(notification: any): void {
+    notification.read = true;
+  }
 
-	ngOnInit() {
-		this.notificationsSvc.markAllRead();
-		// Load appointment statuses from backend
-		const notifs = this.notifications();
-		notifs.forEach(n => {
-			const apptId = n.data?.appointmentId as number | undefined;
-			if (apptId) {
-				this.mock.getAppointment(apptId)
-					.pipe(takeUntilDestroyed(this.destroyRef))
-					.subscribe({
-						next: (a: any) => {
-							const status = (a?.status || '').toLowerCase();
-							if (status === 'accepted') this.statusMap.set(n.id, 'Accepted');
-							else if (status === 'rejected') this.statusMap.set(n.id, 'Rejected');
-						},
-						error: (err: unknown) => {
-							console.error('Failed to load appointment status', err);
-						}
-					});
-			}
-		});
-	}
+  markAllAsRead(): void {
+    this.notifications.forEach(n => n.read = true);
+  }
 
-	onAccept(n: any){
-		const apptId = n.data?.appointmentId as number | undefined;
-		if (!apptId || this.statusMap.has(n.id)) return;
-		
-		this.statusMap.set(n.id, 'Accepted');
-		this.mock.updateAppointmentStatus(apptId, 'Accepted')
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe({ 
-				next: () => {
-					const vehicle = n.data?.vehicleLabel || 'Vehicle';
-					const type = n.data?.vehicleType || 'Sedan';
-					const eta = n.data?.returnDate || '';
-					this.mock.addOngoingService({ vehicle, type, progress: 0, status: 'In Progress', eta });
-				},
-				error: (err: unknown) => {
-					console.error('Failed to accept appointment', err);
-					this.statusMap.delete(n.id);
-					alert('Failed to accept appointment. Please try again.');
-				}
-			});
-	}
+  deleteNotification(id: number): void {
+    this.notifications = this.notifications.filter(n => n.id !== id);
+  }
 
-	onReject(n: any){
-		const apptId = n.data?.appointmentId as number | undefined;
-		if (!apptId || this.statusMap.has(n.id)) return;
-		
-		this.statusMap.set(n.id, 'Rejected');
-		this.mock.updateAppointmentStatus(apptId, 'Rejected')
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe({
-				next: () => {
-					// Appointment rejected successfully
-				},
-				error: (err: unknown) => {
-					console.error('Failed to reject appointment', err);
-					this.statusMap.delete(n.id);
-					alert('Failed to reject appointment. Please try again.');
-				}
-			});
-	}
+  getUnreadCount(): number {
+    return this.notifications.filter(n => !n.read).length;
+  }
 }
-
-

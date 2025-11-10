@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using be.Data;
+using be.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -32,14 +32,13 @@ import { ChatbotComponent } from './features/chatbot/chatbot.component';
 // ==========================
 // 👤 USER DASHBOARD COMPONENTS
 // ==========================
-import { Dashboard } from './features/User/pages/dashboard/dashboard';
-import { BookService } from './features/User/pages/book-service/book-service';
-import { Services } from './features/User/services/services';
-import { PastOrders } from './features/User/pages/past-orders/past-orders';
-import { MyVehicles } from './features/User/pages/my-vehicles/my-vehicles';
-import { RequestModification } from './features/User/pages/request-modification/request-modification';
-import { PaymentDetails } from './features/User/pages/payment-details/payment-details';
-import { NotificationsPage } from './features/User/pages/notifications/notifications';
+import { DashboardComponent as UserDashboardComponent } from './features/User/pages/dashboard/dashboard';
+import { BookServiceComponent } from './features/User/pages/book-service/book-service';
+import { PastOrdersComponent } from './features/User/pages/past-orders/past-orders';
+import { RecentAppointmentsComponent } from './features/User/pages/recent-appointments/recent-appointments';
+import { MyVehiclesComponent } from './features/User/pages/my-vehicles/my-vehicles';
+import { PaymentDetailsComponent } from './features/User/pages/payment-details/payment-details';
+import { NotificationsComponent } from './features/User/pages/notifications/notifications';
 import { WorkerDashboardComponent } from './features/Worker/pages/worker-dashboard/worker-dashboard.component';
 
 // ==========================
@@ -95,42 +94,37 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        component: Dashboard,
+        component: UserDashboardComponent,
         title: 'AutoServeX | Dashboard',
       },
       {
         path: 'book-service',
-        component: BookService,
+        component: BookServiceComponent,
         title: 'AutoServeX | Book Service',
       },
       {
-        path: 'services',
-        component: Services,
-        title: 'AutoServeX | My Bookings',
-      },
-      {
         path: 'my-vehicles',
-        component: MyVehicles,
+        component: MyVehiclesComponent,
         title: 'AutoServeX | My Vehicles',
       },
       {
+        path: 'recent-appointments',
+        component: RecentAppointmentsComponent,
+        title: 'AutoServeX | Recent Appointments',
+      },
+      {
         path: 'past-orders',
-        component: PastOrders,
+        component: PastOrdersComponent,
         title: 'AutoServeX | Past Orders',
       },
       {
-        path: 'request-modification',
-        component: RequestModification,
-        title: 'AutoServeX | Request Modification',
-      },
-      {
         path: 'payment-details',
-        component: PaymentDetails,
+        component: PaymentDetailsComponent,
         title: 'AutoServeX | Payment Details',
       },
       {
         path: 'notifications',
-        component: NotificationsPage,
+        component: NotificationsComponent,
         title: 'AutoServeX | Notifications',
       },
     ],

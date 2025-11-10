@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using be.Data;
+using be.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -142,7 +143,6 @@ public class AppointmentsControllerIntegrationTests : IClassFixture<CustomWebApp
         {
             customerName = "John Doe",
             phoneNumber = "1234567890",
-            specialInstructions = "Handle with care",
             vehicleId = (int?)null,
             vehicleName = "Toyota",
             vehicleModel = "Camry",
@@ -154,7 +154,11 @@ public class AppointmentsControllerIntegrationTests : IClassFixture<CustomWebApp
                 new { id = "1", name = "Oil Change", basePriceLkr = 500, finalPriceLkr = 500 },
                 new { id = "2", name = "Tire Rotation", basePriceLkr = 300, finalPriceLkr = 300 }
             },
-            totalPriceLkr = 800
+            totalPriceLkr = 800,
+            appointmentDate = DateTime.UtcNow,
+            timeSlot = "10:00 AM",
+            note = "Handle with care",
+            extraPayment = 0
         };
 
         // Act

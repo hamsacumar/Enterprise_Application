@@ -1,5 +1,6 @@
 using be.Controllers;
 using be.Data;
+using be.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -116,7 +117,6 @@ public class AppointmentsControllerTests
         var dto = new AppointmentsController.CreateAppointmentDto(
             customerName: "John Doe",
             phoneNumber: "1234567890",
-            specialInstructions: "Handle with care",
             vehicleId: null,
             vehicleName: "Toyota",
             vehicleModel: "Camry",
@@ -128,7 +128,11 @@ public class AppointmentsControllerTests
                 new AppointmentsController.ServiceItemDto("1", "Oil Change", 500, 500),
                 new AppointmentsController.ServiceItemDto("2", "Tire Rotation", 300, 300)
             },
-            totalPriceLkr: 800
+            totalPriceLkr: 800,
+            appointmentDate: DateTime.UtcNow,
+            timeSlot: "10:00 AM",
+            note: "Handle with care",
+            extraPayment: 0
         );
 
         // Act
