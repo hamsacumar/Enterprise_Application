@@ -22,6 +22,18 @@ public class UserService : IUserService
             var db = client.GetDatabase(settings.Value.DatabaseName);
             _users = db.GetCollection<User>(settings.Value.UsersCollectionName);
         }
+        public async Task<User?> GetClassifiedUserByUsernameAsync(string username)
+{
+ 
+    var user = await _users.Find(u => u.Username.ToLower() == username.ToLower()).FirstOrDefaultAsync();
+
+
+    if(user == null || !user.IsVerified)
+        return null;
+
+    return user;
+}
+
 
         public async Task<User?> GetByUsernameAsync(string username) =>
             await _users.Find(u => u.Username.ToLower() == username.ToLower()).FirstOrDefaultAsync();
@@ -46,6 +58,7 @@ public class UserService : IUserService
 
         public async Task<User?> GetByEmailAsync(string email) =>
         await _users.Find(u => u.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+
 
     }
 }
