@@ -6,6 +6,8 @@ using BCrypt.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AuthService.Controllers
 {
@@ -30,14 +32,14 @@ namespace AuthService.Controllers
             if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
                 return BadRequest("Username and password are required.");
 
-        // Check if username already exists
+            // Check if username already exists
             var existingUsername = await _userService.GetByUsernameAsync(dto.Username);
             if (existingUsername != null)
-            return Conflict("Username already exists. Please try a different one.");
+                return Conflict("Username already exists. Please try a different one.");
 
             var existingEmail = await _userService.GetByEmailAsync(dto.Email);
             if (existingEmail != null)
-            return Conflict("Email already registered. Please try a different email or login instead.");
+                return Conflict("Email already registered. Please try a different email or login instead.");
 
 
             var hashed = BCrypt.Net.BCrypt.HashPassword(dto.Password);
@@ -195,20 +197,38 @@ namespace AuthService.Controllers
         [HttpPost("resend-otp")]
         public async Task<IActionResult> ResendOtp([FromBody] ForgotPasswordRequestDto dto)
         {
-        var user = await _userService.GetByEmailAsync(dto.Email);
-        if (user == null) return NotFound("User not found.");
+            var user = await _userService.GetByEmailAsync(dto.Email);
+            if (user == null) return NotFound("User not found.");
 
-        var otp = new Random().Next(100000, 999999).ToString();
-        user.OtpCode = otp;
-    user.OtpExpiry = DateTime.UtcNow.AddMinutes(0.5);
+            var otp = new Random().Next(100000, 999999).ToString();
+            user.OtpCode = otp;
+            user.OtpExpiry = DateTime.UtcNow.AddMinutes(0.5);
 
-    await _userService.UpdateAsync(user.Id!, user);
-    await _emailService.SendOtpEmail(user.Email, otp);
+            await _userService.UpdateAsync(user.Id!, user);
+            await _emailService.SendOtpEmail(user.Email, otp);
 
-    return Ok(new { message = "OTP resent successfully to your email." });
-}
+            return Ok(new { message = "OTP resent successfully to your email." });
+        }
 
-        
+        [HttpPost("verify-token")]
+        public IActionResult VerifyToken([FromBody] TokenDto dto)
+        {
+            var principal = _jwt.ValidateToken(dto.Token);
 
+            if (principal == null)
+                return Unauthorized(new { message = "Invalid or expired token." });
+
+            var userId = principal.FindFirst("userId")?.Value;
+            var username = principal.FindFirst("username")?.Value;
+            var role = principal.FindFirst(ClaimTypes.Role)?.Value;
+
+            return Ok(new
+            {
+                message = "Token is valid.",
+                userId,
+                username,
+                role
+            });
+        }
     }
 }
