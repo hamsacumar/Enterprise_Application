@@ -14,7 +14,7 @@ interface VerifyOtpResponse {
   providedIn: 'root'
 })
 export class VerifyOtpService {
-  private apiUrl = 'http://localhost:5143/api/Auth/verify-otp'; 
+  private apiUrl = 'http://localhost:5000/api/Auth/verify-otp'; 
 
   constructor(private http: HttpClient) {}
 
