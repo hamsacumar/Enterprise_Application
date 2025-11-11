@@ -12,11 +12,11 @@ interface VerifyOtpResponse {
 
 @Injectable({
   providedIn: 'root',
-  providedIn: 'root',
+  
 })
 export class VerifyOtpService {
   private apiUrl = 'http://localhost:5003/api/Auth/verify-otp';
-  private apiUrl = 'http://localhost:5003/api/Auth/verify-otp';
+  
 
   constructor(private http: HttpClient) {}
 
