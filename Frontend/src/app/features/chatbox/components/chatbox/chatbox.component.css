@@ -7,7 +7,8 @@
 
 .chat-container {
   display: flex;
-  height: 85vh;
+  height: auto;
+  min-height: 70vh;
   max-height: 900px;
   width: 100%;
   border-radius: 16px;
@@ -561,7 +562,7 @@
 @media (max-width: 768px) {
   .chat-container {
     border-radius: 0;
-    height: 100vh;
+    height: auto;
     max-height: none;
   }
 
