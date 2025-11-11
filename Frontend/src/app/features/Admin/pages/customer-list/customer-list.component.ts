@@ -10,17 +10,17 @@ import { Customer, CustomerService } from '../../services/customer.service';
   styleUrls: ['./customer-list.component.css']
 })
 export class CustomerListComponent implements OnInit {
-  customers: Customer[] = []; // Initialize empty array
+  customers: Customer[] = [];
 
   constructor(private customerService: CustomerService) {}
 
   ngOnInit(): void {
-    this.customerService.getCustomer('Nirojiha').subscribe({
+    this.customerService.getAllCustomers().subscribe({
       next: (data) => {
-        this.customers = [data]; // API returns a single customer, wrap in array
+        this.customers = data;
       },
       error: (err) => {
-        console.error('Error fetching customer:', err);
+        console.error('Error fetching customers:', err);
       }
     });
   }

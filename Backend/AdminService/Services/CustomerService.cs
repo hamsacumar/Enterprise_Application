@@ -2,6 +2,7 @@ using AdminService.Models;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace AdminService.Services
 {
@@ -14,20 +15,23 @@ namespace AdminService.Services
             _httpClient = httpClient;
         }
 
-        public async Task<CustomerDto?> GetCustomerDetailsAsync(string username)
-        {
-            string url = $"http://localhost:5143/api/Auth/classify/{username}"; // AuthService endpoint
+        // Fetch all classified users from AuthService
+  public async Task<List<CustomerDto>> GetAllClassifiedCustomersAsync()
+{
+    // Use auth-service container hostname for Docker networking
+    string url = "http://auth-service:5003/api/Auth/classify/all";
 
-            try
-            {
-                var customer = await _httpClient.GetFromJsonAsync<CustomerDto>(url);
-                return customer;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Error fetching customer: {ex.Message}");
-                return null;
-            }
-        }
+    try
+    {
+        var customers = await _httpClient.GetFromJsonAsync<List<CustomerDto>>(url);
+        return customers ?? new List<CustomerDto>();
     }
+    catch (HttpRequestException ex)
+    {
+        Console.WriteLine($"Error fetching classified customers: {ex.Message}");
+        return new List<CustomerDto>();
+    }
+}
+
+}
 }

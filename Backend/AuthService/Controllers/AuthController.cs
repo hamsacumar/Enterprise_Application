@@ -103,28 +103,30 @@ namespace AuthService.Controllers
 
             return Ok(new { message = "User details updated successfully. You can now log in." });
         }
-[HttpGet("classify/{username}")]
-public async Task<IActionResult> GetClassifiedUser(string username)
+[HttpGet("classify/all")]
+public async Task<IActionResult> GetAllClassifiedUsers()
 {
-    var user = await _userService.GetByUsernameAsync(username);
-    if (user == null) return NotFound("User not found.");
+    var users = await _userService.GetAllClassifiedUsersAsync();
 
-    if (!user.IsVerified) return BadRequest("User not verified.");
+    if (users == null || users.Count == 0)
+        return NotFound("No classified users found.");
 
     // Return only relevant classified details
-    return Ok(new
+    var result = users.Select(user => new
     {
-       
+        user.Username,
         user.FirstName,
         user.LastName,
-    
         user.Address,
         user.CarModel,
         user.CarLicensePlate,
         user.PhoneNumber,
         user.IsVerified
     });
+
+    return Ok(result);
 }
+
 
 
         [HttpPost("login")]

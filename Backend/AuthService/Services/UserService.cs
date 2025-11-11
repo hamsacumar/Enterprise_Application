@@ -22,17 +22,20 @@ public class UserService : IUserService
             var db = client.GetDatabase(settings.Value.DatabaseName);
             _users = db.GetCollection<User>(settings.Value.UsersCollectionName);
         }
-        public async Task<User?> GetClassifiedUserByUsernameAsync(string username)
+      public async Task<List<User>> GetAllClassifiedUsersAsync()
 {
- 
-    var user = await _users.Find(u => u.Username.ToLower() == username.ToLower()).FirstOrDefaultAsync();
+    // Only return users who are verified and have classified details (non-null fields)
+    var filter = Builders<User>.Filter.And(
+        Builders<User>.Filter.Eq(u => u.IsVerified, true),
+        Builders<User>.Filter.Ne(u => u.Address, null),
+        Builders<User>.Filter.Ne(u => u.CarModel, null),
+        Builders<User>.Filter.Ne(u => u.CarLicensePlate, null),
+        Builders<User>.Filter.Ne(u => u.PhoneNumber, null)
+    );
 
-
-    if(user == null || !user.IsVerified)
-        return null;
-
-    return user;
+    return await _users.Find(filter).ToListAsync();
 }
+
 
 
         public async Task<User?> GetByUsernameAsync(string username) =>

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using AuthService.Models;
+using System.Collections.Generic;
 
 namespace AuthService.Services
 {
@@ -12,9 +13,8 @@ namespace AuthService.Services
         Task UpdateAsync(string id, User updated);
         Task<User?> GetByOtpAsync(string otpCode);
         Task<User?> GetByEmailAsync(string email);
-        Task<User?> GetClassifiedUserByUsernameAsync(string username);
 
-        
-        
+       
+        Task<List<User>> GetAllClassifiedUsersAsync();
     }
 }

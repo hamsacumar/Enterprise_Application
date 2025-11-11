@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Customer {
+  username?: string;
   firstName: string;
   lastName: string;
   carModel: string;
@@ -16,11 +17,12 @@ export interface Customer {
   providedIn: 'root'
 })
 export class CustomerService {
-  private apiUrl = 'http://localhost:5125/api/Customer'; // Your AdminService URL
+  private apiUrl = 'http://localhost:5125/api/Customer'; // AdminService URL
 
   constructor(private http: HttpClient) {}
 
-  getCustomer(username: string): Observable<Customer> {
-    return this.http.get<Customer>(`${this.apiUrl}/${username}`);
+  // Fetch all classified customers
+  getAllCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(`${this.apiUrl}/classified`);
   }
 }
