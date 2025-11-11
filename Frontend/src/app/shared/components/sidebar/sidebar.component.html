@@ -1,0 +1,69 @@
+<!-- Sidebar Container (always open) -->
+<div class="sidebar open">
+  <!-- Sidebar Header -->
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-text">Dashboard</span>
+    </div>
+  </div>
+
+  <!-- User Info Section -->
+  <div class="user-section">
+    <div class="user-info">
+      <div class="user-avatar">
+        {{ getUserInitials() }}
+      </div>
+      <div class="user-details">
+        <p class="user-name">{{ currentUser?.name || currentUser?.email || '' }}</p>
+        <p class="user-role" [class]="userRole.toLowerCase()">{{ userRole }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Items -->
+  <nav class="nav-menu">
+    <ng-container *ngFor="let item of navItems">
+      <div
+        *ngIf="canViewItem(item)"
+        class="nav-item"
+        [class.has-submenu]="item.subItems && item.subItems.length > 0"
+      >
+      <!-- Main Menu Item -->
+      <button
+        class="nav-link"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="item.subItems ? toggleSubMenu(item.id) : null"
+        [title]="item.label"
+      >
+        <span class="nav-label">{{ item.label }}</span>
+        <span class="expand-icon" *ngIf="item.subItems && item.subItems.length > 0">
+          {{ isExpanded(item.id) ? '▼' : '▶' }}
+        </span>
+      </button>
+
+      <!-- Submenu Items -->
+      <div class="submenu" *ngIf="item.subItems && item.subItems.length > 0 && isExpanded(item.id)">
+        <button
+          *ngFor="let subItem of item.subItems"
+          class="submenu-link"
+          [routerLink]="subItem.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
+          [title]="subItem.label"
+        >
+          <span class="submenu-label">{{ subItem.label }}</span>
+        </button>
+      </div>
+      </div>
+    </ng-container>
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()" title="Logout">
+      Logout
+    </button>
+  </div>
+</div>

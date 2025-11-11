@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SidebarComponent } from '../../pages/sidebar/sidebar.component';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -8,7 +7,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, SidebarComponent, RouterOutlet]
+  imports: [CommonModule, RouterOutlet]
 })
 export class DashboardComponent {
   sidebarOpen = false;

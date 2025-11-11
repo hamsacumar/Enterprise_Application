@@ -1,8 +1,13 @@
 // ==========================
 // 📦 Angular Core Imports
 // ==========================
+import { LandingComponent } from './features/landing/landing.component';
+import { AboutComponent } from './features/pages/about/about.component';
+//import { ContactComponent } from './features/pages/contact/contact.component';
+import { ServicesComponent } from './features/pages/services/services.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { landingGuard } from './core/guards/landing.guard';
 
 // ==========================
 // 🔐 AUTH MODULE COMPONENTS
@@ -31,6 +36,11 @@ import { CustomerListComponent } from './features/Admin/pages/customer-list/cust
 import { ChatbotComponent } from './features/chatbot/chatbot.component';
 
 // ==========================
+// CHATBOX COMPONENT
+// ==========================
+import { ChatboxComponent } from './features/chatbox/components/chatbox/chatbox.component';
+
+// ==========================
 // 👤 USER DASHBOARD COMPONENTS
 // ==========================
 import { DashboardComponent as UserDashboardComponent } from './features/User/pages/dashboard/dashboard';
@@ -45,11 +55,26 @@ import { WorkerDashboardComponent } from './features/Worker/pages/worker-dashboa
 // ==========================
 // 🚦 ROUTE CONFIGURATION
 // ==========================
+//import { Routes } from '@angular/router';
+import { PaymentFormComponent } from './features/PaymentGateway/Components/payment-form/payment-form.component';
+import { PaymentStatusComponent } from './features/PaymentGateway/Components/payment-status/payment-status.component';
+
 export const routes: Routes = [
-  // -------------------------------------
-  // 🔹 DEFAULT ROUTE
-  // -------------------------------------
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // =====================================
+  // 🌍 PUBLIC / LANDING ROUTES
+  // =====================================
+  { path: '', component: LandingComponent, canActivate: [landingGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [landingGuard], title: 'AutoServeX | Login' },
+  { path: 'register', component: RegisterComponent, title: 'AutoServeX | Register' },
+  { path: 'verify-otp', component: VerifyOtpComponent, title: 'AutoServeX | Verify OTP' },
+  { path: 'classify', component: ClassifyComponent, title: 'AutoServeX | Classify User' },
+  { path: 'forgot-password', component: ForgotPasswordComponent, title: 'AutoServeX | Forgot Password' },
+  { path: 'reset-password', component: ResetPasswordComponent, title: 'AutoServeX | Reset Password' },
+  { path: 'services', component: ServicesComponent, title: 'AutoServeX | Services' },
+  { path: 'pricing', component: LandingComponent, title: 'AutoServeX | Pricing' },
+  { path: 'about', component: AboutComponent, title: 'AutoServeX | About Us' },
+  //{ path: 'contact', component: ContactComponent, title: 'AutoServeX | Contact' },
+  { path: 'booking', component: LandingComponent, title: 'AutoServeX | Booking' },
 
   // -------------------------------------
   // 🔹 ADMIN ROUTES
@@ -81,8 +106,8 @@ export const routes: Routes = [
 
    // 🔹 AI chatbot
   { path: 'ai', component: ChatbotComponent },
-  // 🔹 Chat
-  { path: 'chat', component: ChatboxComponent, title: 'Chat' },
+  // 🔹 Chatbox
+  { path: 'chat', component: ChatboxComponent },
   // worker
   {
     path: 'worker-dashboard',
@@ -130,8 +155,12 @@ export const routes: Routes = [
         component: NotificationsComponent,
         title: 'AutoServeX | Notifications',
       },
+      { path: 'payment/success', component: PaymentStatusComponent }, 
+      { path: 'payment/cancel', component: PaymentStatusComponent },
+      {path: 'payment', component: PaymentFormComponent},
     ],
   },
+
 
    // 👇 Wildcard must come LAST
   { path: '**', redirectTo: '/login' },
@@ -146,3 +175,5 @@ export const routes: Routes = [
 //   exports: [RouterModule],
 // })
 // export class AppRoutingModule {}
+      
+
