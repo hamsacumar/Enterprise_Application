@@ -1,9 +1,0 @@
-.notif-dialog { min-width: 320px; }
-.body { padding: 8px 0; }
-.row { margin: 6px 0; }
-.actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
-.status { font-weight: 600; padding: 4px 12px; border-radius: 4px; }
-.status.accepted { color: #4caf50; background-color: #e8f5e9; }
-.status.rejected { color: #f44336; background-color: #ffebee; }
-
-

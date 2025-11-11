@@ -110,6 +110,25 @@ services:
     restart: unless-stopped
 
   # =========================
+  # Worker Service (.NET)
+  # =========================
+  worker-service:
+    build:
+      context: ./Backend/WorkersService
+      dockerfile: Dockerfile
+    container_name: worker_service
+    ports:
+      - "7193:7193"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+      - redis
+    restart: unless-stopped
+
+
+  # =========================
   # Chatbot Service (Python)
   # =========================
   chatbot-service:

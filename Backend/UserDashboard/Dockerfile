@@ -22,9 +22,10 @@ WORKDIR /app
 # Copy published output from build stage
 COPY --from=build /app/publish .
 
-# Configure the runtime
-ENV ASPNETCORE_URLS=http://+:80
-EXPOSE 80
+# Configure port and environment variable
+ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_ENVIRONMENT=Development
+EXPOSE 5000
 
 # Set the entry point
 ENTRYPOINT ["dotnet", "be.dll"]
