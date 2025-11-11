@@ -21,6 +21,7 @@ import { DashboardComponent } from './features/Admin/pages/dashboard/dashboard.c
 import { DashboardHomeComponent } from './features/Admin/pages/dashboard-home/dashboard-home.component';
 import { ServiceListComponent } from './features/Admin/pages/service-list/service-list.component';
 import { WorkerListComponent } from './features/Admin/pages/worker-list/worker-list.component';
+import { ChatboxComponent } from './features/chatbox/components/chatbox/chatbox.component';
 import { OrderListComponent } from './features/Admin/pages/order-list/order-list.component';
 import { CustomerListComponent } from './features/Admin/pages/customer-list/customer-list.component';
 
@@ -80,6 +81,8 @@ export const routes: Routes = [
 
    // 🔹 AI chatbot
   { path: 'ai', component: ChatbotComponent },
+  // 🔹 Chat
+  { path: 'chat', component: ChatboxComponent, title: 'Chat' },
   // worker
   {
     path: 'worker-dashboard',
