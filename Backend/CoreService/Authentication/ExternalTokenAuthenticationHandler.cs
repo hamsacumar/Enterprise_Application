@@ -21,17 +21,34 @@ public class ExternalTokenAuthenticationHandler : AuthenticationHandler<Authenti
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        // Expect Authorization: Bearer <token>
+        // Try Authorization: Bearer <token>
         string? authHeader = Request.Headers["Authorization"].FirstOrDefault();
-        if (string.IsNullOrWhiteSpace(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        string? token = null;
+        if (!string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
-            return AuthenticateResult.NoResult();
+            token = authHeader.Substring("Bearer ".Length).Trim();
         }
 
-        string token = authHeader.Substring("Bearer ".Length).Trim();
+        // Fallbacks: custom header 'token', then query string ?token=
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            token = Request.Headers["token"].FirstOrDefault();
+        }
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            token = Request.Query["token"].FirstOrDefault();
+        }
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            Logger.LogInformation("ExternalToken auth: missing token in Authorization header, 'token' header, and query");
+            return AuthenticateResult.Fail("Missing token");
+        }
+
         var result = await _authService.VerifyTokenAsync(token, Context.RequestAborted);
         if (!result.IsAuthenticated)
         {
+            Logger.LogInformation("ExternalToken auth: verify failed - {Error}", result.Error ?? "Unknown");
             return AuthenticateResult.Fail(result.Error ?? "Unauthorized");
         }
 
