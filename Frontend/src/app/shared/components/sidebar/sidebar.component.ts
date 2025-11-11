@@ -26,7 +26,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   navItems: NavItem[] = [];
   userRole: string = 'Customer';
   currentUser: User | null = null;
-  isOpen = true;
   expandedItems: Set<string> = new Set();
   private userSubscription?: Subscription;
 
@@ -72,7 +71,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'admin-dashboard',
         label: 'Dashboard',
-        route: '/app/admin/dashboard',
+        route: '/admin',
         icon: '📊',
         order: 1,
         requiredRole: 'Admin'
@@ -80,7 +79,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'admin-services',
         label: 'Services',
-        route: '/app/admin/services',
+        route: '/admin/services',
         icon: '🔧',
         order: 2,
         requiredRole: 'Admin'
@@ -88,7 +87,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'admin-workers',
         label: 'Workers',
-        route: '/app/admin/workers',
+        route: '/admin/workers',
         icon: '👷',
         order: 3,
         requiredRole: 'Admin'
@@ -96,24 +95,24 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'admin-orders',
         label: 'Orders',
-        route: '/app/admin/orders',
+        route: '/admin/orders',
         icon: '📋',
         order: 4,
         requiredRole: 'Admin'
       },
       {
-        id: 'admin-customers',
-        label: 'Customers',
-        route: '/app/admin/customers',
-        icon: '👥',
+        id: 'admin-chatbox',
+        label: 'Chat',
+        route: '/chat',
+        icon: '💬',
         order: 5,
         requiredRole: 'Admin'
       },
       {
-        id: 'admin-settings',
-        label: 'Settings',
-        route: '/app/admin/settings',
-        icon: '⚙️',
+        id: 'admin-ask-ai',
+        label: 'Ask with AI',
+        route: '/ai',
+        icon: '🤖',
         order: 6,
         requiredRole: 'Admin'
       }
@@ -123,35 +122,27 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private getWorkerNavigation(): NavItem[] {
     return [
       {
-        id: 'worker-new',
-        label: 'New',
-        route: '/app/worker/new',
-        icon: '🆕',
+        id: 'worker-dashboard',
+        label: 'Dashboard',
+        route: '/worker-dashboard',
+        icon: '🔧',
         order: 1,
         requiredRole: 'Worker'
       },
       {
-        id: 'worker-pending',
-        label: 'Pending',
-        route: '/app/worker/pending',
-        icon: '⏳',
+        id: 'worker-chatbox',
+        label: 'Chat',
+        route: '/chat',
+        icon: '💬',
         order: 2,
         requiredRole: 'Worker'
       },
       {
-        id: 'worker-on-work',
-        label: 'On Work',
-        route: '/app/worker/on-work',
-        icon: '🔧',
+        id: 'worker-ask-ai',
+        label: 'Ask with AI',
+        route: '/ai',
+        icon: '🤖',
         order: 3,
-        requiredRole: 'Worker'
-      },
-      {
-        id: 'worker-complete',
-        label: 'Complete',
-        route: '/app/worker/complete',
-        icon: '✅',
-        order: 4,
         requiredRole: 'Worker'
       }
     ];
@@ -162,7 +153,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'customer-dashboard',
         label: 'Dashboard',
-        route: '/app/user/dashboard',
+        route: '/user/dashboard',
         icon: '📊',
         order: 1,
         requiredRole: 'Customer'
@@ -170,7 +161,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'customer-book-service',
         label: 'Book Service',
-        route: '/app/user/book-service',
+        route: '/user/book-service',
         icon: '🔧',
         order: 2,
         requiredRole: 'Customer'
@@ -178,49 +169,33 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'customer-notifications',
         label: 'Notifications',
-        route: '/app/user/notifications',
+        route: '/user/notifications',
         icon: '🔔',
         order: 3,
         requiredRole: 'Customer'
       },
       {
-        id: 'customer-my-bookings',
-        label: 'My Bookings',
-        route: '/app/user/my-bookings',
-        icon: '📅',
+        id: 'customer-past-orders',
+        label: 'Past Orders',
+        route: '/user/past-orders',
+        icon: '📚',
         order: 4,
         requiredRole: 'Customer'
       },
       {
-        id: 'customer-my-vehicles',
-        label: 'My Vehicles',
-        route: '/app/user/my-vehicles',
-        icon: '🚗',
+        id: 'customer-chatbox',
+        label: 'Chat',
+        route: '/chat',
+        icon: '💬',
         order: 5,
         requiredRole: 'Customer'
       },
       {
-        id: 'customer-past-orders',
-        label: 'Past Orders',
-        route: '/app/user/past-orders',
-        icon: '📚',
+        id: 'customer-ask-ai',
+        label: 'Ask with AI',
+        route: '/ai',
+        icon: '🤖',
         order: 6,
-        requiredRole: 'Customer'
-      },
-      {
-        id: 'customer-request-modification',
-        label: 'Request Modification',
-        route: '/app/user/request-modification',
-        icon: '✏️',
-        order: 7,
-        requiredRole: 'Customer'
-      },
-      {
-        id: 'customer-payment-details',
-        label: 'Payment Details',
-        route: '/app/user/payment-details',
-        icon: '💳',
-        order: 8,
         requiredRole: 'Customer'
       }
     ];
@@ -249,10 +224,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     return this.expandedItems.has(itemId);
   }
 
-  // Toggle sidebar open/close
-  toggleSidebar(): void {
-    this.isOpen = !this.isOpen;
-  }
+  // Sidebar is always open; minimize behavior removed.
 
   // Get user initials for avatar
   getUserInitials(): string {

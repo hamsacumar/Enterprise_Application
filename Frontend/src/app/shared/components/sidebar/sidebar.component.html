@@ -1,18 +1,14 @@
-<!-- Sidebar Container -->
-<div class="sidebar" [class.open]="isOpen">
+<!-- Sidebar Container (always open) -->
+<div class="sidebar open">
   <!-- Sidebar Header -->
   <div class="sidebar-header">
     <div class="logo">
-      <span class="logo-text" *ngIf="isOpen">Dashboard</span>
+      <span class="logo-text">Dashboard</span>
     </div>
-    <button class="toggle-btn" (click)="toggleSidebar()" title="Toggle Sidebar">
-      <span *ngIf="isOpen">✕</span>
-      <span *ngIf="!isOpen">☰</span>
-    </button>
   </div>
 
   <!-- User Info Section -->
-  <div class="user-section" *ngIf="isOpen">
+  <div class="user-section">
     <div class="user-info">
       <div class="user-avatar">
         {{ getUserInitials() }}
@@ -41,8 +37,8 @@
         (click)="item.subItems ? toggleSubMenu(item.id) : null"
         [title]="item.label"
       >
-        <span class="nav-label" *ngIf="isOpen">{{ item.label }}</span>
-        <span class="expand-icon" *ngIf="item.subItems && item.subItems.length > 0 && isOpen">
+        <span class="nav-label">{{ item.label }}</span>
+        <span class="expand-icon" *ngIf="item.subItems && item.subItems.length > 0">
           {{ isExpanded(item.id) ? '▼' : '▶' }}
         </span>
       </button>
@@ -57,7 +53,7 @@
           [routerLinkActiveOptions]="{ exact: false }"
           [title]="subItem.label"
         >
-          <span class="submenu-label" *ngIf="isOpen">{{ subItem.label }}</span>
+          <span class="submenu-label">{{ subItem.label }}</span>
         </button>
       </div>
       </div>
@@ -65,12 +61,9 @@
   </nav>
 
   <!-- Sidebar Footer -->
-  <div class="sidebar-footer" *ngIf="isOpen">
+  <div class="sidebar-footer">
     <button class="logout-btn" (click)="logout()" title="Logout">
       Logout
     </button>
   </div>
 </div>
-
-<!-- Sidebar Overlay (for mobile) -->
-<div class="sidebar-overlay" *ngIf="isOpen" (click)="toggleSidebar()"></div>

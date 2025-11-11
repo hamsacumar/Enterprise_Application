@@ -40,7 +40,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   isAuthenticatedArea(): boolean {
-    return this.router.url.startsWith('/app');
+    return (
+      this.router.url.startsWith('/admin') ||
+      this.router.url.startsWith('/user') ||
+      this.router.url.startsWith('/worker-dashboard') ||
+      this.router.url.startsWith('/chat') ||
+      this.router.url.startsWith('/ai')
+    );
   }
 
   shouldShowSidebar(): boolean {

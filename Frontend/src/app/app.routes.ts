@@ -35,6 +35,11 @@ import { CustomerListComponent } from './features/Admin/pages/customer-list/cust
 import { ChatbotComponent } from './features/chatbot/chatbot.component';
 
 // ==========================
+// CHATBOX COMPONENT
+// ==========================
+import { ChatboxComponent } from './features/chatbox/components/chatbox/chatbox.component';
+
+// ==========================
 // 👤 USER DASHBOARD COMPONENTS
 // ==========================
 import { DashboardComponent as UserDashboardComponent } from './features/User/pages/dashboard/dashboard';
@@ -96,6 +101,8 @@ export const routes: Routes = [
 
    // 🔹 AI chatbot
   { path: 'ai', component: ChatbotComponent },
+  // 🔹 Chatbox
+  { path: 'chat', component: ChatboxComponent },
   // worker
   {
     path: 'worker-dashboard',
