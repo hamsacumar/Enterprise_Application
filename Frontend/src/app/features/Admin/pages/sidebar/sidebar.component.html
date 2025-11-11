@@ -1,0 +1,32 @@
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h3>Admin Panel</h3>
+  </div>
+  <ul class="sidebar-menu">
+    <li>
+      <a 
+        routerLink="/admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Dashboard
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/services" routerLinkActive="active">Service Details</a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/workers" routerLinkActive="active">Worker Details</a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/orders" routerLinkActive="active">Orders Summary</a>
+    </li>
+ <li>
+      <a routerLink="/admin/customers" routerLinkActive="active">Customer Details</a>
+    </li>
+   
+  </ul>
+</nav>

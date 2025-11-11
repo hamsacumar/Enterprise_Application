@@ -1,0 +1,93 @@
+<div class="service-list-container">
+  <h2 class="title">Service list</h2>
+
+  <div class="service-layout">
+    <div class="list-pane">
+      <div *ngIf="loading" class="loading">Loading services...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+
+      <!-- Category-wise grouping -->
+      <div *ngIf="!loading && !error && (groupedServices | keyvalue) as categories">
+        <div *ngFor="let category of categories" class="category-block">
+          <h3 class="category-title">{{ category.key }}</h3>
+          <div class="service-cards">
+            <div *ngFor="let service of category.value" class="service-card">
+              <div class="service-info">
+                <div class="service-name">{{ service.name }}</div>
+                <div class="service-price">${{ service.price | number : '1.2-2' }}</div>
+                <div class="service-description">{{ service.description || 'description' }}</div>
+              </div>
+
+              <!-- 3-dot menu -->
+              <div class="menu-container">
+                <button class="menu-btn" (click)="toggleMenu(service, $event)">⋮</button>
+                <div class="menu" *ngIf="service.showMenu">
+                  <div class="menu-item" (click)="editService(service); service.showMenu = false">update</div>
+                  <div class="menu-item" (click)="deleteService(service); service.showMenu = false">delete</div>
+                </div>
+              </div>
+
+              <!-- Edit mode -->
+              <div *ngIf="editingServiceId === getServiceId(service)" class="edit-section">
+                <input [(ngModel)]="editingService.name" placeholder="Service Name" class="edit-input" />
+                <input [(ngModel)]="editingService.description" placeholder="Description" class="edit-input" />
+                <input type="number" [(ngModel)]="editingService.price" placeholder="Price" class="edit-input" />
+                <select [(ngModel)]="editingService.vehicleCategory" class="edit-input">
+                  <option value="Car">Car</option>
+                  <option value="Bike">Bike</option>
+                  <option value="SUV">SUV</option>
+                  <option value="Truck">Truck</option>
+                </select>
+                <div class="edit-actions">
+                  <button class="save-btn" (click)="saveService()">Save</button>
+                  <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No services -->
+      <div *ngIf="!loading && !error && services.length === 0" class="no-services">
+        No services available.
+      </div>
+    </div>
+
+    <div class="form-pane">
+      <!-- Add form -->
+      <div *ngIf="showAddForm" class="add-form">
+        <h3>Add New Service</h3>
+        <div class="form-group">
+          <input [(ngModel)]="newService.name" placeholder="Service Name" class="form-input" />
+        </div>
+        <div class="form-group">
+          <input [(ngModel)]="newService.description" placeholder="Description" class="form-input" />
+        </div>
+        <div class="form-group">
+          <input type="number" [(ngModel)]="newService.price" placeholder="Price" class="form-input" />
+        </div>
+        <div class="form-group">
+          <select [(ngModel)]="newService.vehicleCategory" class="form-input">
+            <option value="" disabled selected>Select Category</option>
+            <option value="Car">Car</option>
+            <option value="Bike">Bike</option>
+            <option value="SUV">SUV</option>
+            <option value="Truck">Truck</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="save-btn" (click)="addService()">Save</button>
+          <button type="button" class="cancel-btn" (click)="cancelAdd()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Service Button -->
+  <div class="bottom-add-container" *ngIf="!showAddForm">
+    <button type="button" class="bottom-add-btn" (click)="toggleAddForm()">
+      {{ showAddForm ? 'Cancel' : 'Add service' }}
+    </button>
+  </div>
+</div>
