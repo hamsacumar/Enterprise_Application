@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 export interface ContactSubmissionRequest {
   name: string;
@@ -36,7 +36,7 @@ export interface PaginatedContactResponse extends ContactResponse {
   providedIn: 'root'
 })
 export class ContactService {
-  private apiUrl = 'http://localhost:5000/api/contact'; // Adjust port as needed
+  private apiUrl = 'http://localhost:5155/api/contact';
 
   constructor(private http: HttpClient) { }
 
@@ -44,7 +44,13 @@ export class ContactService {
    * Submit a new contact form
    */
   submitContact(request: ContactSubmissionRequest): Observable<ContactResponse> {
-    return this.http.post<ContactResponse>(`${this.apiUrl}/submit`, request);
+    return this.http.post<any>(`${this.apiUrl}/submit`, request).pipe(
+      map(r => ({
+        success: r.success ?? r.Success,
+        message: r.message ?? r.Message,
+        data: r.data ?? r.Data
+      } as ContactResponse))
+    );
   }
 
   /**
@@ -55,45 +61,83 @@ export class ContactService {
     if (status) {
       url += `&status=${status}`;
     }
-    return this.http.get<PaginatedContactResponse>(url);
+    return this.http.get<any>(url).pipe(
+      map(r => ({
+        success: r.success ?? r.Success,
+        message: r.message ?? r.Message,
+        total: r.total ?? r.Total,
+        page: r.page ?? r.Page,
+        pageSize: r.pageSize ?? r.PageSize,
+        data: (r.data ?? r.Data) as ContactSubmission[]
+      } as PaginatedContactResponse))
+    );
   }
 
   /**
    * Get submission by ID
    */
   getSubmissionById(id: string): Observable<ContactResponse> {
-    return this.http.get<ContactResponse>(`${this.apiUrl}/submissions/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/submissions/${id}`).pipe(
+      map(r => ({
+        success: r.success ?? r.Success,
+        message: r.message ?? r.Message,
+        data: r.data ?? r.Data
+      } as ContactResponse))
+    );
   }
 
   /**
    * Get submissions by email
    */
   getSubmissionsByEmail(email: string): Observable<ContactResponse> {
-    return this.http.get<ContactResponse>(`${this.apiUrl}/submissions/email/${email}`);
+    return this.http.get<any>(`${this.apiUrl}/submissions/email/${email}`).pipe(
+      map(r => ({
+        success: r.success ?? r.Success,
+        message: r.message ?? r.Message,
+        data: r.data ?? r.Data
+      } as ContactResponse))
+    );
   }
 
   /**
    * Update submission status
    */
   updateSubmissionStatus(id: string, status: string, adminNotes?: string): Observable<ContactResponse> {
-    return this.http.put<ContactResponse>(`${this.apiUrl}/submissions/${id}/status`, {
+    return this.http.put<any>(`${this.apiUrl}/submissions/${id}/status`, {
       status,
       adminNotes
-    });
+    }).pipe(
+      map(r => ({
+        success: r.success ?? r.Success,
+        message: r.message ?? r.Message,
+        data: r.data ?? r.Data
+      } as ContactResponse))
+    );
   }
 
   /**
    * Delete submission
    */
   deleteSubmission(id: string): Observable<ContactResponse> {
-    return this.http.delete<ContactResponse>(`${this.apiUrl}/submissions/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/submissions/${id}`).pipe(
+      map(r => ({
+        success: r.success ?? r.Success,
+        message: r.message ?? r.Message,
+      } as ContactResponse))
+    );
   }
 
   /**
    * Get statistics
    */
   getStatistics(): Observable<ContactResponse> {
-    return this.http.get<ContactResponse>(`${this.apiUrl}/statistics`);
+    return this.http.get<any>(`${this.apiUrl}/statistics`).pipe(
+      map(r => ({
+        success: r.success ?? r.Success,
+        message: r.message ?? r.Message,
+        data: r.data ?? r.Data
+      } as ContactResponse))
+    );
   }
 }
 

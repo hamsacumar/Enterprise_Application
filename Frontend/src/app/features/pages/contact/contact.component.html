@@ -29,15 +29,17 @@
         <h2>Send us a Message</h2>
         <p class="form-subtitle">Fill out the form below and we'll get back to you as soon as possible</p>
 
-        <!-- Success Message -->
-        <div class="alert alert-success" *ngIf="successMessage">
-          {{ successMessage }}
+        <!-- Toast Notifications -->
+        <div class="toast toast-success" *ngIf="successMessage" role="status" aria-live="polite">
+          <span class="toast-icon">✔</span>
+          <span class="toast-text">{{ successMessage }}</span>
+        </div>
+        <div class="toast toast-error" *ngIf="errorMessage && submitted" role="alert" aria-live="assertive">
+          <span class="toast-icon">!</span>
+          <span class="toast-text">{{ errorMessage }}</span>
         </div>
 
-        <!-- Error Message -->
-        <div class="alert alert-error" *ngIf="errorMessage && submitted">
-          {{ errorMessage }}
-        </div>
+        <!-- Removed duplicate alert blocks; using toast notifications above -->
 
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
           <!-- Name Field -->
@@ -49,6 +51,7 @@
               formControlName="name"
               [class.is-invalid]="submitted && f['name'].errors"
               placeholder="Your full name"
+              [disabled]="isSubmitting"
             />
             <div class="error-message" *ngIf="submitted && f['name'].errors">
               <span *ngIf="f['name'].errors['required']">Name is required</span>
@@ -65,6 +68,7 @@
               formControlName="email"
               [class.is-invalid]="submitted && f['email'].errors"
               placeholder="your.email@example.com"
+              [disabled]="isSubmitting"
             />
             <div class="error-message" *ngIf="submitted && f['email'].errors">
               <span *ngIf="f['email'].errors['required']">Email is required</span>
@@ -81,6 +85,7 @@
               formControlName="phone"
               [class.is-invalid]="submitted && f['phone'].errors"
               placeholder="+1 (800) 555-0000"
+              [disabled]="isSubmitting"
             />
             <div class="error-message" *ngIf="submitted && f['phone'].errors">
               <span *ngIf="f['phone'].errors['required']">Phone number is required</span>
@@ -91,7 +96,7 @@
           <!-- Service Type -->
           <div class="form-group">
             <label for="serviceType">Service Type *</label>
-            <select id="serviceType" formControlName="serviceType">
+            <select id="serviceType" formControlName="serviceType" [disabled]="isSubmitting">
               <option value="general">General Inquiry</option>
               <option value="booking">Booking Question</option>
               <option value="complaint">Complaint</option>
@@ -109,6 +114,7 @@
               formControlName="subject"
               [class.is-invalid]="submitted && f['subject'].errors"
               placeholder="What is this about?"
+              [disabled]="isSubmitting"
             />
             <div class="error-message" *ngIf="submitted && f['subject'].errors">
               <span *ngIf="f['subject'].errors['required']">Subject is required</span>
@@ -125,6 +131,7 @@
               [class.is-invalid]="submitted && f['message'].errors"
               placeholder="Tell us what's on your mind..."
               rows="6"
+              [disabled]="isSubmitting"
             ></textarea>
             <div class="error-message" *ngIf="submitted && f['message'].errors">
               <span *ngIf="f['message'].errors['required']">Message is required</span>
@@ -134,7 +141,10 @@
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="submit-btn">Send Message</button>
+          <button type="submit" class="submit-btn" [disabled]="isSubmitting || contactForm.invalid">
+            <span class="btn-spinner" *ngIf="isSubmitting"></span>
+            <span>{{ isSubmitting ? 'Sending…' : 'Send Message' }}</span>
+          </button>
         </form>
       </div>
 
