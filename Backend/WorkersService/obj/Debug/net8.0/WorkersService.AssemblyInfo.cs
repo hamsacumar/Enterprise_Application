@@ -14,10 +14,17 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 <<<<<<< HEAD
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c0b0f30fa0aa397792cb408c4a32c6d3185948d6")]
 =======
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8bd3427e2b65f24d3761450f6231905924d3e68c")]
 >>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8bd3427e2b65f24d3761450f6231905924d3e68c")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c0b0f30fa0aa397792cb408c4a32c6d3185948d6")]
+>>>>>>> 19aa3a9f5c384ec92c20445a55cba27246376549
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
 [assembly: System.Reflection.AssemblyProductAttribute("WorkersService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorkersService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

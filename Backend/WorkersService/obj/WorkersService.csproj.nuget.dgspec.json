@@ -2,6 +2,7 @@
   "format": 1,
   "restore": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "E:\\Enterprise_application\\Backend\\WorkersService\\WorkersService.csproj": {}
   },
   "projects": {
@@ -17,6 +18,8 @@
         "configFilePaths": [
           "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
 =======
+=======
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
     "C:\\Users\\User\\Desktop\\Enterprise_Application\\Backend\\WorkersService\\WorkersService.csproj": {}
   },
   "projects": {
@@ -36,16 +39,41 @@
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+<<<<<<< HEAD
 >>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
+=======
+=======
+    "E:\\Enterprise_application\\Backend\\WorkersService\\WorkersService.csproj": {}
+  },
+  "projects": {
+    "E:\\Enterprise_application\\Backend\\WorkersService\\WorkersService.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Enterprise_application\\Backend\\WorkersService\\WorkersService.csproj",
+        "projectName": "WorkersService",
+        "projectPath": "E:\\Enterprise_application\\Backend\\WorkersService\\WorkersService.csproj",
+        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
+        "outputPath": "E:\\Enterprise_application\\Backend\\WorkersService\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
+>>>>>>> 19aa3a9f5c384ec92c20445a55cba27246376549
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
 >>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
+=======
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+=======
+>>>>>>> 19aa3a9f5c384ec92c20445a55cba27246376549
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -65,10 +93,17 @@
           "auditMode": "direct"
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
         "SdkAnalysisLevel": "9.0.100"
 =======
         "SdkAnalysisLevel": "9.0.300"
 >>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
+=======
+        "SdkAnalysisLevel": "9.0.300"
+=======
+        "SdkAnalysisLevel": "9.0.100"
+>>>>>>> 19aa3a9f5c384ec92c20445a55cba27246376549
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
       },
       "frameworks": {
         "net8.0": {
@@ -105,6 +140,10 @@
           "assetTargetFallback": true,
           "warn": true,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
@@ -123,8 +162,12 @@
               "version": "[8.0.12, 8.0.12]"
             }
           ],
+<<<<<<< HEAD
 =======
 >>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
+=======
+>>>>>>> 19aa3a9f5c384ec92c20445a55cba27246376549
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -134,10 +177,17 @@
             }
           },
 <<<<<<< HEAD
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
 =======
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
 >>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 19aa3a9f5c384ec92c20445a55cba27246376549
+>>>>>>> d2d88e6d3a116a36e6b2df3976e5b2b3065ed884
         }
       }
     }
