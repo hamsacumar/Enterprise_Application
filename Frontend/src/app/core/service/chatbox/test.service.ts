@@ -19,7 +19,7 @@ export interface ApiResponse {
   providedIn: 'root',
 })
 export class TestService {
-  private apiUrl = 'http://localhost:5000/api/test';
+  private apiUrl = 'http://localhost:5002/api/test';
 
   constructor(private http: HttpClient) {}
 

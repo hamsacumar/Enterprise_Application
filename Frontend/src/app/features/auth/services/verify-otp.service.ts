@@ -11,10 +11,10 @@ interface VerifyOtpResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class VerifyOtpService {
-  private apiUrl = 'http://localhost:5000/api/Auth/verify-otp'; 
+  private apiUrl = 'http://localhost:5003/api/Auth/verify-otp';
 
   constructor(private http: HttpClient) {}
 
@@ -23,7 +23,9 @@ export class VerifyOtpService {
   }
 
   resendOtp(data: { Email: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl.replace('/verify-otp', '')}/resend-otp`, data);
+    return this.http.post(
+      `${this.apiUrl.replace('/verify-otp', '')}/resend-otp`,
+      data
+    );
   }
-  
 }

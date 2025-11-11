@@ -61,7 +61,7 @@ export class LoginComponent {
     
     setTimeout(() => {
       this.errorMessage = '';
-    }, 5000);
+    }, 5003);
   },
 
 

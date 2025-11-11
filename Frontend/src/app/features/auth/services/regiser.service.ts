@@ -18,7 +18,7 @@ interface RegisterResponse {
   providedIn: 'root'
 })
 export class RegisterService {
-  private apiUrl = 'http://localhost:5000/api/Auth/register'; 
+  private apiUrl = 'http://localhost:5003/api/Auth/register'; 
 
   constructor(private http: HttpClient) {}
 
