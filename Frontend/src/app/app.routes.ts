@@ -130,11 +130,12 @@ export const routes: Routes = [
         component: NotificationsComponent,
         title: 'AutoServeX | Notifications',
       },
+      { path: 'payment/success', component: PaymentStatusComponent }, 
+      { path: 'payment/cancel', component: PaymentStatusComponent },
+      {path: 'payment', component: PaymentFormComponent},
     ],
   },
-  { path: 'payment/success', component: PaymentStatusComponent }, 
-  { path: 'payment/cancel', component: PaymentStatusComponent },
-  {path: 'payment', component: PaymentFormComponent},
+
 
    // 👇 Wildcard must come LAST
   { path: '**', redirectTo: '/login' },
