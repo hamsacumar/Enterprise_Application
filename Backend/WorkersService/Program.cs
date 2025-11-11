@@ -30,6 +30,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// ===== NEW: Auto-create database & tables =====
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated(); // <-- creates WorkerDB tables if they don’t exist
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
