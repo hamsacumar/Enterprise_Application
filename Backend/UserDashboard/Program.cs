@@ -18,9 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     }
     else
     {
-        // Get connection string from environment variable or appsettings.json
-        var envConnectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING");
-        var connectionString = envConnectionString ?? builder.Configuration.GetConnectionString("DefaultConnection");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {

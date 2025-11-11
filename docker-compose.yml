@@ -62,7 +62,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AuthDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
-      - JwtSettings__Secret=MySuperSecretKey123
+      - JwtSettings__Secret=MySuperLongAndSecureJwtKey1234567890!
       - JwtSettings__Issuer=EnterpriseApp
       - JwtSettings__Audience=EnterpriseApp
       # Add MongoDB environment variables
@@ -166,7 +166,7 @@ services:
       - "5015:5015"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=UserDashboardDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
     depends_on:
       - sqlserver
     restart: unless-stopped
