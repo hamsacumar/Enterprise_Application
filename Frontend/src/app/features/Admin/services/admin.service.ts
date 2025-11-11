@@ -27,7 +27,7 @@ export interface Worker {
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:5125/api/admin'; // common base
+  private baseUrl = 'http://localhost:5155/api/admin'; // CoreService base
 
   // ---- Services ----
   private toServiceItem = (dto: any): ServiceItem => ({

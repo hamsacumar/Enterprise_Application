@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "E:\\Enterprise_application\\Backend\\WorkersService\\WorkersService.csproj": {}
   },
   "projects": {
@@ -15,11 +16,36 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
+    "C:\\Users\\User\\Desktop\\Enterprise_Application\\Backend\\WorkersService\\WorkersService.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\User\\Desktop\\Enterprise_Application\\Backend\\WorkersService\\WorkersService.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\User\\Desktop\\Enterprise_Application\\Backend\\WorkersService\\WorkersService.csproj",
+        "projectName": "WorkersService",
+        "projectPath": "C:\\Users\\User\\Desktop\\Enterprise_Application\\Backend\\WorkersService\\WorkersService.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\User\\Desktop\\Enterprise_Application\\Backend\\WorkersService\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+>>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+<<<<<<< HEAD
+=======
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+>>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +64,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
+<<<<<<< HEAD
         "SdkAnalysisLevel": "9.0.100"
+=======
+        "SdkAnalysisLevel": "9.0.300"
+>>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
       },
       "frameworks": {
         "net8.0": {
@@ -74,6 +104,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+<<<<<<< HEAD
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
@@ -92,6 +123,8 @@
               "version": "[8.0.12, 8.0.12]"
             }
           ],
+=======
+>>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -100,7 +133,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05
         }
       }
     }

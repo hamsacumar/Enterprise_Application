@@ -1,0 +1,13 @@
+.message {
+  margin: 5px 0;
+  padding: 10px;
+  background: #e4e6eb;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+.own-message {
+  background: #007bff;
+  color: #fff;
+  margin-left: auto;
+}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "Version": 1,
   "Hash": "B+51UEIa7I+0BfM0swrqNRRTwkfP/p6zDwkTFVVMxXk=",
@@ -10,3 +11,6 @@
   "Assets": [],
   "Endpoints": []
 }
+=======
+{"Version":1,"Hash":"B+51UEIa7I+0BfM0swrqNRRTwkfP/p6zDwkTFVVMxXk=","Source":"WorkersService","BasePath":"_content/WorkersService","Mode":"Default","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[],"Assets":[],"Endpoints":[]}
+>>>>>>> 91f5173993c07fb09b70d1e307ffa2a7d0746f05

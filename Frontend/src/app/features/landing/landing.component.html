@@ -1,0 +1,114 @@
+<!-- ROLE SELECTION SIDEBAR -->
+<div class="role-sidebar" [class.open]="showRoleSidebar">
+  <div class="role-sidebar-header">
+    <h3>Select Your Role</h3>
+    <button class="close-btn" (click)="toggleRoleSidebar()">×</button>
+  </div>
+  <div class="role-options">
+    <button class="role-btn user-btn" (click)="selectRole('User')">
+      <div class="role-icon">👤</div>
+      <div class="role-info">
+        <h4>Customer</h4>
+        <p>Book services and manage appointments</p>
+      </div>
+    </button>
+    <button class="role-btn worker-btn" (click)="selectRole('Worker')">
+      <div class="role-icon">👷</div>
+      <div class="role-info">
+        <h4>Worker</h4>
+        <p>Manage tasks and service assignments</p>
+      </div>
+    </button>
+    <button class="role-btn admin-btn" (click)="selectRole('Admin')">
+      <div class="role-icon">👑</div>
+      <div class="role-info">
+        <h4>Admin</h4>
+        <p>Manage services, workers, and system settings</p>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- DEMO MODE INDICATOR -->
+<div class="demo-mode-indicator" *ngIf="demoMode">
+  <div class="demo-banner">
+    <span class="demo-icon">🎭</span>
+    <span class="demo-text">Demo Mode Active - Viewing as {{ getCurrentDemoRole() }}</span>
+    <button class="exit-demo-btn" (click)="exitDemoMode()">Exit Demo</button>
+  </div>
+</div>
+
+<!-- ROLE SELECTION BUTTON -->
+<button class="role-select-btn" (click)="toggleRoleSidebar()" title="Select Role to View Demo" *ngIf="!demoMode">
+  <span class="role-icon">⚙️</span>
+  <span class="role-text">Demo</span>
+</button>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>{{ heroTitle }}</h1>
+    <p>{{ heroSubtitle }}</p>
+  </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section class="services" id="services">
+  <div class="section-container">
+    <h2 class="section-title">Our Premium Services</h2>
+    <p class="section-subtitle">Professional care for your vehicle</p>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services">
+        <div class="service-icon-container">
+          <img [src]="service.icon" [alt]="service.title" class="service-icon-img">
+        </div>
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features" id="features">
+  <div class="section-container">
+    <h2 class="section-title">Why Choose AutoServex?</h2>
+    <p class="section-subtitle">Excellence in every detail</p>
+
+    <div class="features-grid">
+      <div class="feature-item" *ngFor="let feature of features">
+        <div class="feature-icon-container">
+          <img [src]="feature.icon" [alt]="feature.title" class="feature-icon-img">
+        </div>
+        <h4>{{ feature.title }}</h4>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section class="testimonials" id="testimonials">
+  <div class="section-container">
+    <h2 class="section-title">What Our Customers Say</h2>
+    <p class="section-subtitle">Real feedback from satisfied clients</p>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+        <div class="stars">
+          <span *ngFor="let star of getStars(testimonial.stars)">⭐</span>
+        </div>
+        <p class="testimonial-text">{{ testimonial.text }}</p>
+        <p class="testimonial-author">- {{ testimonial.author }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section" id="contact">
+  <h2>Ready to Treat Your Vehicle Right?</h2>
+  <p>Book your service appointment today and get 20% off your first visit</p>
+  <a href="tel:+15551234567" class="cta-button-secondary">Call Us Now</a>
+</section>
