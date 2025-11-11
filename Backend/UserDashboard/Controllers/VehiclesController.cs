@@ -1,4 +1,5 @@
 using be.Data;
+using be.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
