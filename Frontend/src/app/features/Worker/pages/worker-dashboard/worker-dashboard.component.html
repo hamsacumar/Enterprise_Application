@@ -195,16 +195,17 @@
 
           <div class="info-row">
             <span class="label">Appointment:</span>
-            <span class="value"
-              >{{ appointment.appointmentDate }} |
-              {{ appointment.timeSlot }}</span
-            >
+            <span class="value">
+              {{ appointment.appointmentDate | date : "yyyy-MM-dd" }} |
+              {{ appointment.timeSlot }}
+            </span>
           </div>
 
           <div class="info-row">
             <span class="label">Return:</span>
             <span class="value"
-              >{{ appointment.returnDate }} | {{ appointment.returnTime }}</span
+              >{{ appointment.returnDate | date : "yyyy-MM-dd" }} |
+              {{ appointment.returnTime }}</span
             >
           </div>
 
@@ -238,27 +239,46 @@
   </div>
 
   <!-- ON WORK TAB -->
-  <!-- ✅ ON WORK TAB -->
   <div class="tab-content" *ngIf="activeTab === 'onwork'">
     <div class="appointments-grid">
       <div
         class="appointment-card work-card"
         *ngFor="let appointment of onWorkAppointments"
       >
+        <!-- Card Header -->
         <div class="card-header">
           <h3>{{ appointment.customerName }}</h3>
           <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
           <span class="status-badge working">In Progress</span>
         </div>
 
+        <!-- Card Body -->
         <div class="card-body">
-          <!-- Vehicle Info -->
+          <!-- Customer Details -->
+          <div class="info-row">
+            <span class="label">Phone Number:</span>
+            <span class="value">{{ appointment.phoneNumber }}</span>
+          </div>
+
+          <!-- Vehicle Details -->
+          <div class="info-row">
+            <span class="label">Vehicle Name:</span>
+            <span class="value">{{ appointment.vehicleName }}</span>
+          </div>
           <div class="info-row">
             <span class="label">Vehicle Model:</span>
             <span class="value">{{ appointment.vehicleModel }}</span>
           </div>
+          <div class="info-row">
+            <span class="label">Vehicle Year:</span>
+            <span class="value">{{ appointment.vehicleYear }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Registration Number:</span>
+            <span class="value">{{ appointment.vehicleRegNumber }}</span>
+          </div>
 
-          <!-- ✅ Current Services with Prices -->
+          <!-- Services Checklist -->
           <div class="services-checklist">
             <h4>Selected Services:</h4>
             <div
@@ -285,7 +305,7 @@
             </div>
           </div>
 
-          <!-- ✅ Add Service Dropdown -->
+          <!-- Add Service -->
           <div class="add-service-section">
             <label>Add Service:</label>
             <div class="add-service-controls">
@@ -309,7 +329,7 @@
             </div>
           </div>
 
-          <!-- ✅ Payment Section -->
+          <!-- Payment Section -->
           <div class="payment-section">
             <h4>Payment Summary</h4>
 
@@ -340,7 +360,7 @@
               </span>
             </div>
 
-            <!-- ✅ Paid / Unpaid toggle -->
+            <!-- Paid / Unpaid toggle -->
             <div class="payment-toggle">
               <label class="toggle-label">
                 <input
@@ -348,14 +368,15 @@
                   [checked]="appointment.isPaid"
                   (change)="togglePaidStatus(appointment)"
                 />
-                <span class="toggle-text">
-                  {{ appointment.isPaid ? "Paid" : "Unpaid" }}
-                </span>
+                <span class="toggle-text">{{
+                  appointment.isPaid ? "Paid" : "Unpaid"
+                }}</span>
               </label>
             </div>
           </div>
         </div>
 
+        <!-- Card Footer -->
         <div class="card-footer">
           <button class="btn btn-success" (click)="finishWork(appointment)">
             Finish Work
@@ -372,33 +393,57 @@
         class="appointment-card completed-card"
         *ngFor="let appointment of completedAppointments"
       >
+        <!-- Card Header -->
         <div class="card-header">
           <h3>{{ appointment.customerName }}</h3>
           <span class="vehicle-badge">{{ appointment.vehicleType }}</span>
           <span class="status-badge completed">Completed</span>
         </div>
 
+        <!-- Card Body -->
         <div class="card-body">
+          <!-- Customer Details -->
+          <div class="info-row">
+            <span class="label">Phone Number:</span>
+            <span class="value">{{ appointment.phoneNumber }}</span>
+          </div>
+
+          <!-- Vehicle Details -->
+          <div class="info-row">
+            <span class="label">Vehicle Name:</span>
+            <span class="value">{{ appointment.vehicleName }}</span>
+          </div>
           <div class="info-row">
             <span class="label">Vehicle Model:</span>
             <span class="value">{{ appointment.vehicleModel }}</span>
           </div>
+          <div class="info-row">
+            <span class="label">Vehicle Year:</span>
+            <span class="value">{{ appointment.vehicleYear }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Registration Number:</span>
+            <span class="value">{{ appointment.vehicleRegNumber }}</span>
+          </div>
 
+          <!-- Appointment Date & Return -->
           <div class="info-row">
             <span class="label">Appointment:</span>
-            <span class="value"
-              >{{ appointment.appointmentDate }} |
-              {{ appointment.timeSlot }}</span
-            >
+            <span class="value">
+              {{ appointment.appointmentDate | date : "yyyy-MM-dd" }} |
+              {{ appointment.timeSlot }}
+            </span>
           </div>
 
           <div class="info-row">
             <span class="label">Return:</span>
             <span class="value"
-              >{{ appointment.returnDate }} | {{ appointment.returnTime }}</span
+              >{{ appointment.returnDate | date : "yyyy-MM-dd" }} |
+              {{ appointment.returnTime }}</span
             >
           </div>
 
+          <!-- Services Completed -->
           <div class="info-row">
             <span class="label">Services Completed:</span>
             <div class="services-list">
@@ -411,15 +456,32 @@
             </div>
           </div>
 
+          <!-- Notes -->
           <div class="info-row" *ngIf="appointment.note">
             <span class="label">Note:</span>
             <span class="value">{{ appointment.note }}</span>
           </div>
 
+          <!-- Payment Summary -->
           <div class="payment-summary">
             <div class="summary-row">
+              <span>Total Price:</span>
+              <span class="amount">{{
+                appointment.totalPriceLkr | currency : "LKR"
+              }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Extra Charges:</span>
+              <span class="amount">{{
+                appointment.extraPayment || 0 | currency : "LKR"
+              }}</span>
+            </div>
+            <div class="summary-row">
               <span>Total Payment:</span>
-              <span class="amount">${{ appointment.totalPayment || 0 }}</span>
+              <span class="amount">{{
+                (appointment.totalPriceLkr ?? 0) +
+                  (appointment.extraPayment ?? 0) | currency : "LKR"
+              }}</span>
             </div>
             <div class="summary-row">
               <span>Status:</span>
