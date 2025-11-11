@@ -125,47 +125,6 @@
   text-overflow: ellipsis;
 }
 
-.demo-indicator {
-  margin-top: 0.25rem;
-}
-
-.demo-badge {
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-  color: white;
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 0.15rem 0.4rem;
-  border-radius: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
-}
-
-.demo-actions {
-  padding: 0.75rem 1rem;
-  border-top: 1px solid #E5E7EB;
-  background: #FEF7F0;
-}
-
-.exit-demo-btn {
-  width: 100%;
-  padding: 0.5rem 1rem;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.exit-demo-btn:hover {
-  background: #c82333;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
-}
-
 .user-role {
   margin: 0;
   font-size: 0.85rem;

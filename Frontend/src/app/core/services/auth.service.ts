@@ -14,7 +14,7 @@ import {
 })
 export class AuthService {
   private apiUrl = 'http://localhost:5155/api/auth'; // HTTP endpoint
-  private coreApiUrl = 'http://localhost:5000/api/auth';
+  private coreApiUrl = 'http://localhost:5155/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -49,7 +49,8 @@ export class AuthService {
     }).pipe(
       tap(response => {
         if (response.success && response.user) {
-          this.currentUserSubject.next(response.user);
+          const role = this.normalizeRole((response.user as any).role);
+          this.currentUserSubject.next({ ...response.user, role });
         }
       })
     );
@@ -61,7 +62,8 @@ export class AuthService {
     }).pipe(
       tap(res => {
         if (res?.success && res.user) {
-          this.currentUserSubject.next(res.user);
+          const role = this.normalizeRole(res.user.role);
+          this.currentUserSubject.next({ ...res.user, role });
         }
       })
     );
@@ -163,7 +165,8 @@ export class AuthService {
       this.getMeFromCore().subscribe({
         next: (response) => {
           if (response.success) {
-            this.currentUserSubject.next(response.user);
+            const role = this.normalizeRole(response.user.role);
+            this.currentUserSubject.next({ ...response.user, role });
           }
         },
         error: () => {
@@ -171,6 +174,17 @@ export class AuthService {
         }
       });
     }
+  }
+
+  /**
+   * Normalize role values from backend to string labels used in UI.
+   * Accepts numeric (0,1,2) or string ('0','1','2','Customer','Worker','Admin','User').
+   */
+  private normalizeRole(role: any): 'Admin' | 'Worker' | 'Customer' {
+    if (role === 2 || role === '2' || `${role}`.toLowerCase() === 'admin') return 'Admin';
+    if (role === 1 || role === '1' || `${role}`.toLowerCase() === 'worker') return 'Worker';
+    // Treat 'User' and 0 as Customer
+    return 'Customer';
   }
 
   /**

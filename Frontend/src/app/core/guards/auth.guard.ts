@@ -33,11 +33,23 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = new Router();
   const token = localStorage.getItem('token');
   const userRole = localStorage.getItem('userRole');
+  const url = state.url;
 
   if (!token) {
     localStorage.setItem('redirectUrl', state.url);
     window.location.href = '/login';
     return false;
+  }
+
+  // Role-based redirect when hitting the layout root
+  if (url === '/app' || url === '/app/') {
+    if (userRole === 'Admin') {
+      window.location.href = '/app/admin/services';
+      return false;
+    }
+    // For Worker/User (routes not defined yet), stay at /app so layout + sidebar render
+    // You can change these destinations when corresponding routes exist
+    return true;
   }
 
   const requiredRole = route.data?.['role'];

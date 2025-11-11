@@ -24,7 +24,7 @@ interface NavItem {
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   navItems: NavItem[] = [];
-  userRole: string = 'User';
+  userRole: string = 'Customer';
   currentUser: User | null = null;
   isOpen = true;
   expandedItems: Set<string> = new Set();
@@ -36,7 +36,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     // Subscribe to current user changes
     this.userSubscription = this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
-      this.userRole = user?.role || 'User';
+      const role = user?.role || 'Customer';
+      // Normalize legacy 'User' to 'Customer'
+      this.userRole = role === 'User' ? 'Customer' : role;
       this.loadNavigation();
     });
   }
@@ -61,7 +63,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     } else if (role === 'Worker') {
       return this.getWorkerNavigation();
     } else {
-      return this.getUserNavigation();
+      return this.getCustomerNavigation();
     }
   }
 
@@ -155,71 +157,71 @@ export class SidebarComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private getUserNavigation(): NavItem[] {
+  private getCustomerNavigation(): NavItem[] {
     return [
       {
-        id: 'user-dashboard',
+        id: 'customer-dashboard',
         label: 'Dashboard',
         route: '/app/user/dashboard',
         icon: '📊',
         order: 1,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       },
       {
-        id: 'user-book-service',
+        id: 'customer-book-service',
         label: 'Book Service',
         route: '/app/user/book-service',
         icon: '🔧',
         order: 2,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       },
       {
-        id: 'user-notifications',
+        id: 'customer-notifications',
         label: 'Notifications',
         route: '/app/user/notifications',
         icon: '🔔',
         order: 3,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       },
       {
-        id: 'user-my-bookings',
+        id: 'customer-my-bookings',
         label: 'My Bookings',
         route: '/app/user/my-bookings',
         icon: '📅',
         order: 4,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       },
       {
-        id: 'user-my-vehicles',
+        id: 'customer-my-vehicles',
         label: 'My Vehicles',
         route: '/app/user/my-vehicles',
         icon: '🚗',
         order: 5,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       },
       {
-        id: 'user-past-orders',
+        id: 'customer-past-orders',
         label: 'Past Orders',
         route: '/app/user/past-orders',
         icon: '📚',
         order: 6,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       },
       {
-        id: 'user-request-modification',
+        id: 'customer-request-modification',
         label: 'Request Modification',
         route: '/app/user/request-modification',
         icon: '✏️',
         order: 7,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       },
       {
-        id: 'user-payment-details',
+        id: 'customer-payment-details',
         label: 'Payment Details',
         route: '/app/user/payment-details',
         icon: '💳',
         order: 8,
-        requiredRole: 'User'
+        requiredRole: 'Customer'
       }
     ];
   }
@@ -227,7 +229,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
   // Check if item should be visible based on role
   canViewItem(item: NavItem): boolean {
     if (!item.requiredRole) return true;
-    return item.requiredRole === this.userRole;
+    // Compare case-insensitively and normalize 'User' to 'Customer'
+    const req = item.requiredRole.toLowerCase() === 'user' ? 'customer' : item.requiredRole.toLowerCase();
+    const cur = this.userRole.toLowerCase() === 'user' ? 'customer' : this.userRole.toLowerCase();
+    return req === cur;
   }
 
   // Toggle submenu expansion
@@ -252,24 +257,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
   // Get user initials for avatar
   getUserInitials(): string {
     if (!this.currentUser) return '?';
-    const names = this.currentUser.name.split(' ');
+    const display = this.currentUser.name || this.currentUser.email || '';
+    if (!display || display.length === 0) return '?';
+
+    const names = display.split(' ').filter(Boolean);
     if (names.length >= 2) {
-      return names[0][0] + names[1][0];
+      return (names[0][0] || '?') + (names[1][0] || '?');
     }
-    return this.currentUser.name[0];
+    return display[0] || '?';
   }
 
   // Check if in demo mode
-  isDemoMode(): boolean {
-    return localStorage.getItem('demoMode') === 'true';
-  }
-
-  // Exit demo mode
-  exitDemoMode(): void {
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('demoMode');
-    window.location.href = '/';
-  }
+  // (Demo mode removed) — demo-related methods and UI have been removed.
 
   // Logout function
   logout(): void {

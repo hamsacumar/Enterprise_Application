@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router,RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class LoginComponent {
   errorMessage = '';
   successMessage = '';
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router, private authService: AuthService) {}
 
 
   onLogin() {
@@ -31,17 +32,18 @@ export class LoginComponent {
         this.successMessage = 'Login successful!';
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
-        
-
-        setTimeout(() => {
-          if (res.role === 'Admin') {
-            this.router.navigate(['/app/admin/services']);
-          } else if (res.role === 'Worker') {
-            this.router.navigate(['/app']);
-          } else {
-            this.router.navigate(['/app']);
-          }
-        }, 1000);
+        localStorage.setItem('userRole', res.role);
+        // Fetch user from CoreService so sidebar receives role immediately
+        this.authService.getMeFromCore().subscribe({
+          next: () => {},
+          error: () => {}
+        });
+        if (res.role === 'Admin') {
+          this.router.navigate(['/app/admin/services']);
+        } else {
+          // Worker/User routes not yet defined; navigate to app root
+          this.router.navigate(['/app']);
+        }
       },
       error: (err) => {
         if(err.status === 401) {

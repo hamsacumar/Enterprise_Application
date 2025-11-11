@@ -18,17 +18,9 @@
         {{ getUserInitials() }}
       </div>
       <div class="user-details">
-        <p class="user-name">{{ currentUser?.name || 'Demo User' }}</p>
+        <p class="user-name">{{ currentUser?.name || currentUser?.email || '' }}</p>
         <p class="user-role" [class]="userRole.toLowerCase()">{{ userRole }}</p>
-        <div class="demo-indicator" *ngIf="isDemoMode()">
-          <span class="demo-badge">DEMO</span>
-        </div>
       </div>
-    </div>
-    <div class="demo-actions" *ngIf="isDemoMode() && isOpen">
-      <button class="exit-demo-btn" (click)="exitDemoMode()">
-        Exit Demo
-      </button>
     </div>
   </div>
 
