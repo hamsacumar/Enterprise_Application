@@ -7,6 +7,19 @@
   min-height: 100vh;
 }
 
+/* Align content next to fixed sidebar on desktop */
+@media (min-width: 769px) {
+  .dashboard-container {
+    margin-left: 280px; /* width of fixed sidebar */
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    margin-left: 0; /* sidebar becomes off-canvas */
+  }
+}
+
 /* Welcome Section */
 .welcome-section {
   display: flex;

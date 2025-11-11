@@ -53,6 +53,16 @@ app-sidebar {
   z-index: 1; /* above content background, below overlays */
 }
 
+/* Admin-specific sidebar host element on desktop */
+app-admin-sidebar {
+  flex: 0 0 280px; /* match shared sidebar width */
+  position: sticky;
+  top: 0;
+  align-self: stretch;
+  height: 100vh;
+  z-index: 1;
+}
+
 /* Overlay for mobile sidebar */
 .overlay {
   position: fixed;
@@ -87,6 +97,20 @@ app-sidebar {
   }
 
   .dashboard.mobile-open app-sidebar {
+    left: 0; /* slide in */
+  }
+
+  /* Off-canvas Admin sidebar host element */
+  app-admin-sidebar {
+    position: fixed;
+    top: 56px; /* below topbar */
+    left: -280px; /* hidden by default */
+    height: calc(100vh - 56px);
+    z-index: 1000;
+    transition: left 0.25s ease;
+  }
+
+  .dashboard.mobile-open app-admin-sidebar {
     left: 0; /* slide in */
   }
 }

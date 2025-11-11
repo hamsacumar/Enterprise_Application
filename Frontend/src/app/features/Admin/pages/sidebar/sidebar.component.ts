@@ -13,7 +13,7 @@ import {
 } from 'lucide-angular';
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'app-admin-sidebar',
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],

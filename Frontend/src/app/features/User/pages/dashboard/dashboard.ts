@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from '../../../../shared/components/sidebar/sidebar.component';
 import { VehicleService, Vehicle } from '../../services/vehicle.service';
 import { AppointmentService, Appointment } from '../../services/appointment.service';
 
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, SidebarComponent],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })

@@ -13,8 +13,8 @@ import {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5155/api/auth'; // HTTP endpoint
-  private coreApiUrl = 'http://localhost:5155/api/auth';
+  private apiUrl = 'http://localhost:5003/api/auth'; // HTTP endpoint
+  private coreApiUrl = 'http://localhost:5003/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
