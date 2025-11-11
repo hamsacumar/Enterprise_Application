@@ -48,6 +48,26 @@ services:
     restart: unless-stopped
 
 
+  # =========================
+  # PostgreSQL Database
+  # =========================
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Rishi@290302
+      POSTGRES_DB: EAD
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d EAD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # =========================
   # Auth Service (.NET)
@@ -172,6 +192,28 @@ services:
       - sqlserver
     restart: unless-stopped
 
+ # =========================
+  # Payment Gateway Service (Spring Boot + PostgreSQL)
+  # =========================
+  payment-gateway:
+    build:
+      context: ./Backend/PaymentGatewayService
+      dockerfile: Dockerfile
+    container_name: payment_gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/EAD
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Rishi@290302
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SERVER_PORT: 8080
+    restart: unless-stopped
+
   # =========================
   # Frontend Service (Angular)
   # =========================
@@ -198,3 +240,5 @@ volumes:
   sql_data:
   mongo_data:
   redis_data:
+  postgres_data:
+
