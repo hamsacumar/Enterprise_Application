@@ -1,22 +1,53 @@
 
 services:
+
   # =========================
-  # Frontend Service (Angular)
+  # MongoDB
   # =========================
-  frontend:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile
-    container_name: enterprise_frontend
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
     ports:
-      - "4200:80"
-    environment:
-      - NODE_ENV=production
-    depends_on:
-      - auth-service
-      - admin-service
-      - chatbox-service
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
     restart: unless-stopped
+
+
+# =========================
+# SQL Server
+# =========================
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MySecurePass123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    command: >
+      /bin/bash -c "(/opt/mssql/bin/sqlservr &)
+                    sleep 20
+                    /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P MySecurePass123! -Q 'CREATE DATABASE WorkerDB;' 
+                    wait"
+    restart: unless-stopped
+
+  # =========================
+  # Redis (for caching and message brokering)
+  # =========================
+  redis:
+    image: redis:alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+
 
   # =========================
   # Auth Service (.NET)
@@ -32,7 +63,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AuthDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
-      - JwtSettings__Secret=MySuperSecretKey123
+      - JwtSettings__Secret=MySuperLongAndSecureJwtKey1234567890!
       - JwtSettings__Issuer=EnterpriseApp
       - JwtSettings__Audience=EnterpriseApp
       # Add MongoDB environment variables
@@ -81,37 +112,11 @@ services:
     restart: unless-stopped
 
   
-  # =========================
-  # SQL Server
-  # =========================
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sql_server
-    ports:
-      - "1433:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=MySecurePass123!
-      - MSSQL_PID=Express
-    volumes:
-      - sql_data:/var/opt/mssql
-    restart: unless-stopped
 
-  # =========================
-  # MongoDB
-  # =========================
-  mongo:
-    image: mongo:latest
-    container_name: mongo_db
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    restart: unless-stopped
 
-  # =========================
-  # Worker Service (.NET)
-  # =========================
+# =========================
+# Worker Service (.NET)
+# =========================
   worker-service:
     build:
       context: ./Backend/WorkersService
@@ -121,10 +126,10 @@ services:
       - "7193:7193"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+      - SQL_CONNECTION_STRING=Server=sql_server,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
     depends_on:
-      - sqlserver
-      - redis
+      sqlserver:
+        condition: service_healthy
     restart: unless-stopped
 
 
@@ -150,19 +155,41 @@ services:
       sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
   
       
-      
+  # =========================
+  # User Dashboard Service (.NET)
+  # =========================
+  user-dashboard:
+    build:
+      context: ./Backend/UserDashboard
+      dockerfile: Dockerfile
+    container_name: user_dashboard
+    ports:
+      - "5015:5015"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=WorkerDB;User Id=sa;Password=MySecurePass123!;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+    restart: unless-stopped
 
   # =========================
-  # Redis (for caching and message brokering)
+  # Frontend Service (Angular)
   # =========================
-  redis:
-    image: redis:alpine
-    container_name: redis_cache
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: enterprise_frontend
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+      - "4200:80"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - auth-service
+      - admin-service
+      - chatbox-service
     restart: unless-stopped
+
 
 # =========================
 # Volumes for persistent data
