@@ -1,0 +1,89 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Book a Service</h1>
+    <p class="page-subtitle">Select your vehicle and services</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Vehicle Selection -->
+    <div class="content-card">
+      <h2 class="card-title">Select Vehicle</h2>
+      <div *ngIf="isLoadingVehicles" class="loading-state">
+        <p>Loading vehicles...</p>
+      </div>
+      <div *ngIf="!isLoadingVehicles && vehicles.length === 0" class="empty-state">
+        <p>No vehicles found. Please add a vehicle first.</p>
+        <a routerLink="/user/my-vehicles" class="btn-link">Add Vehicle</a>
+      </div>
+      <div class="vehicles-list" *ngIf="!isLoadingVehicles && vehicles.length > 0">
+        <div 
+          class="vehicle-option" 
+          *ngFor="let vehicle of vehicles"
+          [class.selected]="selectedVehicle?.id === vehicle.id"
+          (click)="selectedVehicle = vehicle">
+          <div class="vehicle-icon">🚗</div>
+          <div class="vehicle-info">
+            <div class="vehicle-name">{{ vehicle.name }} {{ vehicle.model }}</div>
+            <div class="vehicle-details">{{ vehicle.year }} • {{ vehicle.regNumber }} • {{ vehicle.type }}</div>
+          </div>
+          <div class="check-icon" *ngIf="selectedVehicle?.id === vehicle.id">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Selection -->
+    <div class="content-card">
+      <h2 class="card-title">Select Services</h2>
+      <div *ngIf="isLoadingServices" class="loading-state">
+        <p>Loading services...</p>
+      </div>
+      <div *ngIf="!isLoadingServices && availableServices.length === 0" class="empty-state">
+        <p>No services available at the moment.</p>
+      </div>
+      <div class="services-grid" *ngIf="!isLoadingServices && availableServices.length > 0">
+        <div 
+          class="service-option" 
+          *ngFor="let service of availableServices"
+          [class.selected]="isServiceSelected(service.id)"
+          (click)="toggleService(service)">
+          <div class="service-header">
+            <h3 class="service-name">{{ service.name }}</h3>
+            <div class="service-price">Rs. {{ service.price | number:'1.2-2' }}</div>
+          </div>
+          <div class="check-icon" *ngIf="isServiceSelected(service.id)">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="content-card summary-card">
+      <h2 class="card-title">Booking Summary</h2>
+      <div class="summary-item" *ngIf="selectedVehicle">
+        <span class="summary-label">Vehicle:</span>
+        <span class="summary-value">{{ selectedVehicle.name }} {{ selectedVehicle.model }} ({{ selectedVehicle.regNumber }})</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Services:</span>
+        <span class="summary-value">{{ selectedServices.length }} selected</span>
+      </div>
+      <div class="summary-services" *ngIf="selectedServices.length > 0">
+        <div class="summary-service" *ngFor="let service of selectedServices">
+          <span>{{ service.name }}</span>
+          <span>Rs. {{ service.price | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="summary-total">
+        <span class="total-label">Total:</span>
+        <span class="total-value">Rs. {{ getTotalPrice() | number:'1.2-2' }}</span>
+      </div>
+      <button 
+        class="btn-submit" 
+        (click)="submitBooking()" 
+        [disabled]="isSubmitting || !selectedVehicle || selectedServices.length === 0">
+        <span *ngIf="isSubmitting">Submitting...</span>
+        <span *ngIf="!isSubmitting">Submit Booking Request</span>
+      </button>
+    </div>
+  </div>
+</div>
+

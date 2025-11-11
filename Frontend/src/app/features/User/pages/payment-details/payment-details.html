@@ -1,0 +1,67 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Payment Details</h1>
+    <p class="page-subtitle">View your payment history and transactions</p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="summary-icon">💰</div>
+      <div class="summary-content">
+        <div class="summary-label">Total Paid</div>
+        <div class="summary-value">Rs. {{ totalPaid }}</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">⏳</div>
+      <div class="summary-content">
+        <div class="summary-label">Pending Payments</div>
+        <div class="summary-value">Rs. {{ totalPending }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payments List -->
+  <div class="payments-list">
+    <div class="payment-card" *ngFor="let payment of payments">
+      <div class="payment-header">
+        <div class="payment-info">
+          <h3 class="payment-service">{{ payment.service }}</h3>
+          <p class="payment-vehicle">{{ payment.vehicle }}</p>
+        </div>
+        <div class="payment-status">
+          <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+            {{ payment.status }}
+          </span>
+        </div>
+      </div>
+      <div class="payment-body">
+        <div class="payment-details">
+          <div class="detail-row">
+            <span class="detail-label">Date:</span>
+            <span class="detail-value">📅 {{ payment.date }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Amount:</span>
+            <span class="detail-value amount">Rs. {{ payment.amount }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Method:</span>
+            <span class="detail-value">{{ payment.method }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Transaction ID:</span>
+            <span class="detail-value transaction-id">{{ payment.transactionId }}</span>
+          </div>
+        </div>
+        <div class="payment-actions">
+          <button class="btn-download" (click)="downloadReceipt(payment)" *ngIf="payment.status === 'Paid'">
+            📥 Download Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

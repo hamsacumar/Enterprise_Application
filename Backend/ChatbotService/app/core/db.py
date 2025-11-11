@@ -1,7 +1,7 @@
 from typing import Optional
 import ssl
 from motor.motor_asyncio import AsyncIOMotorClient
-from .core.config import settings
+from .config import settings
 
 _mongo_client: Optional[AsyncIOMotorClient] = None
 

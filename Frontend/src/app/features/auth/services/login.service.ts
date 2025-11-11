@@ -5,13 +5,14 @@ import { Observable } from 'rxjs';
 interface LoginResponse {
   token: string;
   role: string;
+  userId: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = 'http://localhost:5143/api/Auth/login';
+  private apiUrl = 'http://localhost:5003/api/Auth/login';
 
   constructor(private http: HttpClient) {}
 

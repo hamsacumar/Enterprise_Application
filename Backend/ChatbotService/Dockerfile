@@ -4,19 +4,28 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Copy dependency files first (for caching)
-COPY requirements.txt .
+# For debugging: List files in the build context
+RUN ls -la /app
 
 # Install system dependencies (for asyncio, MongoDB, etc.)
 RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements.txt first for better caching
+COPY requirements.txt .
+
+# For debugging: Check if requirements.txt exists
+RUN ls -la /app/requirements.txt
+
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code
+# Copy the rest of the application
 COPY . .
+
+# For debugging: List all files after copy
+RUN ls -la /app/
 
 # Expose FastAPI port
 EXPOSE 8000

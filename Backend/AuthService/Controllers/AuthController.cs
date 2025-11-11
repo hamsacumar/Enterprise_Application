@@ -15,11 +15,11 @@ namespace AuthService.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserService _userService;
-        private readonly JwtHelper _jwt;
-        private readonly EmailService _emailService;
+        private readonly IUserService _userService;
+        private readonly IJwtHelper _jwt;
+        private readonly IEmailService _emailService;
 
-        public AuthController(UserService userService, JwtHelper jwt, EmailService emailService)
+        public AuthController(IUserService userService, IJwtHelper jwt, IEmailService emailService)
         {
             _userService = userService;
             _jwt = jwt;

@@ -1,0 +1,43 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Notifications</h1>
+      <p class="page-subtitle">Stay updated with your service activities</p>
+    </div>
+    <div class="header-actions">
+      <span class="unread-count" *ngIf="getUnreadCount() > 0">{{ getUnreadCount() }} unread</span>
+      <button class="btn-mark-all" (click)="markAllAsRead()" *ngIf="getUnreadCount() > 0">
+        Mark All as Read
+      </button>
+    </div>
+  </div>
+
+  <div class="notifications-list">
+    <div 
+      class="notification-card" 
+      *ngFor="let notification of notifications"
+      [class.unread]="!notification.read"
+      (click)="markAsRead(notification)">
+      <div class="notification-icon" [ngClass]="'icon-' + notification.type">
+        <span *ngIf="notification.type === 'success'">✅</span>
+        <span *ngIf="notification.type === 'info'">ℹ️</span>
+        <span *ngIf="notification.type === 'warning'">⚠️</span>
+      </div>
+      <div class="notification-content">
+        <div class="notification-header">
+          <h3 class="notification-title">{{ notification.title }}</h3>
+          <button class="btn-delete" (click)="deleteNotification(notification.id); $event.stopPropagation()" title="Delete">
+            🗑️
+          </button>
+        </div>
+        <p class="notification-message">{{ notification.message }}</p>
+        <div class="notification-meta">
+          <span class="notification-date">📅 {{ notification.date }}</span>
+          <span class="notification-time">🕐 {{ notification.time }}</span>
+        </div>
+      </div>
+      <div class="notification-indicator" *ngIf="!notification.read"></div>
+    </div>
+  </div>
+</div>
+

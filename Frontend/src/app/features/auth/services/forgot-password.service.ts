@@ -14,7 +14,7 @@ interface ForgotPasswordResponse {
   providedIn: 'root'
 })
 export class ForgotPasswordService {
-  private apiUrl = 'http://localhost:5143/api/Auth/forgot-password'; 
+  private apiUrl = 'http://localhost:5001/api/Auth/forgot-password'; 
 
   constructor(private http: HttpClient) {}
 
