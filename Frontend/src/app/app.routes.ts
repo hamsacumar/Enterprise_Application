@@ -54,6 +54,10 @@ import { WorkerDashboardComponent } from './features/Worker/pages/worker-dashboa
 // ==========================
 // 🚦 ROUTE CONFIGURATION
 // ==========================
+//import { Routes } from '@angular/router';
+import { PaymentFormComponent } from './features/PaymentGateway/Components/payment-form/payment-form.component';
+import { PaymentStatusComponent } from './features/PaymentGateway/Components/payment-status/payment-status.component';
+
 export const routes: Routes = [
   // =====================================
   // 🌍 PUBLIC / LANDING ROUTES
@@ -150,8 +154,12 @@ export const routes: Routes = [
         component: NotificationsComponent,
         title: 'AutoServeX | Notifications',
       },
+      { path: 'payment/success', component: PaymentStatusComponent }, 
+      { path: 'payment/cancel', component: PaymentStatusComponent },
+      {path: 'payment', component: PaymentFormComponent},
     ],
   },
+
 
    // 👇 Wildcard must come LAST
   { path: '**', redirectTo: '/login' },
@@ -166,3 +174,5 @@ export const routes: Routes = [
 //   exports: [RouterModule],
 // })
 // export class AppRoutingModule {}
+      
+
