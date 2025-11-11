@@ -6,7 +6,10 @@ services:
       - "4200:80"
     depends_on:
       - nodeapi
+      - paymentgateway
     restart: always
+    networks:
+      - microservice-network
 
   nodeapi:
     build: .\backend\ChatboxService
@@ -17,6 +20,8 @@ services:
     depends_on:
       - mongo
     restart: always
+    networks:
+      - microservice-network
 
   mongo:
     image: mongo:latest
@@ -24,6 +29,53 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+      - microservice-network  
+
+  # 1. NEW: Spring Boot Payment Gateway Service
+  paymentgateway:
+    container_name: payment-gateway-service
+    build:
+      context: ./backend/PaymentGatewayService 
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: target/payhere-gateway-0.0.1-SNAPSHOT.jar 
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres # Depends on the new database service
+    environment:
+      # Critical: Spring Boot connection settings
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/EAD
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      # PayHere credentials loaded from .env
+      PAYHERE_MERCHANT_ID: ${PAYHERE_MERCHANT_ID}
+      PAYHERE_MERCHANT_SECRET: ${PAYHERE_MERCHANT_SECRET}
+    restart: always
+    networks:
+      - microservice-network    
+
+    # 2. NEW: PostgreSQL Database Container
+  postgres:
+    container_name: postgres-db
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      # Database environment variables used by the PostgreSQL image
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - microservice-network  
 
 volumes:
   mongo_data:
+  postgres_data:
+
+networks:
+  microservice-network: # Define a single network for all services
+    driver: bridge  
