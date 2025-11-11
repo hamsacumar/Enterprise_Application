@@ -19,6 +19,10 @@ namespace AdminService.Controllers
         public async Task<IActionResult> GetOrders()
         {
             var orders = await _orderService.GetOrdersAsync();
+
+            if (orders == null || orders.Count == 0)
+                return NotFound("No orders found.");
+
             return Ok(orders);
         }
     }

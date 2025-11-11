@@ -14,32 +14,46 @@ namespace AdminService.Services
         }
 
         public async Task<List<OrderDto>> GetOrdersAsync()
+{
+    // Fetch wrapped response from Worker service
+    var wrapper = await _httpClient.GetFromJsonAsync<AppointmentListWrapper>(
+        "http://worker-service:7193/api/Appointments"
+    );
+
+    // Extract the actual list or initialize empty
+    var response = wrapper?.Values ?? new List<AppointmentDto>();
+
+    var orders = new List<OrderDto>();
+
+    foreach (var a in response)
+    {
+        var servicesList = new List<string>();
+        if (!string.IsNullOrEmpty(a.SelectedServicesJson))
         {
-            var response = await _httpClient.GetFromJsonAsync<List<dynamic>>("http://localhost:7193/api/Appointments");
-
-            var orders = new List<OrderDto>();
-
-            if (response != null)
+            try
             {
-                foreach (var a in response)
-                {
-                    var servicesJson = a.selectedServicesJson != null ? (string)a.selectedServicesJson : "[]";
-                    var servicesList = JsonSerializer.Deserialize<List<string>>(servicesJson) ?? new List<string>();
-
-                    orders.Add(new OrderDto
-                    {
-                        Customer = a.customerName,
-                        CarModel = a.vehicleModel,
-                        ServiceType = string.Join(", ", servicesList),
-                        Worker = "Worker A", // replace with actual if available
-                        Date = a.appointmentDate,
-                        Status = a.status,
-                        Total = a.totalPriceLkr
-                    });
-                }
+                servicesList = JsonSerializer.Deserialize<List<string>>(a.SelectedServicesJson) ?? new List<string>();
             }
-
-            return orders;
+            catch
+            {
+                servicesList = new List<string>();
+            }
         }
+
+        orders.Add(new OrderDto
+        {
+            Customer = a.CustomerName ?? string.Empty,
+            CarModel = a.Vehicle?.Model ?? string.Empty,
+            ServiceType = string.Join(", ", servicesList),
+            Worker = "Worker A",
+            Date = a.AppointmentDate,
+            Status = a.Status ?? string.Empty,
+            Total = a.TotalPriceLkr
+        });
+    }
+
+    return orders;
+}
+
     }
 }
