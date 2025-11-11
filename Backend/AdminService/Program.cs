@@ -29,6 +29,8 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddSingleton<IWorkerService, WorkerService>();
 // Register HttpClient
 builder.Services.AddHttpClient<CustomerService>();
+builder.Services.AddHttpClient<IOrderService, OrderService>();
+
 
 // Controllers + Swagger
 builder.Services.AddControllers();
