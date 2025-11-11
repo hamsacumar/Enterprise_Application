@@ -6,5 +6,6 @@ namespace AuthService.Helpers
     public interface IJwtHelper
     {
         string GenerateToken(User user);
+        ClaimsPrincipal? ValidateToken(string token);
     }
 }
