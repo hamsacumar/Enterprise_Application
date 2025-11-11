@@ -174,4 +174,3 @@ export class ContactComponent implements OnInit {
     return this.expandedFAQ[index] || false;
   }
 }
-

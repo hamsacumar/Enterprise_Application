@@ -13,4 +13,3 @@ export const landingGuard: CanActivateFn = (route, state) => {
   // Allow all users (authenticated or not) to access the landing page
   return true;
 };
-

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 import asyncio, json
-from ..db import get_db
+from ..core.db import get_db
 from ..core.config import settings
 from ..security import decode_token
 import google.generativeai as genai

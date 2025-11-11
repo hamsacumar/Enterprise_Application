@@ -45,4 +45,3 @@ export class FooterComponent {
     { icon: 'f', name: 'Facebook', url: '#facebook' }
   ];
 }
-

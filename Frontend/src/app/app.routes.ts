@@ -1,13 +1,13 @@
-import { Routes } from '@angular/router';
-
 // ==========================
-// 🌍 LANDING + LAYOUT COMPONENTS
+// 📦 Angular Core Imports
 // ==========================
 import { LandingComponent } from './features/landing/landing.component';
 import { AboutComponent } from './features/pages/about/about.component';
-import { ContactComponent } from './features/pages/contact/contact.component';
+//import { ContactComponent } from './features/pages/contact/contact.component';
 import { ServicesComponent } from './features/pages/services/services.component';
-import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { landingGuard } from './core/guards/landing.guard';
 
 // ==========================
 // 🔐 AUTH MODULE COMPONENTS
@@ -20,23 +20,14 @@ import { ForgotPasswordComponent } from './features/auth/pages/forgot-password/f
 import { ResetPasswordComponent } from './features/auth/pages/reset-password/reset-password.component';
 
 // ==========================
-// 👤 USER DASHBOARD COMPONENTS (COMMENTED OUT)
-// ==========================
-// import { UserDashboardComponent } from './features/dashboard/user-dashboard/user-dashboard.component';
-
-// ==========================
-// 👷 WORKER MODULE COMPONENTS (COMMENTED OUT)
-// ==========================
-// import { WorkerDashboardComponent } from './features/dashboard/worker-dashboard/worker-dashboard.component';
-// import { WorkerTasksComponent } from './features/dashboard/worker-tasks/worker-tasks.component';
-
-// ==========================
 // 🛠️ ADMIN MODULE COMPONENTS
 // ==========================
+import { DashboardComponent } from './features/Admin/pages/dashboard/dashboard.component';
+import { DashboardHomeComponent } from './features/Admin/pages/dashboard-home/dashboard-home.component';
 import { ServiceListComponent } from './features/Admin/pages/service-list/service-list.component';
 import { WorkerListComponent } from './features/Admin/pages/worker-list/worker-list.component';
-// import { DashboardComponent } from './features/Admin/pages/dashboard/dashboard.component';
-// import { DashboardHomeComponent } from './features/Admin/pages/dashboard-home/dashboard-home.component';
+import { OrderListComponent } from './features/Admin/pages/order-list/order-list.component';
+import { CustomerListComponent } from './features/Admin/pages/customer-list/customer-list.component';
 
 // ==========================
 // 🤖 AI CHATBOT COMPONENT
@@ -44,10 +35,16 @@ import { WorkerListComponent } from './features/Admin/pages/worker-list/worker-l
 import { ChatbotComponent } from './features/chatbot/chatbot.component';
 
 // ==========================
-// 🛡️ GUARDS
+// 👤 USER DASHBOARD COMPONENTS
 // ==========================
-import { authGuard } from './core/guards/auth.guard';
-import { landingGuard } from './core/guards/landing.guard';
+import { DashboardComponent as UserDashboardComponent } from './features/User/pages/dashboard/dashboard';
+import { BookServiceComponent } from './features/User/pages/book-service/book-service';
+import { PastOrdersComponent } from './features/User/pages/past-orders/past-orders';
+import { RecentAppointmentsComponent } from './features/User/pages/recent-appointments/recent-appointments';
+import { MyVehiclesComponent } from './features/User/pages/my-vehicles/my-vehicles';
+import { PaymentDetailsComponent } from './features/User/pages/payment-details/payment-details';
+import { NotificationsComponent } from './features/User/pages/notifications/notifications';
+import { WorkerDashboardComponent } from './features/Worker/pages/worker-dashboard/worker-dashboard.component';
 
 // ==========================
 // 🚦 ROUTE CONFIGURATION
@@ -66,51 +63,99 @@ export const routes: Routes = [
   { path: 'services', component: ServicesComponent, title: 'AutoServeX | Services' },
   { path: 'pricing', component: LandingComponent, title: 'AutoServeX | Pricing' },
   { path: 'about', component: AboutComponent, title: 'AutoServeX | About Us' },
-  { path: 'contact', component: ContactComponent, title: 'AutoServeX | Contact' },
+  //{ path: 'contact', component: ContactComponent, title: 'AutoServeX | Contact' },
   { path: 'booking', component: LandingComponent, title: 'AutoServeX | Booking' },
 
-  // =====================================
-  // 🔒 PROTECTED ROUTES (with layout)
-  // =====================================
+  // -------------------------------------
+  // 🔹 ADMIN ROUTES
+  // -------------------------------------
   {
-    path: 'app',
-    component: MainLayoutComponent,
-    canActivate: [authGuard],
+    path: 'admin',
+    component: DashboardComponent,
     children: [
-      // 🔹 Default
-      { path: '', redirectTo: 'services', pathMatch: 'full' },
+      { path: '', component: DashboardHomeComponent, title: 'Admin | Dashboard Home' },
+      { path: 'services', component: ServiceListComponent, title: 'Admin | Services' },
+      { path: 'workers', component: WorkerListComponent, title: 'Admin | Workers' },
+      { path: 'customers', component: CustomerListComponent, title: 'Admin | Customers' },
+      { path: 'orders', component: OrderListComponent, title: 'Admin | Orders' },
+    ],
+  },
 
-      // 👤 USER ROUTES (COMMENTED OUT)
-      // { path: 'dashboard', component: UserDashboardComponent, data: { role: 'User' }, title: 'AutoServeX | Dashboard' },
-      // { path: 'user-dashboard', component: UserDashboardComponent, data: { role: 'User' }, title: 'AutoServeX | User Dashboard' },
+  // -------------------------------------
+  // 🔹 AUTHENTICATION ROUTES
+  // -------------------------------------
+  // 🔹 Auth routes
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'verify-otp', component: VerifyOtpComponent },
+  { path: 'classify', component: ClassifyComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
 
-      // 👷 WORKER ROUTES (COMMENTED OUT)
-      // { path: 'worker-dashboard', component: WorkerDashboardComponent, data: { role: 'Worker' }, title: 'AutoServeX | Worker Dashboard' },
-      // { path: 'worker-tasks', component: WorkerTasksComponent, data: { role: 'Worker' }, title: 'AutoServeX | Worker Tasks' },
-      // { path: 'worker-tasks/:category', component: WorkerTasksComponent, data: { role: 'Worker' }, title: 'AutoServeX | Worker Tasks' },
+  
 
-      // 🧑‍💼 ADMIN ROUTES
+   // 🔹 AI chatbot
+  { path: 'ai', component: ChatbotComponent },
+  // worker
+  {
+    path: 'worker-dashboard',
+    component: WorkerDashboardComponent,
+    title: 'Worker | Dashboard',
+  },
+
+   // 🔹 User dashboard routes
+  {
+    path: 'user',
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
-        path: 'admin',
-        // component: DashboardComponent, (COMMENTED OUT)
-        data: { role: 'Admin' },
-        children: [
-          { path: '', redirectTo: 'services', pathMatch: 'full' },
-          // { path: 'dashboard', component: DashboardHomeComponent, title: 'Admin | Dashboard' }, (COMMENTED OUT)
-          { path: 'services', component: ServiceListComponent, title: 'Admin | Services' },
-          { path: 'workers', component: WorkerListComponent, title: 'Admin | Workers' },
-        ],
+        path: 'dashboard',
+        component: UserDashboardComponent,
+        title: 'AutoServeX | Dashboard',
+      },
+      {
+        path: 'book-service',
+        component: BookServiceComponent,
+        title: 'AutoServeX | Book Service',
+      },
+      {
+        path: 'my-vehicles',
+        component: MyVehiclesComponent,
+        title: 'AutoServeX | My Vehicles',
+      },
+      {
+        path: 'recent-appointments',
+        component: RecentAppointmentsComponent,
+        title: 'AutoServeX | Recent Appointments',
+      },
+      {
+        path: 'past-orders',
+        component: PastOrdersComponent,
+        title: 'AutoServeX | Past Orders',
+      },
+      {
+        path: 'payment-details',
+        component: PaymentDetailsComponent,
+        title: 'AutoServeX | Payment Details',
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
+        title: 'AutoServeX | Notifications',
       },
     ],
   },
 
-  // =====================================
-  // 🤖 CHATBOT ROUTE
-  // =====================================
-  { path: 'ai', component: ChatbotComponent, canActivate: [authGuard], title: 'AutoServeX | AI Chatbot' },
-
-  // =====================================
-  // 🔚 FALLBACK ROUTE
-  // =====================================
+   // 👇 Wildcard must come LAST
   { path: '**', redirectTo: '/login' },
+  
 ];
+
+// // ==========================
+// // 🚀 ROUTING MODULE
+// // ==========================
+// @NgModule({
+//   imports: [RouterModule.forRoot(routes)],
+//   exports: [RouterModule],
+// })
+// export class AppRoutingModule {}

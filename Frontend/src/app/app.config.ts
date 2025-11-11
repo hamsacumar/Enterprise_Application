@@ -5,19 +5,16 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideZoneChangeDetection } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(
-      withInterceptors([authInterceptor])
-    ),
+    provideHttpClient(),
     importProvidersFrom(FormsModule),
   ],
 };

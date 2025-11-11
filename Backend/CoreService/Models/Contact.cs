@@ -67,4 +67,3 @@ public class UpdateStatusRequest
     public string Status { get; set; } = string.Empty; // "pending", "read", "resolved"
     public string? AdminNotes { get; set; }
 }
-

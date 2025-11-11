@@ -101,4 +101,3 @@ export class AboutComponent {
     { number: '15+', label: 'Years Experience' }
   ];
 }
-

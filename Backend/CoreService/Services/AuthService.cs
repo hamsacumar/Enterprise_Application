@@ -15,7 +15,7 @@ public class AuthService
     {
         _http = http;
         // Prefer config value, fallback to provided URL
-        _baseUrl = config["AuthService:BaseUrl"]?.TrimEnd('/') ?? "http://localhost:5143/api/Auth";
+        _baseUrl = config["AuthService:BaseUrl"]?.TrimEnd('/') ?? "http://localhost:5003/api/Auth";
     }
 
     public async Task<AuthVerifyResult> VerifyTokenAsync(string token, CancellationToken ct = default)

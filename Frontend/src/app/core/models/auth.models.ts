@@ -28,4 +28,3 @@ export interface UsersListResponse {
   workers: User[];
   users: User[];
 }
-

@@ -1,11 +1,26 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideAngularModule, LayoutDashboard, Briefcase, Users, ShoppingCart, UserCircle, Settings } from 'lucide-angular';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // ✅ Import this
+
+import {
+  LucideAngularModule,
+  LayoutDashboard,
+  Briefcase,
+  Users,
+  ShoppingCart,
+  UserCircle,
+  Settings,
+} from 'lucide-angular';
+
 @Component({
   selector: 'app-sidebar',
+  standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, LucideAngularModule]
+  imports: [
+    CommonModule,
+    RouterModule, // ✅ Required for routerLink / routerLinkActive
+    LucideAngularModule, // Optional: for icons
+  ],
 })
 export class SidebarComponent {}

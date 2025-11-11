@@ -64,4 +64,3 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.currentUser.name[0];
   }
 }
-

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace AuthService.Services
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
 

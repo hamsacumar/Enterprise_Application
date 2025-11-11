@@ -14,7 +14,7 @@ namespace AuthService.Helpers
         public int ExpiryMinutes { get; set; }
     }
 
-    public class JwtHelper
+    public class JwtHelper : IJwtHelper
     {
         private readonly JwtSettings _settings;
 

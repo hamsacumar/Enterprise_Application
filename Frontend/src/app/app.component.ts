@@ -9,10 +9,10 @@ import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, SidebarComponent, FooterComponent, CommonModule],
   standalone: true,
+  imports: [RouterOutlet, CommonModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Enterprise Application';

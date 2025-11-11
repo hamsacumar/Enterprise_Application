@@ -28,7 +28,7 @@ export class LoginComponent {
 
     this.loginService.login(this.username, this.password).subscribe({
       next: (res) => {
-        // Save token in local storage
+        // Save token and user data in local storage
         this.successMessage = 'Login successful!';
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
@@ -44,6 +44,25 @@ export class LoginComponent {
           // Worker/User routes not yet defined; navigate to app root
           this.router.navigate(['/app']);
         }
+        localStorage.setItem('userId', res.userId);
+        
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 1000);
+
+        setTimeout(() => {
+          // The backend sends role with first letter capitalized (e.g., 'Admin', 'Customer')
+          const role = res.role;
+          console.log('User role:', role); // For debugging
+          
+          if (role === 'Admin') {
+            this.router.navigate(['/admin']); // Changed from '/Admin/dashboard' to '/admin'
+          } else if (role === 'Worker') {
+            this.router.navigate(['/worker-dashboard']); // Update this if you have a worker route
+          } else if (role === 'Customer') {
+            this.router.navigate(['/user']); // Changed from '/User/dashboard' to '/user'
+          }
+        }, 1000);
       },
       error: (err) => {
         if(err.status === 401) {
@@ -51,8 +70,15 @@ export class LoginComponent {
         } else{
         this.errorMessage = err.error || 'Login failed. Please try again.';
       }
-    }
     
+    
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 5003);
+  },
+
+
+
     });
   }
 

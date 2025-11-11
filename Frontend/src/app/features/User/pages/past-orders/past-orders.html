@@ -1,0 +1,136 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Past Orders</h1>
+    <p class="page-subtitle">View your service history</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Loading past orders...</p>
+  </div>
+  <div *ngIf="!isLoading && orders.length === 0" class="empty-state">
+    <p>No completed orders found.</p>
+  </div>
+  <div class="orders-list" *ngIf="!isLoading && orders.length > 0">
+    <div class="order-card" *ngFor="let order of orders">
+      <div class="order-header">
+        <div class="order-icon">🚗</div>
+        <div class="order-info">
+          <h3 class="order-service">{{ getServiceNames(order)[0] || 'Service' }}</h3>
+          <p class="order-vehicle">{{ order.vehicleName }} {{ order.vehicleModel }} ({{ order.vehicleRegNumber }})</p>
+        </div>
+        <div class="order-status">
+          <span class="status-badge" [ngClass]="getStatusBadgeClass(order.status)">{{ order.status }}</span>
+        </div>
+      </div>
+      <div class="order-body">
+        <div class="order-details">
+          <div class="detail-row" *ngIf="order.appointmentDate">
+            <span class="detail-icon">📅</span>
+            <span class="detail-text">{{ formatDate(order.appointmentDate) }}</span>
+          </div>
+          <div class="detail-row" *ngIf="order.timeSlot">
+            <span class="detail-icon">🕐</span>
+            <span class="detail-text">{{ formatTime(order.timeSlot) }}</span>
+          </div>
+        </div>
+        <div class="order-services">
+          <span class="services-label">Services:</span>
+          <div class="services-tags">
+            <span class="service-tag" *ngFor="let service of getServiceNames(order)">{{ service }}</span>
+          </div>
+        </div>
+        <div class="order-footer">
+          <div class="order-total">
+            <span class="total-label">Total:</span>
+            <span class="total-amount">Rs. {{ order.totalPayment | number:'1.2-2' }}</span>
+          </div>
+          <button 
+            class="btn-pay" 
+            (click)="showPayDetails(order)"
+            *ngIf="!order.isPaid">
+            {{ showBillingDetails[order.id] ? 'Hide Details' : 'Pay' }}
+          </button>
+          <span *ngIf="order.isPaid" class="paid-badge">Paid</span>
+        </div>
+        
+        <!-- Billing Details Section -->
+        <div class="billing-details" *ngIf="showBillingDetails[order.id]">
+          <div class="billing-header">
+            <h3>Billing Details</h3>
+          </div>
+          
+          <div class="billing-content">
+            <div class="billing-section">
+              <h4>Order Information</h4>
+              <div class="billing-row">
+                <span class="billing-label">Order ID:</span>
+                <span class="billing-value">#{{ order.id }}</span>
+              </div>
+              <div class="billing-row" *ngIf="order.appointmentDate">
+                <span class="billing-label">Date:</span>
+                <span class="billing-value">{{ formatDate(order.appointmentDate) }}</span>
+              </div>
+              <div class="billing-row" *ngIf="order.timeSlot">
+                <span class="billing-label">Time:</span>
+                <span class="billing-value">{{ formatTime(order.timeSlot) }}</span>
+              </div>
+            </div>
+
+            <div class="billing-section">
+              <h4>Vehicle Information</h4>
+              <div class="billing-row">
+                <span class="billing-label">Vehicle:</span>
+                <span class="billing-value">{{ order.vehicleName }} {{ order.vehicleModel }}</span>
+              </div>
+              <div class="billing-row">
+                <span class="billing-label">Registration:</span>
+                <span class="billing-value">{{ order.vehicleRegNumber }}</span>
+              </div>
+              <div class="billing-row">
+                <span class="billing-label">Type:</span>
+                <span class="billing-value">{{ order.vehicleType }}</span>
+              </div>
+            </div>
+
+            <div class="billing-section">
+              <h4>Services</h4>
+              <div class="services-list-billing">
+                <div class="service-item-billing" *ngFor="let service of getServiceDetails(order)">
+                  <span class="service-name-billing">{{ service.name }}</span>
+                  <span class="service-price-billing">Rs. {{ service.finalPriceLkr | number:'1.2-2' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="billing-section">
+              <h4>Payment Summary</h4>
+              <div class="billing-row">
+                <span class="billing-label">Subtotal:</span>
+                <span class="billing-value">Rs. {{ getSubtotal(order) | number:'1.2-2' }}</span>
+              </div>
+              <div class="billing-row" *ngIf="getExtraPayment(order) > 0">
+                <span class="billing-label">Extra Payment:</span>
+                <span class="billing-value">Rs. {{ getExtraPayment(order) | number:'1.2-2' }}</span>
+              </div>
+              <div class="billing-total">
+                <span class="total-label-billing">Total Amount:</span>
+                <span class="total-value-billing">Rs. {{ getTotal(order) | number:'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <div class="billing-actions">
+              <button 
+                class="btn-pay-now" 
+                (click)="processPayment(order)"
+                [disabled]="isProcessingPayment[order.id] || order.isPaid">
+                <span *ngIf="!isProcessingPayment[order.id]">PAY</span>
+                <span *ngIf="isProcessingPayment[order.id]">Processing...</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
