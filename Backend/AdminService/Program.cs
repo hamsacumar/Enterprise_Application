@@ -31,6 +31,7 @@ builder.Services.AddSingleton<IWorkerService, WorkerService>();
 builder.Services.AddHttpClient<CustomerService>();
 builder.Services.AddHttpClient<IOrderService, OrderService>();
 
+builder.Services.AddHttpClient<DashboardService>();
 
 // Controllers + Swagger
 builder.Services.AddControllers();
