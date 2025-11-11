@@ -1,0 +1,24 @@
+<div class="status-card">
+  <ng-container *ngIf="status === 'success'">
+    <h2>✅ Payment Successful!</h2>
+    <p>Thank you for your purchase.</p>
+    <p>Order ID: <strong>{{ orderId }}</strong></p>
+    <p *ngIf="amount">Amount Paid: <strong>{{ amount }}</strong></p>
+    <small>Your order is confirmed via our server (IPN).</small>
+  </ng-container>
+
+  <ng-container *ngIf="status === 'cancel'">
+    <h2>❌ Payment Cancelled</h2>
+    <p>Your transaction was cancelled or failed.</p>
+    <p>Order ID: <strong>{{ orderId }}</strong></p>
+    <p>You can try paying again.</p>
+  </ng-container>
+
+  <ng-container *ngIf="status === 'pending'">
+    <h2>⏳ Transaction Pending/Unconfirmed</h2>
+    <p>We are currently confirming the status of Order ID: <strong>{{ orderId }}</strong>.</p>
+    <p>Please check your email for confirmation, or contact support if the issue persists.</p>
+  </ng-container>
+
+  <button type="submit" (click)="navigateToHome()">Back to Home</button>
+</div>

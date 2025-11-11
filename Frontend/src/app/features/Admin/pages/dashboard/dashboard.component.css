@@ -1,0 +1,92 @@
+.dashboard {
+  display: flex;
+  height: 100vh;
+  overflow: hidden; /* prevent body scroll; only content will scroll */
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+  background-color: #f5f5f5; /* light background for content */
+  overflow: auto; /* scroll only the main content */
+  height: 100vh; /* fill viewport height for internal scrolling */
+}
+
+/* Topbar (mobile only) */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 56px;
+  padding: 0 1rem;
+  background: #0f1841;
+  color: #fff;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.brand {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Hide topbar on desktop */
+@media (min-width: 769px) {
+  .topbar {
+    display: none;
+  }
+}
+
+/* Sidebar host element on desktop */
+app-sidebar {
+  flex: 0 0 250px; /* fixed width column for sidebar */
+  position: sticky; /* keep it fixed within viewport during scroll */
+  top: 0;
+  align-self: stretch; /* match container height */
+  height: 100vh; /* full viewport height */
+  z-index: 1; /* above content background, below overlays */
+}
+
+/* Overlay for mobile sidebar */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 900;
+}
+
+/* Responsive: stack sidebar on top for narrow screens */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    width: 100%; 
+  }
+
+  .content {
+    padding: 0.75rem;
+    padding-top: 1rem; /* space under topbar */
+    height: auto; /* allow page content height on mobile */
+  }
+
+  /* Off-canvas sidebar host element */
+  app-sidebar {
+    position: fixed;
+    top: 56px; /* below topbar */
+    left: -260px; /* hidden by default */
+    height: calc(100vh - 56px);
+    z-index: 1000;
+    transition: left 0.25s ease;
+  }
+
+  .dashboard.mobile-open app-sidebar {
+    left: 0; /* slide in */
+  }
+}

@@ -1,0 +1,207 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">My Vehicles</h1>
+      <p class="page-subtitle">Manage your registered vehicles</p>
+    </div>
+    <button class="btn-primary" (click)="openAddModal()">
+      <span class="btn-icon">➕</span>
+      Add Vehicle
+    </button>
+  </div>
+
+  <div class="vehicles-grid">
+    <div class="vehicle-card" *ngFor="let vehicle of vehicles">
+      <div class="vehicle-header">
+        <div class="vehicle-icon-large">🚗</div>
+        <div class="vehicle-actions">
+          <button class="btn-icon-small" (click)="editVehicle(vehicle)" title="Edit">✏️</button>
+          <button class="btn-icon-small" (click)="deleteVehicle(vehicle.id)" title="Delete">🗑️</button>
+        </div>
+      </div>
+      <div class="vehicle-body">
+        <h2 class="vehicle-name-large">{{ vehicle.name }} {{ vehicle.model }}</h2>
+        <div class="vehicle-details-grid">
+          <div class="detail-item">
+            <span class="detail-label">Year:</span>
+            <span class="detail-value">{{ vehicle.year }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Reg Number:</span>
+            <span class="detail-value">{{ vehicle.regNumber }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Type:</span>
+            <span class="detail-value">{{ vehicle.type }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Color:</span>
+            <span class="detail-value">{{ vehicle.color }}</span>
+          </div>
+        </div>
+        <div class="vehicle-status-section">
+          <div class="status-badge-blue">Active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Vehicle Modal -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Add New Vehicle</h2>
+        <button class="modal-close" (click)="closeAddModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="addVehicle()">
+          <div class="form-group">
+            <label for="name">Vehicle Name *</label>
+            <input 
+              type="text" 
+              id="name" 
+              [(ngModel)]="vehicleForm.name" 
+              name="name"
+              placeholder="e.g., Toyota, Honda"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="model">Model *</label>
+            <input 
+              type="text" 
+              id="model" 
+              [(ngModel)]="vehicleForm.model" 
+              name="model"
+              placeholder="e.g., Camry, Civic"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="year">Year *</label>
+            <select 
+              id="year" 
+              [(ngModel)]="vehicleForm.year" 
+              name="year"
+              required>
+              <option *ngFor="let year of yearRange" [value]="year">{{ year }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="regNumber">Registration Number *</label>
+            <input 
+              type="text" 
+              id="regNumber" 
+              [(ngModel)]="vehicleForm.regNumber" 
+              name="regNumber"
+              placeholder="e.g., ABC-1234"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="type">Vehicle Type *</label>
+            <select 
+              id="type" 
+              [(ngModel)]="vehicleForm.type" 
+              name="type"
+              required>
+              <option *ngFor="let type of vehicleTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="color">Color (Optional)</label>
+            <input 
+              type="text" 
+              id="color" 
+              [(ngModel)]="vehicleForm.color" 
+              name="color"
+              placeholder="e.g., Blue, Red">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeAddModal()">Cancel</button>
+            <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Adding...' : 'Add Vehicle' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Vehicle Modal -->
+  <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Vehicle</h2>
+        <button class="modal-close" (click)="closeEditModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updateVehicle()">
+          <div class="form-group">
+            <label for="edit-name">Vehicle Name *</label>
+            <input 
+              type="text" 
+              id="edit-name" 
+              [(ngModel)]="vehicleForm.name" 
+              name="name"
+              placeholder="e.g., Toyota, Honda"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="edit-model">Model *</label>
+            <input 
+              type="text" 
+              id="edit-model" 
+              [(ngModel)]="vehicleForm.model" 
+              name="model"
+              placeholder="e.g., Camry, Civic"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="edit-year">Year *</label>
+            <select 
+              id="edit-year" 
+              [(ngModel)]="vehicleForm.year" 
+              name="year"
+              required>
+              <option *ngFor="let year of yearRange" [value]="year">{{ year }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit-regNumber">Registration Number *</label>
+            <input 
+              type="text" 
+              id="edit-regNumber" 
+              [(ngModel)]="vehicleForm.regNumber" 
+              name="regNumber"
+              placeholder="e.g., ABC-1234"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="edit-type">Vehicle Type *</label>
+            <select 
+              id="edit-type" 
+              [(ngModel)]="vehicleForm.type" 
+              name="type"
+              required>
+              <option *ngFor="let type of vehicleTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit-color">Color (Optional)</label>
+            <input 
+              type="text" 
+              id="edit-color" 
+              [(ngModel)]="vehicleForm.color" 
+              name="color"
+              placeholder="e.g., Blue, Red">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeEditModal()">Cancel</button>
+            <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Updating...' : 'Update Vehicle' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
