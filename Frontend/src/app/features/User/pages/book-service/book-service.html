@@ -1,121 +1,89 @@
-<div class="book-service-page">
-  <h1 class="page-title">Book a Service</h1>
-  <p class="page-subtitle">Choose from AutoServeX services and book your appointment</p>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Book a Service</h1>
+    <p class="page-subtitle">Select your vehicle and services</p>
+  </div>
 
   <div class="content-grid">
-    <!-- Available Services -->
-    <div class="services-section">
-      <h2>Available Services</h2>
-      <div class="services-grid">
-        <mat-card 
-          class="service-card" 
-          *ngFor="let service of availableServices$ | async"
-          [class.selected]="isSelected(service)"
-          (click)="toggleService(service)">
-          <mat-icon class="service-icon">{{ service.icon }}</mat-icon>
-          <h3>{{ service.name }}</h3>
-          <p class="service-desc">{{ service.description }}</p>
-          <div class="service-footer">
-            <span class="price">Rs {{ service.price | number }}</span>
-            <span class="duration">{{ service.duration }}</span>
+    <!-- Vehicle Selection -->
+    <div class="content-card">
+      <h2 class="card-title">Select Vehicle</h2>
+      <div *ngIf="isLoadingVehicles" class="loading-state">
+        <p>Loading vehicles...</p>
+      </div>
+      <div *ngIf="!isLoadingVehicles && vehicles.length === 0" class="empty-state">
+        <p>No vehicles found. Please add a vehicle first.</p>
+        <a routerLink="/user/my-vehicles" class="btn-link">Add Vehicle</a>
+      </div>
+      <div class="vehicles-list" *ngIf="!isLoadingVehicles && vehicles.length > 0">
+        <div 
+          class="vehicle-option" 
+          *ngFor="let vehicle of vehicles"
+          [class.selected]="selectedVehicle?.id === vehicle.id"
+          (click)="selectedVehicle = vehicle">
+          <div class="vehicle-icon">🚗</div>
+          <div class="vehicle-info">
+            <div class="vehicle-name">{{ vehicle.name }} {{ vehicle.model }}</div>
+            <div class="vehicle-details">{{ vehicle.year }} • {{ vehicle.regNumber }} • {{ vehicle.type }}</div>
           </div>
-        </mat-card>
+          <div class="check-icon" *ngIf="selectedVehicle?.id === vehicle.id">✓</div>
+        </div>
       </div>
     </div>
 
-    <!-- Booking Form -->
-    <div class="booking-form-section">
-      <mat-card class="form-card">
-        <h2>Booking Details</h2>
-        
-        <div *ngIf="selectedServices.length === 0" class="no-selection">
-          <mat-icon>info</mat-icon>
-          <p>Please select one or more services from the list</p>
+    <!-- Services Selection -->
+    <div class="content-card">
+      <h2 class="card-title">Select Services</h2>
+      <div *ngIf="isLoadingServices" class="loading-state">
+        <p>Loading services...</p>
+      </div>
+      <div *ngIf="!isLoadingServices && availableServices.length === 0" class="empty-state">
+        <p>No services available at the moment.</p>
+      </div>
+      <div class="services-grid" *ngIf="!isLoadingServices && availableServices.length > 0">
+        <div 
+          class="service-option" 
+          *ngFor="let service of availableServices"
+          [class.selected]="isServiceSelected(service.id)"
+          (click)="toggleService(service)">
+          <div class="service-header">
+            <h3 class="service-name">{{ service.name }}</h3>
+            <div class="service-price">Rs. {{ service.price | number:'1.2-2' }}</div>
+          </div>
+          <div class="check-icon" *ngIf="isServiceSelected(service.id)">✓</div>
         </div>
+      </div>
+    </div>
 
-        <form *ngIf="selectedServices.length > 0" (ngSubmit)="bookService()">
-          <div class="selected-service-info" *ngFor="let s of selectedServices">
-            <mat-icon>{{ s.icon }}</mat-icon>
-            <div>
-              <strong>{{ s.name }}</strong>
-              <p>Rs {{ s.price | number }} • {{ s.duration }}</p>
-            </div>
-          </div>
-          <div class="total">
-            <strong>Total ({{ effectiveVehicleType() }}):</strong>
-            <span>Rs {{ totalPriceLkr() | number }}</span>
-          </div>
-
-          <ng-container *ngIf="(vehicles$ | async)?.length; else manualVehicle">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Select Vehicle</mat-label>
-              <mat-select [(ngModel)]="selectedVehicle" name="vehicle" required>
-                <mat-option *ngFor="let vehicle of vehicles$ | async" [value]="vehicle">
-                  {{ vehicle.name }} {{ vehicle.model }} ({{ vehicle.type }}) - {{ vehicle.year }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </ng-container>
-          <ng-template #manualVehicle>
-            <div class="manual-vehicle">
-              <p>No saved vehicles found. Enter your vehicle details:</p>
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Name</mat-label>
-                  <input matInput [(ngModel)]="manualVehicleForm.name" name="mv_name" required>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Model</mat-label>
-                  <input matInput [(ngModel)]="manualVehicleForm.model" name="mv_model" required>
-                </mat-form-field>
-              </div>
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Type</mat-label>
-                  <mat-select [(ngModel)]="manualVehicleForm.type" name="mv_type" required>
-                    <mat-option value="Sedan">Sedan</mat-option>
-                    <mat-option value="Hatchback">Hatchback</mat-option>
-                    <mat-option value="SUV">SUV</mat-option>
-                    <mat-option value="MUV">MUV</mat-option>
-                    <mat-option value="Coupe">Coupe</mat-option>
-                    <mat-option value="Pickup">Pickup</mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Year</mat-label>
-                  <input matInput type="number" [(ngModel)]="manualVehicleForm.year" name="mv_year" required>
-                </mat-form-field>
-              </div>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Registration Number</mat-label>
-                <input matInput [(ngModel)]="manualVehicleForm.regNumber" name="mv_reg" required>
-              </mat-form-field>
-            </div>
-          </ng-template>
-
-          <!-- Preferred date/time removed per requirement -->
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Your Name</mat-label>
-            <input matInput [(ngModel)]="customerName" name="name" required>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Phone Number</mat-label>
-            <input matInput type="tel" [(ngModel)]="phoneNumber" name="phone" required>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Special Instructions (Optional)</mat-label>
-            <textarea matInput rows="3" [(ngModel)]="specialInstructions" name="instructions"></textarea>
-          </mat-form-field>
-
-          <button mat-raised-button color="primary" type="submit" class="book-btn">
-            <mat-icon>book_online</mat-icon>
-            Book Service Now
-          </button>
-        </form>
-      </mat-card>
+    <!-- Summary -->
+    <div class="content-card summary-card">
+      <h2 class="card-title">Booking Summary</h2>
+      <div class="summary-item" *ngIf="selectedVehicle">
+        <span class="summary-label">Vehicle:</span>
+        <span class="summary-value">{{ selectedVehicle.name }} {{ selectedVehicle.model }} ({{ selectedVehicle.regNumber }})</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Services:</span>
+        <span class="summary-value">{{ selectedServices.length }} selected</span>
+      </div>
+      <div class="summary-services" *ngIf="selectedServices.length > 0">
+        <div class="summary-service" *ngFor="let service of selectedServices">
+          <span>{{ service.name }}</span>
+          <span>Rs. {{ service.price | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="summary-total">
+        <span class="total-label">Total:</span>
+        <span class="total-value">Rs. {{ getTotalPrice() | number:'1.2-2' }}</span>
+      </div>
+      <button 
+        class="btn-submit" 
+        (click)="submitBooking()" 
+        [disabled]="isSubmitting || !selectedVehicle || selectedServices.length === 0">
+        <span *ngIf="isSubmitting">Submitting...</span>
+        <span *ngIf="!isSubmitting">Submit Booking Request</span>
+      </button>
     </div>
   </div>
 </div>
+

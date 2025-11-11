@@ -8,9 +8,6 @@ namespace AuthService.Models.DTOs
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string Role { get; set; } = "Customer"; // Default role is Customer
-
-
-
     }
 
     public class LoginDto
@@ -28,16 +25,21 @@ namespace AuthService.Models.DTOs
     }
 
     public class OtpVerifyDto
-{
+    {
         public string OtpCode { get; set; } = null!;
-}
+    }
 
-public class ClassifyDto
-{
-    public string Username { get; set; } = null!;
-    public string? Address { get; set; }
-    public string? CarModel { get; set; }
-    public string? CarLicensePlate { get; set; }
-    public string? PhoneNumber { get; set; }
-}
+    public class ClassifyDto
+    {
+        public string Username { get; set; } = null!;
+        public string? Address { get; set; }
+        public string? CarModel { get; set; }
+        public string? CarLicensePlate { get; set; }
+        public string? PhoneNumber { get; set; }
+    }
+
+    public class TokenDto
+    {
+        public string Token { get; set; } = null!;
+    }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router,RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class LoginComponent {
   errorMessage = '';
   successMessage = '';
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router, private authService: AuthService) {}
 
 
   onLogin() {
@@ -31,6 +32,18 @@ export class LoginComponent {
         this.successMessage = 'Login successful!';
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
+        localStorage.setItem('userRole', res.role);
+        // Fetch user from CoreService so sidebar receives role immediately
+        this.authService.getMeFromCore().subscribe({
+          next: () => {},
+          error: () => {}
+        });
+        if (res.role === 'Admin') {
+          this.router.navigate(['/app/admin/services']);
+        } else {
+          // Worker/User routes not yet defined; navigate to app root
+          this.router.navigate(['/app']);
+        }
         localStorage.setItem('userId', res.userId);
         
         setTimeout(() => {
@@ -45,7 +58,7 @@ export class LoginComponent {
           if (role === 'Admin') {
             this.router.navigate(['/admin']); // Changed from '/Admin/dashboard' to '/admin'
           } else if (role === 'Worker') {
-            this.router.navigate(['/worker']); // Update this if you have a worker route
+            this.router.navigate(['/worker-dashboard']); // Update this if you have a worker route
           } else if (role === 'Customer') {
             this.router.navigate(['/user']); // Changed from '/User/dashboard' to '/user'
           }
@@ -61,7 +74,7 @@ export class LoginComponent {
     
     setTimeout(() => {
       this.errorMessage = '';
-    }, 5000);
+    }, 5003);
   },
 
 

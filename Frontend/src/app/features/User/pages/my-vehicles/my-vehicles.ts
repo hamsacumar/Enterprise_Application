@@ -1,94 +1,198 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
-import { MockData } from '../../../../services/mock-data';
+import { HttpClientModule } from '@angular/common/http';
+import { VehicleService, Vehicle } from '../../services/vehicle.service';
 
 @Component({
   selector: 'app-my-vehicles',
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule
-  ],
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule, HttpClientModule],
   templateUrl: './my-vehicles.html',
-  styleUrl: './my-vehicles.css',
+  styleUrls: ['./my-vehicles.css']
 })
-export class MyVehicles {
-  private mock = inject(MockData);
-  vehicles = signal<Array<{ id: number; name: string; model: string; year: number; regNumber: string; type: string; color?: string }>>([]);
-
-  editingId: number | null = null;
-  form: { id: number | null; name: string; model: string; year: number; regNumber: string; type: string; color: string } = {
-    id: null, name: '', model: '', year: new Date().getFullYear(), regNumber: '', type: 'Sedan', color: ''
+export class MyVehiclesComponent implements OnInit {
+  vehicles: Vehicle[] = [];
+  showAddModal: boolean = false;
+  showEditModal: boolean = false;
+  isSubmitting: boolean = false;
+  
+  vehicleForm: Vehicle = {
+    id: 0,
+    name: '',
+    model: '',
+    year: new Date().getFullYear(),
+    regNumber: '',
+    type: 'Car',
+    color: ''
   };
-  formOpen = false;
 
-  constructor(){
-    this.refresh();
+  vehicleTypes = ['Car', 'Bike', 'Van', 'SUV', 'Truck'];
+  currentYear = new Date().getFullYear();
+  yearRange: number[] = [];
+
+  constructor(private vehicleService: VehicleService) {
+    // Generate year range (last 30 years to future 5 years)
+    for (let i = this.currentYear - 30; i <= this.currentYear + 5; i++) {
+      this.yearRange.push(i);
+    }
   }
 
-  refresh(){
-    this.mock.getMyVehicles().subscribe(list => this.vehicles.set(list));
+  ngOnInit(): void {
+    this.loadVehicles();
   }
 
-  startAdd(){
-    this.editingId = null;
-    this.form = { id: null, name: '', model: '', year: new Date().getFullYear(), regNumber: '', type: 'Sedan', color: '' };
-    this.formOpen = true;
+  loadVehicles(): void {
+    this.vehicleService.getVehicles().subscribe({
+      next: (vehicles) => {
+        this.vehicles = vehicles;
+      },
+      error: (error) => {
+        console.error('Error loading vehicles:', error);
+        alert('Failed to load vehicles. Please try again.');
+      }
+    });
   }
 
-  startEdit(v: { id: number; name: string; model: string; year: number; regNumber?: string; type?: string; color?: string }){
-    this.editingId = v.id;
-    this.form = {
-      id: v.id,
-      name: v.name,
-      model: v.model,
-      year: v.year,
-      regNumber: v.regNumber || '',
-      type: v.type || 'Sedan',
-      color: v.color || ''
+  openAddModal(): void {
+    this.vehicleForm = {
+      id: 0,
+      name: '',
+      model: '',
+      year: this.currentYear,
+      regNumber: '',
+      type: 'Car',
+      color: ''
     };
-    this.formOpen = true;
+    this.showAddModal = true;
   }
 
-  cancel(){
-    this.editingId = null;
-    this.formOpen = false;
+  closeAddModal(): void {
+    this.showAddModal = false;
+    this.vehicleForm = {
+      id: 0,
+      name: '',
+      model: '',
+      year: this.currentYear,
+      regNumber: '',
+      type: 'Car',
+      color: ''
+    };
   }
 
-  save(){
-    const { id, name, model, year, regNumber, type, color } = this.form;
-    if (!name || !model || !year || !regNumber || !type){
-      alert('Please fill all required fields: Name, Model, Year, Registration Number, Type');
+  openEditModal(vehicle: Vehicle): void {
+    this.vehicleForm = { ...vehicle };
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.vehicleForm = {
+      id: 0,
+      name: '',
+      model: '',
+      year: this.currentYear,
+      regNumber: '',
+      type: 'Car',
+      color: ''
+    };
+  }
+
+  addVehicle(): void {
+    if (!this.validateForm()) {
       return;
     }
-    const done = () => { this.cancel(); this.refresh(); };
-    if (id == null){
-      this.mock.addVehicle({ name, model, year, regNumber, type, color }).subscribe({ next: done, error: (err) => {
-        console.error('Add vehicle failed', err);
-        alert('Failed to save vehicle. Please ensure the backend is running and try again.');
-      }});
-    } else {
-      this.mock.updateVehicle({ id, name, model, year, regNumber, type, color }).subscribe({ next: done, error: (err) => {
-        console.error('Update vehicle failed', err);
+
+    this.isSubmitting = true;
+    const vehicleData = {
+      name: this.vehicleForm.name,
+      model: this.vehicleForm.model,
+      year: this.vehicleForm.year,
+      regNumber: this.vehicleForm.regNumber,
+      type: this.vehicleForm.type,
+      color: this.vehicleForm.color || undefined
+    };
+
+    this.vehicleService.addVehicle(vehicleData).subscribe({
+      next: (newVehicle) => {
+        this.vehicles.push(newVehicle);
+        this.closeAddModal();
+        this.isSubmitting = false;
+        alert('Vehicle added successfully!');
+      },
+      error: (error) => {
+        console.error('Error adding vehicle:', error);
+        alert('Failed to add vehicle. Please try again.');
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  updateVehicle(): void {
+    if (!this.validateForm()) {
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.vehicleService.updateVehicle(this.vehicleForm.id, this.vehicleForm).subscribe({
+      next: () => {
+        const index = this.vehicles.findIndex(v => v.id === this.vehicleForm.id);
+        if (index > -1) {
+          this.vehicles[index] = { ...this.vehicleForm };
+        }
+        this.closeEditModal();
+        this.isSubmitting = false;
+        alert('Vehicle updated successfully!');
+      },
+      error: (error) => {
+        console.error('Error updating vehicle:', error);
         alert('Failed to update vehicle. Please try again.');
-      }});
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  editVehicle(vehicle: Vehicle): void {
+    this.openEditModal(vehicle);
+  }
+
+  deleteVehicle(vehicleId: number): void {
+    if (confirm('Are you sure you want to delete this vehicle?')) {
+      this.vehicleService.deleteVehicle(vehicleId).subscribe({
+        next: () => {
+          this.vehicles = this.vehicles.filter(v => v.id !== vehicleId);
+          alert('Vehicle deleted successfully!');
+        },
+        error: (error) => {
+          console.error('Error deleting vehicle:', error);
+          alert('Failed to delete vehicle. Please try again.');
+        }
+      });
     }
   }
 
-  remove(v: { id: number }){
-    if (!confirm('Delete this vehicle?')) return;
-    this.mock.deleteVehicle(v.id).subscribe(() => this.refresh());
+  validateForm(): boolean {
+    if (!this.vehicleForm.name || !this.vehicleForm.name.trim()) {
+      alert('Please enter vehicle name (e.g., Toyota, Honda)');
+      return false;
+    }
+    if (!this.vehicleForm.model || !this.vehicleForm.model.trim()) {
+      alert('Please enter vehicle model (e.g., Camry, Civic)');
+      return false;
+    }
+    if (!this.vehicleForm.regNumber || !this.vehicleForm.regNumber.trim()) {
+      alert('Please enter registration number');
+      return false;
+    }
+    if (!this.vehicleForm.type) {
+      alert('Please select vehicle type');
+      return false;
+    }
+    if (this.vehicleForm.year < 1900 || this.vehicleForm.year > this.currentYear + 5) {
+      alert('Please enter a valid year');
+      return false;
+    }
+    return true;
   }
 }

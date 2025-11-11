@@ -1,11 +1,15 @@
+using System;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace AuthService.Services
 {
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
+
         public EmailService(IConfiguration config)
         {
             _config = config;
@@ -18,19 +22,23 @@ namespace AuthService.Services
             var smtpUser = _config["Smtp:User"];
             var smtpPass = _config["Smtp:Pass"];
 
+            if (string.IsNullOrEmpty(smtpUser) || string.IsNullOrEmpty(smtpPass))
+            {
+                throw new InvalidOperationException("SMTP user or password is not configured.");
+            }
+
             using var client = new SmtpClient(smtpHost, smtpPort)
             {
                 Credentials = new NetworkCredential(smtpUser, smtpPass),
                 EnableSsl = true
             };
 
-            if (string.IsNullOrEmpty(smtpUser))
+            var msg = new MailMessage(smtpUser, toEmail)
             {
-                throw new InvalidOperationException("SMTP user is not configured.");
-            }
+                Subject = "Your OTP Code",
+                Body = $"Your OTP code is: {otpCode}. It is valid for 5 minutes."
+            };
 
-            var msg = new MailMessage(smtpUser, toEmail,
-            "Your OTP Code", $"Your OTP code is: {otpCode}. It is valid for 5 minutes.");
             await client.SendMailAsync(msg);
         }
     }

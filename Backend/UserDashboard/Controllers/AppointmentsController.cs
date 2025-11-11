@@ -1,5 +1,6 @@
 using System.Text.Json;
 using be.Data;
+using be.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,9 +14,17 @@ namespace be.Controllers
         public AppointmentsController(AppDbContext db) => _db = db;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Appointment>>> Get()
+        public async Task<ActionResult<IEnumerable<Appointment>>> Get([FromQuery] string? status = null)
         {
-            return await _db.Appointments.AsNoTracking().OrderByDescending(a => a.CreatedAtUtc).ToListAsync();
+            var query = _db.Appointments.AsNoTracking();
+            
+            if (!string.IsNullOrEmpty(status))
+            {
+                var statuses = status.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                query = query.Where(a => statuses.Contains(a.Status));
+            }
+            
+            return await query.OrderByDescending(a => a.CreatedAtUtc).ToListAsync();
         }
 
         [HttpGet("{id:int}")]
@@ -28,17 +37,20 @@ namespace be.Controllers
 
         public record ServiceItemDto(string id, string name, int basePriceLkr, int finalPriceLkr);
         public record CreateAppointmentDto(
-            string customerName,
-            string phoneNumber,
-            string? specialInstructions,
+            string? customerName,
+            string? phoneNumber,
             int? vehicleId,
-            string? vehicleName,
-            string? vehicleModel,
-            int? vehicleYear,
-            string? vehicleRegNumber,
-            string? vehicleType,
+            string vehicleName,
+            string vehicleModel,
+            int vehicleYear,
+            string vehicleRegNumber,
+            string vehicleType,
             IEnumerable<ServiceItemDto> services,
-            int totalPriceLkr
+            int totalPriceLkr,
+            DateTime? appointmentDate,
+            string? timeSlot,
+            string? note,
+            int? extraPayment
         );
 
         [HttpPost]
@@ -46,10 +58,8 @@ namespace be.Controllers
         {
             var entity = new Appointment
             {
-                CustomerName = dto.customerName,
-                PhoneNumber = dto.phoneNumber,
-                // Preferred date/time removed
-                SpecialInstructions = dto.specialInstructions,
+                CustomerName = dto.customerName ?? string.Empty,
+                PhoneNumber = dto.phoneNumber ?? string.Empty,
                 VehicleId = dto.vehicleId,
                 VehicleName = dto.vehicleName,
                 VehicleModel = dto.vehicleModel,
@@ -58,8 +68,14 @@ namespace be.Controllers
                 VehicleType = dto.vehicleType,
                 SelectedServicesJson = JsonSerializer.Serialize(dto.services),
                 TotalPriceLkr = dto.totalPriceLkr,
-                Status = "Requested"
+                AppointmentDate = dto.appointmentDate ?? DateTime.UtcNow,
+                TimeSlot = dto.timeSlot ?? string.Empty,
+                Note = dto.note,
+                ExtraPayment = dto.extraPayment ?? 0,
+                Status = "New"
             };
+
+            entity.RecalculateTotalPayment();
 
             _db.Appointments.Add(entity);
             await _db.SaveChangesAsync();

@@ -2,13 +2,40 @@ from fastapi import FastAPI
 from .routes import chat
 from .core import config
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="CHATBOT")
+# 👇 Define lifespan first so it's available when creating FastAPI
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from .core.db import get_db    # Import inside to avoid circular import
 
-# Add CORS
+    print("🚀 App starting up")
+    try:
+        db = get_db()
+        # Test MongoDB connection
+        await db.command("ping")
+        print("✅ MongoDB connection successful")
+
+        # Create unique index on username
+        await get_db.users.create_index("username", unique=True)
+        print("✅ Index created on username")
+    except Exception as e:
+        print(f"❌ MongoDB connection error: {e}")
+        # Optional: raise exception if you want startup to fail
+        # raise
+
+    yield  # Application runs during this time
+
+    print("🛑 App shutting down")
+
+
+# ✅ Create app only once
+app = FastAPI(title="CHATBOT", lifespan=lifespan)
+
+# Add CORS middleware
 origins = [
     "http://localhost:4200",  # Angular dev server
-    # you can add more origins if needed
+    # Add more origins if needed
 ]
 
 app.add_middleware(
@@ -19,32 +46,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+# Include routers
 app.include_router(chat.router)
 
+# Health check endpoint
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
 
-@app.on_event("startup")
-async def startup_event():
-    from .db import get_db
-    db = get_db()
-    
-    try:
-        # Test connection first
-        await db.command('ping')
-        print("✅ MongoDB connection successful")
-        
-        # Create unique index on username (not email, since you're using username)
-        await db.users.create_index("username", unique=True)
-        print("✅ Index created on username")
-    except Exception as e:
-        print(f"❌ MongoDB connection error: {e}")
-        # Don't raise - allow app to start even if DB connection fails
-        # You can uncomment the line below if you want the app to fail on DB errors
-        # raise
-
+# Root endpoint
 @app.get("/")
 async def root():
     return {"msg": "Auth service running"}

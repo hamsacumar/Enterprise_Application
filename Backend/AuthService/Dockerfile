@@ -2,26 +2,20 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
-# Copy csproj and restore dependencies
-COPY *.csproj ./
-RUN dotnet restore
+# Copy csproj and restore as distinct layers
+COPY ["AuthService.csproj", "./"]
+RUN dotnet restore "AuthService.csproj"
 
-# Copy everything else and publish
-COPY . ./
-RUN dotnet publish -c Release -o out
+# Copy everything else and build
+COPY . .
+RUN dotnet publish "AuthService.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
+COPY --from=build /app/publish .
 
-# Copy published output
-COPY --from=build /app/out .
+ENV ASPNETCORE_URLS=http://+:5003
+EXPOSE 5003
 
-# Copy configuration files
-COPY appsettings*.json ./
-
-# Expose port 5000
-EXPOSE 5000
-
-# Start the app
 ENTRYPOINT ["dotnet", "AuthService.dll"]

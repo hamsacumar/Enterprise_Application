@@ -1,8 +1,13 @@
 // ==========================
 // 📦 Angular Core Imports
 // ==========================
+import { LandingComponent } from './features/landing/landing.component';
+import { AboutComponent } from './features/pages/about/about.component';
+//import { ContactComponent } from './features/pages/contact/contact.component';
+import { ServicesComponent } from './features/pages/services/services.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { landingGuard } from './core/guards/landing.guard';
 
 // ==========================
 // 🔐 AUTH MODULE COMPONENTS
@@ -30,25 +35,41 @@ import { CustomerListComponent } from './features/Admin/pages/customer-list/cust
 import { ChatbotComponent } from './features/chatbot/chatbot.component';
 
 // ==========================
+// CHATBOX COMPONENT
+// ==========================
+import { ChatboxComponent } from './features/chatbox/components/chatbox/chatbox.component';
+
+// ==========================
 // 👤 USER DASHBOARD COMPONENTS
 // ==========================
-import { Dashboard } from './features/User/pages/dashboard/dashboard';
-import { BookService } from './features/User/pages/book-service/book-service';
-import { Services } from './features/User/services/services';
-import { PastOrders } from './features/User/pages/past-orders/past-orders';
-import { MyVehicles } from './features/User/pages/my-vehicles/my-vehicles';
-import { RequestModification } from './features/User/pages/request-modification/request-modification';
-import { PaymentDetails } from './features/User/pages/payment-details/payment-details';
-import { NotificationsPage } from './features/User/pages/notifications/notifications';
+import { DashboardComponent as UserDashboardComponent } from './features/User/pages/dashboard/dashboard';
+import { BookServiceComponent } from './features/User/pages/book-service/book-service';
+import { PastOrdersComponent } from './features/User/pages/past-orders/past-orders';
+import { RecentAppointmentsComponent } from './features/User/pages/recent-appointments/recent-appointments';
+import { MyVehiclesComponent } from './features/User/pages/my-vehicles/my-vehicles';
+import { PaymentDetailsComponent } from './features/User/pages/payment-details/payment-details';
+import { NotificationsComponent } from './features/User/pages/notifications/notifications';
+import { WorkerDashboardComponent } from './features/Worker/pages/worker-dashboard/worker-dashboard.component';
 
 // ==========================
 // 🚦 ROUTE CONFIGURATION
 // ==========================
 export const routes: Routes = [
-  // -------------------------------------
-  // 🔹 DEFAULT ROUTE
-  // -------------------------------------
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // =====================================
+  // 🌍 PUBLIC / LANDING ROUTES
+  // =====================================
+  { path: '', component: LandingComponent, canActivate: [landingGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [landingGuard], title: 'AutoServeX | Login' },
+  { path: 'register', component: RegisterComponent, title: 'AutoServeX | Register' },
+  { path: 'verify-otp', component: VerifyOtpComponent, title: 'AutoServeX | Verify OTP' },
+  { path: 'classify', component: ClassifyComponent, title: 'AutoServeX | Classify User' },
+  { path: 'forgot-password', component: ForgotPasswordComponent, title: 'AutoServeX | Forgot Password' },
+  { path: 'reset-password', component: ResetPasswordComponent, title: 'AutoServeX | Reset Password' },
+  { path: 'services', component: ServicesComponent, title: 'AutoServeX | Services' },
+  { path: 'pricing', component: LandingComponent, title: 'AutoServeX | Pricing' },
+  { path: 'about', component: AboutComponent, title: 'AutoServeX | About Us' },
+  //{ path: 'contact', component: ContactComponent, title: 'AutoServeX | Contact' },
+  { path: 'booking', component: LandingComponent, title: 'AutoServeX | Booking' },
 
   // -------------------------------------
   // 🔹 ADMIN ROUTES
@@ -80,20 +101,55 @@ export const routes: Routes = [
 
    // 🔹 AI chatbot
   { path: 'ai', component: ChatbotComponent },
+  // 🔹 Chatbox
+  { path: 'chat', component: ChatboxComponent },
+  // worker
+  {
+    path: 'worker-dashboard',
+    component: WorkerDashboardComponent,
+    title: 'Worker | Dashboard',
+  },
 
    // 🔹 User dashboard routes
   {
     path: 'user',
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: Dashboard, title: 'AutoServeX | Dashboard' },
-      { path: 'book-service', component: BookService, title: 'AutoServeX | Book Service' },
-      { path: 'services', component: Services, title: 'AutoServeX | My Bookings' },
-      { path: 'my-vehicles', component: MyVehicles, title: 'AutoServeX | My Vehicles' },
-      { path: 'past-orders', component: PastOrders, title: 'AutoServeX | Past Orders' },
-      { path: 'request-modification', component: RequestModification, title: 'AutoServeX | Request Modification' },
-      { path: 'payment-details', component: PaymentDetails, title: 'AutoServeX | Payment Details' },
-      { path: 'notifications', component: NotificationsPage, title: 'AutoServeX | Notifications' },
+      {
+        path: 'dashboard',
+        component: UserDashboardComponent,
+        title: 'AutoServeX | Dashboard',
+      },
+      {
+        path: 'book-service',
+        component: BookServiceComponent,
+        title: 'AutoServeX | Book Service',
+      },
+      {
+        path: 'my-vehicles',
+        component: MyVehiclesComponent,
+        title: 'AutoServeX | My Vehicles',
+      },
+      {
+        path: 'recent-appointments',
+        component: RecentAppointmentsComponent,
+        title: 'AutoServeX | Recent Appointments',
+      },
+      {
+        path: 'past-orders',
+        component: PastOrdersComponent,
+        title: 'AutoServeX | Past Orders',
+      },
+      {
+        path: 'payment-details',
+        component: PaymentDetailsComponent,
+        title: 'AutoServeX | Payment Details',
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
+        title: 'AutoServeX | Notifications',
+      },
     ],
   },
 

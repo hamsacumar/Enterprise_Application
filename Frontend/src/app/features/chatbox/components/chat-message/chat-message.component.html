@@ -1,0 +1,38 @@
+<div class="chat-container" *ngIf="connected">
+  <div class="user-list">
+    <div
+      *ngFor="let user of users"
+      (click)="selectUser(user)"
+      [class.active]="user === selectedUser"
+      class="user-item"
+    >
+      {{ user.username }}
+    </div>
+  </div>
+
+  <div class="chat-section" *ngIf="selectedUser; else selectUserMsg">
+    <h3>Chat with {{ selectedUser.username }}</h3>
+    <div id="chat-box" class="chat-box">
+      <div
+        *ngFor="let msg of messages"
+        [class.self]="msg.senderId === currentUser.id"
+        class="chat-message"
+      >
+        {{ msg.content }}
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        placeholder="Type a message..."
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <ng-template #selectUserMsg>
+    <div class="no-user">Select a user to start chatting.</div>
+  </ng-template>
+</div>
