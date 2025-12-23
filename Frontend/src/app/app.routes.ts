@@ -3,11 +3,12 @@
 // ==========================
 import { LandingComponent } from './features/landing/landing.component';
 import { AboutComponent } from './features/pages/about/about.component';
-//import { ContactComponent } from './features/pages/contact/contact.component';
+import { ContactComponent } from './features/pages/contact/contact.component';
 import { ServicesComponent } from './features/pages/services/services.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { landingGuard } from './core/guards/landing.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 // ==========================
 // 🔐 AUTH MODULE COMPONENTS
@@ -72,7 +73,7 @@ export const routes: Routes = [
   { path: 'services', component: ServicesComponent, title: 'AutoServeX | Services' },
   { path: 'pricing', component: LandingComponent, title: 'AutoServeX | Pricing' },
   { path: 'about', component: AboutComponent, title: 'AutoServeX | About Us' },
-  //{ path: 'contact', component: ContactComponent, title: 'AutoServeX | Contact' },
+  { path: 'contact', component: ContactComponent, title: 'AutoServeX | Contact' },
   { path: 'booking', component: LandingComponent, title: 'AutoServeX | Booking' },
 
   // -------------------------------------
@@ -80,7 +81,9 @@ export const routes: Routes = [
   // -------------------------------------
   {
     path: 'admin',
-    component: DashboardComponent,
+    
+    canActivate: [authGuard],
+    data: { role: 'Admin' },
     children: [
       { path: '', component: DashboardHomeComponent, title: 'Admin | Dashboard Home' },
       { path: 'services', component: ServiceListComponent, title: 'Admin | Services' },
@@ -110,6 +113,8 @@ export const routes: Routes = [
   // worker
   {
     path: 'worker-dashboard',
+    canActivate: [authGuard],
+    data: { role: 'Worker' },
     component: WorkerDashboardComponent,
     title: 'Worker | Dashboard',
   },
@@ -117,6 +122,8 @@ export const routes: Routes = [
    // 🔹 User dashboard routes
   {
     path: 'user',
+    canActivate: [authGuard],
+    data: { role: 'Customer' },
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
@@ -175,4 +182,6 @@ export const routes: Routes = [
 // })
 // export class AppRoutingModule {}
       
+
+
 

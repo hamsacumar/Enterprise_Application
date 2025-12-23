@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 
 @Injectable({
@@ -30,8 +30,27 @@ export class AuthGuardService {
 
 // Standalone guard function
 export const authGuard: CanActivateFn = (route, state) => {
-  const router = new Router();
+  const router = inject(Router);
   const token = localStorage.getItem('token');
+  const rawRole = localStorage.getItem('userRole') || localStorage.getItem('role') || '';
+
+  const normalize = (r: string) => {
+    const v = (r || '').toLowerCase();
+    return v === 'user' ? 'customer' : v;
+  };
+
+  if (!token) {
+    localStorage.setItem('redirectUrl', state.url);
+    return router.parseUrl('/login');
+  }
+
+  const requiredRole = route.data?.['role'] as string | undefined;
+  if (requiredRole && normalize(rawRole) !== normalize(requiredRole)) {
+    return router.parseUrl('/');
+  }
+
+  return true;
+};const token = localStorage.getItem('token');
   const userRole = localStorage.getItem('userRole');
   const url = state.url;
 
