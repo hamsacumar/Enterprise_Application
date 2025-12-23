@@ -1,0 +1,19 @@
+# Exclude build output and IDE artifacts
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.log
+
+# Git & Docker
+.git/
+.gitignore
+Dockerfile
+*.md
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
