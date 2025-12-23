@@ -44,6 +44,7 @@ import { ChatboxComponent } from './features/chatbox/components/chatbox/chatbox.
 // 👤 USER DASHBOARD COMPONENTS
 // ==========================
 import { DashboardComponent as UserDashboardComponent } from './features/User/pages/dashboard/dashboard';
+import { UserLayoutComponent } from './features/User/layout/user-layout.component';
 import { BookServiceComponent } from './features/User/pages/book-service/book-service';
 import { PastOrdersComponent } from './features/User/pages/past-orders/past-orders';
 import { RecentAppointmentsComponent } from './features/User/pages/recent-appointments/recent-appointments';
@@ -51,6 +52,7 @@ import { MyVehiclesComponent } from './features/User/pages/my-vehicles/my-vehicl
 import { PaymentDetailsComponent } from './features/User/pages/payment-details/payment-details';
 import { NotificationsComponent } from './features/User/pages/notifications/notifications';
 import { WorkerDashboardComponent } from './features/Worker/pages/worker-dashboard/worker-dashboard.component';
+import { WorkerLayoutComponent } from './features/Worker/layout/worker-layout.component';
 
 // ==========================
 // 🚦 ROUTE CONFIGURATION
@@ -84,12 +86,15 @@ export const routes: Routes = [
     
     canActivate: [authGuard],
     data: { role: 'Admin' },
+    component: DashboardComponent,
     children: [
       { path: '', component: DashboardHomeComponent, title: 'Admin | Dashboard Home' },
       { path: 'services', component: ServiceListComponent, title: 'Admin | Services' },
       { path: 'workers', component: WorkerListComponent, title: 'Admin | Workers' },
       { path: 'customers', component: CustomerListComponent, title: 'Admin | Customers' },
       { path: 'orders', component: OrderListComponent, title: 'Admin | Orders' },
+      { path: 'chat', component: ChatboxComponent, title: 'Admin | Chat' },
+      { path: 'ai', component: ChatbotComponent, title: 'Admin | Ask with AI' },
     ],
   },
 
@@ -111,12 +116,18 @@ export const routes: Routes = [
   // 🔹 Chatbox
   { path: 'chat', component: ChatboxComponent },
   // worker
+  { path: 'worker-dashboard', redirectTo: 'worker/dashboard', pathMatch: 'full' },
   {
-    path: 'worker-dashboard',
+    path: 'worker',
     canActivate: [authGuard],
     data: { role: 'Worker' },
-    component: WorkerDashboardComponent,
-    title: 'Worker | Dashboard',
+    component: WorkerLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: WorkerDashboardComponent, title: 'Worker | Dashboard' },
+      { path: 'chat', component: ChatboxComponent, title: 'Worker | Chat' },
+      { path: 'ai', component: ChatbotComponent, title: 'Worker | Ask with AI' },
+    ],
   },
 
    // 🔹 User dashboard routes
@@ -124,6 +135,7 @@ export const routes: Routes = [
     path: 'user',
     canActivate: [authGuard],
     data: { role: 'Customer' },
+    component: UserLayoutComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
@@ -161,6 +173,8 @@ export const routes: Routes = [
         component: NotificationsComponent,
         title: 'AutoServeX | Notifications',
       },
+      { path: 'chat', component: ChatboxComponent, title: 'AutoServeX | Chat' },
+      { path: 'ai', component: ChatbotComponent, title: 'AutoServeX | Ask with AI' },
       { path: 'payment/success', component: PaymentStatusComponent }, 
       { path: 'payment/cancel', component: PaymentStatusComponent },
       {path: 'payment', component: PaymentFormComponent},
@@ -182,6 +196,8 @@ export const routes: Routes = [
 // })
 // export class AppRoutingModule {}
       
+
+
 
 
 

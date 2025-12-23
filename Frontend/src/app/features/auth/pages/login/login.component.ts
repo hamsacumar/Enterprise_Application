@@ -38,30 +38,17 @@ export class LoginComponent {
           next: () => {},
           error: () => {}
         });
-        if (res.role === 'Admin') {
-          this.router.navigate(['/app/admin/services']);
-        } else {
-          // Worker/User routes not yet defined; navigate to app root
-          this.router.navigate(['/app']);
-        }
         localStorage.setItem('userId', res.userId);
-        
+        const role = res.role;
+        if (role === 'Admin') {
+          this.router.navigate(['/admin']);
+        } else if (role === 'Worker') {
+          this.router.navigate(['/worker-dashboard']);
+        } else {
+          this.router.navigate(['/user']);
+        }
         setTimeout(() => {
           this.successMessage = '';
-        }, 1000);
-
-        setTimeout(() => {
-          // The backend sends role with first letter capitalized (e.g., 'Admin', 'Customer')
-          const role = res.role;
-          console.log('User role:', role); // For debugging
-          
-          if (role === 'Admin') {
-            this.router.navigate(['/admin']); // Changed from '/Admin/dashboard' to '/admin'
-          } else if (role === 'Worker') {
-            this.router.navigate(['/worker-dashboard']); // Update this if you have a worker route
-          } else if (role === 'Customer') {
-            this.router.navigate(['/user']); // Changed from '/User/dashboard' to '/user'
-          }
         }, 1000);
       },
       error: (err) => {

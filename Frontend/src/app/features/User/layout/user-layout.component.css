@@ -1,0 +1,17 @@
+.user-layout {
+  display: block;
+}
+
+.user-layout .content {
+  margin-left: 280px; /* match sidebar width */
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .user-layout .content {
+    margin-left: 0;
+    padding: 0.75rem;
+  }
+}
