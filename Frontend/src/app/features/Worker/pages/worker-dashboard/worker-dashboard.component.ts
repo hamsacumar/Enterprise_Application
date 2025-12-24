@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from '../../../../shared/components/sidebar/sidebar.component';
 
 interface Service {
   name: string;
@@ -60,7 +61,7 @@ interface Appointment {
 @Component({
   selector: 'app-worker-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, SidebarComponent],
   templateUrl: './worker-dashboard.component.html',
   styleUrls: ['./worker-dashboard.component.css'],
 })

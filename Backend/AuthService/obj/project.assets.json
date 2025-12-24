@@ -1540,19 +1540,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ADMIN\\.nuget\\packages\\": {}
+    "C:\\Users\\Tishanth\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Enterprise_application\\Backend\\AuthService\\AuthService.csproj",
+      "projectUniqueName": "C:\\IT - UOM\\Enterprise_Application\\Backend\\AuthService\\AuthService.csproj",
       "projectName": "AuthService",
-      "projectPath": "E:\\Enterprise_application\\Backend\\AuthService\\AuthService.csproj",
-      "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "E:\\Enterprise_application\\Backend\\AuthService\\obj\\",
+      "projectPath": "C:\\IT - UOM\\Enterprise_Application\\Backend\\AuthService\\AuthService.csproj",
+      "packagesPath": "C:\\Users\\Tishanth\\.nuget\\packages\\",
+      "outputPath": "C:\\IT - UOM\\Enterprise_Application\\Backend\\AuthService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Tishanth\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1576,7 +1576,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -1626,7 +1626,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

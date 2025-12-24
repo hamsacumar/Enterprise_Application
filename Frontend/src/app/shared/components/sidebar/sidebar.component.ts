@@ -35,7 +35,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     // Subscribe to current user changes
     this.userSubscription = this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
-      const role = user?.role || 'Customer';
+      const role = (user?.role as string) || (localStorage.getItem('userRole') as string) || 'Customer';
       // Normalize legacy 'User' to 'Customer'
       this.userRole = role === 'User' ? 'Customer' : role;
       this.loadNavigation();
@@ -103,7 +103,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'admin-chatbox',
         label: 'Chat',
-        route: '/chat',
+        route: '/admin/chat',
         icon: '💬',
         order: 5,
         requiredRole: 'Admin'
@@ -111,7 +111,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'admin-ask-ai',
         label: 'Ask with AI',
-        route: '/ai',
+        route: '/admin/ai',
         icon: '🤖',
         order: 6,
         requiredRole: 'Admin'
@@ -124,7 +124,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'worker-dashboard',
         label: 'Dashboard',
-        route: '/worker-dashboard',
+        route: '/worker/dashboard',
         icon: '🔧',
         order: 1,
         requiredRole: 'Worker'
@@ -132,7 +132,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'worker-chatbox',
         label: 'Chat',
-        route: '/chat',
+        route: '/worker/chat',
         icon: '💬',
         order: 2,
         requiredRole: 'Worker'
@@ -140,7 +140,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'worker-ask-ai',
         label: 'Ask with AI',
-        route: '/ai',
+        route: '/worker/ai',
         icon: '🤖',
         order: 3,
         requiredRole: 'Worker'
@@ -185,7 +185,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'customer-chatbox',
         label: 'Chat',
-        route: '/chat',
+        route: '/user/chat',
         icon: '💬',
         order: 5,
         requiredRole: 'Customer'
@@ -193,7 +193,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         id: 'customer-ask-ai',
         label: 'Ask with AI',
-        route: '/ai',
+        route: '/user/ai',
         icon: '🤖',
         order: 6,
         requiredRole: 'Customer'

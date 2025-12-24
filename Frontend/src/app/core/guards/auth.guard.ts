@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 
 @Injectable({
@@ -30,33 +30,25 @@ export class AuthGuardService {
 
 // Standalone guard function
 export const authGuard: CanActivateFn = (route, state) => {
-  const router = new Router();
+  const router = inject(Router);
   const token = localStorage.getItem('token');
-  const userRole = localStorage.getItem('userRole');
-  const url = state.url;
+  const rawRole = localStorage.getItem('userRole') || localStorage.getItem('role') || '';
+
+  const normalize = (r: string) => {
+    const v = (r || '').toLowerCase();
+    return v === 'user' ? 'customer' : v;
+  };
 
   if (!token) {
     localStorage.setItem('redirectUrl', state.url);
-    window.location.href = '/login';
-    return false;
+    return router.parseUrl('/login');
   }
 
-  // Role-based redirect when hitting the layout root
-  if (url === '/app' || url === '/app/') {
-    if (userRole === 'Admin') {
-      window.location.href = '/app/admin/services';
-      return false;
-    }
-    // For Worker/User (routes not defined yet), stay at /app so layout + sidebar render
-    // You can change these destinations when corresponding routes exist
-    return true;
-  }
-
-  const requiredRole = route.data?.['role'];
-  if (requiredRole && userRole !== requiredRole) {
-    window.location.href = '/unauthorized';
-    return false;
+  const requiredRole = route.data?.['role'] as string | undefined;
+  if (requiredRole && normalize(rawRole) !== normalize(requiredRole)) {
+    return router.parseUrl('/');
   }
 
   return true;
 };
+

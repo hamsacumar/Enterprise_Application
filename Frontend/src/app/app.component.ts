@@ -43,15 +43,29 @@ export class AppComponent implements OnInit, OnDestroy {
     return (
       this.router.url.startsWith('/admin') ||
       this.router.url.startsWith('/user') ||
-      this.router.url.startsWith('/worker-dashboard') ||
+      this.router.url.startsWith('/worker') ||
       this.router.url.startsWith('/chat') ||
       this.router.url.startsWith('/ai')
     );
   }
 
+  isDashboardArea(): boolean {
+    return (
+      this.router.url.startsWith('/admin') ||
+      this.router.url.startsWith('/user') ||
+      this.router.url.startsWith('/worker')
+    );
+  }
+
+  shouldShiftFooter(): boolean {
+    return this.shouldShowSidebar() || this.isDashboardArea();
+  }
+
   shouldShowSidebar(): boolean {
-    // Show sidebar when user is authenticated AND in authenticated area, OR in demo mode
-    return (this.isAuthenticated && this.isAuthenticatedArea()) || this.isInDemoMode();
+    const inDash = this.isDashboardArea();
+    const showForAuthArea = this.isAuthenticated && this.isAuthenticatedArea() && !inDash;
+    const showForDemo = this.isInDemoMode() && !inDash;
+    return showForAuthArea || showForDemo;
   }
 
   isInDemoMode(): boolean {

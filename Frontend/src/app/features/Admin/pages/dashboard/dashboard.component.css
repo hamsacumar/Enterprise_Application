@@ -45,7 +45,7 @@
 
 /* Sidebar host element on desktop */
 app-sidebar {
-  flex: 0 0 250px; /* fixed width column for sidebar */
+  flex: 0 0 280px; /* match SidebarComponent width */
   position: sticky; /* keep it fixed within viewport during scroll */
   top: 0;
   align-self: stretch; /* match container height */
@@ -80,7 +80,7 @@ app-sidebar {
   app-sidebar {
     position: fixed;
     top: 56px; /* below topbar */
-    left: -260px; /* hidden by default */
+    left: -280px; /* hidden by default, match width */
     height: calc(100vh - 56px);
     z-index: 1000;
     transition: left 0.25s ease;

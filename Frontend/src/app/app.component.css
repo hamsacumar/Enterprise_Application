@@ -22,6 +22,7 @@ app-footer {
 
 app-footer.footer-shift {
   margin-left: 280px; /* align with sidebar */
+  width: calc(100% - 280px);
 }
 
 /* Responsive: stack content for narrow screens */
@@ -33,5 +34,6 @@ app-footer.footer-shift {
 
   app-footer.footer-shift {
     margin-left: 0;
+    width: 100%;
   }
 }
