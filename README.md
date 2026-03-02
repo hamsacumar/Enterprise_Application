@@ -278,8 +278,8 @@ This map shows **how services communicate** with one another — the most critic
          │                           └──────────────┘  └──────────────┘  └─────────────────┘
          │                                                                         │
          │                                                              ┌──────────▼──────────┐
-         │                                                              │   WorkerService      │
-         │                                                              │   .NET + MySQL       │
+         │                                                              │   WorkerService     │
+         │                                                              │   .NET + MySQL      │
          │                                                              └─────────────────────┘
          │
          ├─── [WebSocket ⚡ Socket.io — Bi-directional] ─────────────▶ ┌──────────────────┐
@@ -322,8 +322,8 @@ This map shows **how services communicate** with one another — the most critic
              ▼
   ┌─────────────────────────────────────────────────────────┐
   │  AuthService                                            │
-  │  → Validates credentials against MongoDB               │
-  │  → Issues RS256-signed JWT with role claim             │
+  │  → Validates credentials against MongoDB                │
+  │  → Issues RS256-signed JWT with role claim              │
   └──────────┬──────────────────────────────────────────────┘
              │
              ▼
@@ -341,11 +341,11 @@ This map shows **how services communicate** with one another — the most critic
              ▼
   ┌────────────────────────────────────────────┐
   │  API Gateway → JWT Middleware              │
-  │  → Verifies signature                     │
-  │  → Extracts role claim                    │
+  │  → Verifies signature                      │
+  │  → Extracts role claim                     │
   └──────────┬─────────────────────────────────┘
              │
-    ┌────────┴─────────────────────┐
+    ┌────────┴───────────────────────────────────────────
     │                              │                    │
     ▼                              ▼                    ▼
 ┌───────────┐             ┌─────────────┐       ┌─────────────┐
@@ -369,8 +369,8 @@ The ChatboxService is the most technically complex component of the platform. He
 
 ```
   ┌──────────────────────────────┐          ┌────────────────────────────────┐
-  │      Angular Frontend        │          │    ChatboxService (Node.js)     │
-  │  ─────────────────────────  │          │  ────────────────────────────  │
+  │      Angular Frontend        │          │    ChatboxService (Node.js)    │
+  │  ─────────────────────────   │          │  ────────────────────────────  │
   │  socket.connect()            │ ───────▶ │  io.on('connection')           │
   │  socket.emit('join_room')    │ ───────▶ │  socket.join(roomId)           │
   │  socket.emit('send_message') │ ───────▶ │  io.to(roomId).emit(msg)       │
@@ -379,11 +379,11 @@ The ChatboxService is the most technically complex component of the platform. He
   └──────────────────────────────┘          └────────────────┬───────────────┘
                                                              │
   ┌──────────────────────────────┐          ┌───────────────▼───────────────┐
-  │      Worker Frontend         │          │     MongoDB (autoservex_chat)  │
-  │  ─────────────────────────  │          │  ────────────────────────────  │
-  │  socket.connect()            │ ───────▶ │  Write: messages collection    │
-  │  socket.on('receive_message')│ ◀─────── │  Read:  conversation history   │
-  │  socket.emit('send_message') │ ───────▶ │  Index: roomId + timestamp     │
+  │      Worker Frontend         │          │     MongoDB (autoservex_chat) │
+  │  ─────────────────────────   │          │  ──────────────────────────── │
+  │  socket.connect()            │ ───────▶ │  Write: messages collection   │
+  │  socket.on('receive_message')│ ◀─────── │  Read:  conversation history  │
+  │  socket.emit('send_message') │ ───────▶ │  Index: roomId + timestamp    │
   └──────────────────────────────┘          └───────────────────────────────┘
 ```
 
@@ -434,8 +434,8 @@ All 7 backend services, 3 databases, and the Angular frontend are containerized 
 ### Docker Network Topology
 
 ```
-  ╔══════════════════════════════════════════════════════════════════════════════╗
-  ║           🐳  docker-compose network: autoservex_network (bridge)           ║
+  ╔═══════════════════════════════════════════════════════════════════════════ ═╗
+  ║           🐳  docker-compose network: autoservex_network (bridge)          ║
   ╠══════════════════════╦═══════════════════════════════════════╦══════════════╣
   ║  Container           ║  Base Image                           ║  Port(s)     ║
   ╠══════════════════════╬═══════════════════════════════════════╬══════════════╣
